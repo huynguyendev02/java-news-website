@@ -50,7 +50,6 @@ public class HomeServlet extends HttpServlet {
                 ServletUtils.forward("/views/404.jsp",request,response);
                 break;
         }
-
     }
 
     private void getArticlesAndForward(int service, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -77,6 +76,5 @@ public class HomeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
     }
 }

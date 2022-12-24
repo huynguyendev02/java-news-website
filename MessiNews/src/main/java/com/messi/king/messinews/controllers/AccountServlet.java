@@ -5,6 +5,8 @@ import com.messi.king.messinews.services.UsersService;
 import com.messi.king.messinews.utils.ServletUtils;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import org.sql2o.logging.SysOutLogger;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
@@ -21,6 +23,7 @@ public class AccountServlet extends HttpServlet {
         String url = request.getPathInfo();
         switch (url) {
             case "/Login":
+                request.setAttribute("errorMessage", "");
                 ServletUtils.forward("/views/vwAccount/Login.jsp",request,response);
                 break;
             case "/Register":
@@ -83,6 +86,7 @@ public class AccountServlet extends HttpServlet {
         String username = request.getParameter("username");
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
+
         int role =0;
         try {
             role = Integer.parseInt(request.getParameter("role"));
@@ -137,5 +141,4 @@ public class AccountServlet extends HttpServlet {
             url = "/Home";
         ServletUtils.redirect(url, request, response);
     }
-
 }
