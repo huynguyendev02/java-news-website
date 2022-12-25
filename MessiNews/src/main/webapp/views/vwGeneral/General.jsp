@@ -15,7 +15,7 @@
                 </ol>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="https://vnn-imgs-f.vgcloud.vn/2019/11/15/06/ronaldo-2.jpg" class="d-block crop"
+                        <img src="${pageContext.request.contextPath}/photos/PhotoOfArticle/30/b.png" class="d-block crop"
                              alt="...">
                         <div class="carousel-caption  w-100 h-100 grad"
                              style=" bottom: 0; left: 0 ; z-index:2">
@@ -27,7 +27,7 @@
                     </div>
 
                     <div class="carousel-item">
-                        <img src="https://image.bongda24h.vn/medias/640x458twebp/original/2021/10/1/ronaldo-tro-lai-dt-bo-dao-nha.jpg" class="d-block crop"
+                        <img src="${pageContext.request.contextPath}/photos/PhotoOfArticle/33/b.png" class="d-block crop"
                              alt="...">
                         <div class="carousel-caption d-flex align-items-end w-100 h-100 grad"
                              style=" bottom: 0; left: 0 ; z-index:2">
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <div class="carousel-item">
-                        <img src="https://znews-photo.zingcdn.me/w1200/Uploaded/sotnzt/2022_11_15/Ronaldo_Rashford.jpg" class="d-block crop"
+                        <img src="${pageContext.request.contextPath}/photos/PhotoOfArticle/12/b.png" class="d-block crop"
                              alt="...">
                         <div class="carousel-caption d-flex align-items-end w-100 h-100 grad"
                              style=" bottom: 0; left: 0 ; z-index:2">
@@ -80,7 +80,7 @@
 
                         <!--                    Đứng đầu-->
                         <div style=" width: 66%">
-                            <img src="https://hanoispiritofplace.com/wp-content/uploads/2014/10/hinh-anh-cr7-dep-1.jpg"
+                            <img src="${pageContext.request.contextPath}/photos/PhotoOfArticle/24/a.png"
                                  alt="" class="w-100">
                             <a href="">Thể thao</a>
                             <a href="">
@@ -93,7 +93,7 @@
 
                         <!--                    Hạng nhì-->
                         <div style=" width: 32%; background-image: linear-gradient(to bottom, #EEEEEE, #EEEEEE, transparent) ">
-                            <img src="https://hanoispiritofplace.com/wp-content/uploads/2014/10/hinh-anh-cr7-dep-3.jpg"
+                            <img src="${pageContext.request.contextPath}/photos/PhotoOfArticle/22/a.png"
                                  alt="" class="w-100">
                             <div class="p-2" style="">
                                 <a href="">Thể thao</a>
@@ -109,7 +109,7 @@
                     <!--                3 hình dưới-->
                     <div class=" pt-3 w-100 d-flex justify-content-between">
                         <div style=" width: 32%">
-                            <img src="https://hanoispiritofplace.com/wp-content/uploads/2014/10/hinh-anh-cr7-dep-4.jpg"
+                            <img src="${pageContext.request.contextPath}/photos/PhotoOfArticle/13/a.png"
                                  alt="" class="w-100">
                             <a href="">Thể thao</a> <br>
                             <a href="">
@@ -118,7 +118,7 @@
                             </a>
                         </div>
                         <div style=" width: 32%">
-                            <img src="https://hanoispiritofplace.com/wp-content/uploads/2014/10/hinh-anh-cr7-dep-7.jpg"
+                            <img src="${pageContext.request.contextPath}/photos/PhotoOfArticle/2/a.png"
                                  alt="" class="w-100">
                             <a href="">Thể thao</a> <br>
                             <a href="">
@@ -144,7 +144,7 @@
                     <div class=" mb-3 w-100 d-flex justify-content-between">
                         <div style="width: 30%">
                             <img style="width: 100%"
-                                 src="https://hanoispiritofplace.com/wp-content/uploads/2014/10/hinh-anh-cr7-dep-15.jpg"
+                                 src="${pageContext.request.contextPath}/photos/PhotoOfArticle/40/a.png"
                                  alt="">
                         </div>
                         <div style="width: 69%" class="pl-2">
@@ -172,7 +172,7 @@
                     <div class=" mb-3 w-100 d-flex justify-content-between">
                         <div style="width: 30%">
                             <img style="width: 100%"
-                                 src="https://hanoispiritofplace.com/wp-content/uploads/2014/10/hinh-anh-cr7-dep-15.jpg"
+                                 src="${pageContext.request.contextPath}/photos/PhotoOfArticle/24/a.png"
                                  alt="">
                         </div>
                         <div style="width: 69%" class="pl-2">
@@ -372,7 +372,7 @@
                             </div>
                             <div class=" align-items-center" style="width: 40%">
                                 <img class="w-100"
-                                     src="https://hanoispiritofplace.com/wp-content/uploads/2014/10/hinh-anh-cr7-dep-12.jpg"
+                                     src="${pageContext.request.contextPath}/photos/PhotoOfArticle/33/a.png"
                                      alt="">
                             </div>
                         </div>
@@ -384,7 +384,7 @@
                             </div>
                             <div class=" align-items-center" style="width: 40%">
                                 <img class="w-100"
-                                     src="https://hanoispiritofplace.com/wp-content/uploads/2014/10/hinh-anh-cr7-dep-12.jpg"
+                                     src="${pageContext.request.contextPath}/photos/PhotoOfArticle/22/a.png"
                                      alt="">
                             </div>
                         </div>
@@ -395,7 +395,7 @@
                             </div>
                             <div class=" align-items-center" style="width: 40%">
                                 <img class="w-100"
-                                     src="https://hanoispiritofplace.com/wp-content/uploads/2014/10/hinh-anh-cr7-dep-12.jpg"
+                                     src="${pageContext.request.contextPath}/photos/PhotoOfArticle/6/a.png"
                                      alt="">
                             </div>
                         </div>

@@ -45,7 +45,7 @@
 
         .crop {
             width: 1060px;
-            height: 300px;
+            height: 400px;
         }
 
         .crop img {

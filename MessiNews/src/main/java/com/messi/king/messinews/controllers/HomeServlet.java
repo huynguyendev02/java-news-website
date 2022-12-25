@@ -23,32 +23,33 @@ public class HomeServlet extends HttpServlet {
                 ServletUtils.forward("/views/vwGeneral/General.jsp",request,response);
                 break;
             case "/Details":
-                int id=0;
-                try {
-                    id = Integer.parseInt(request.getParameter("id"));
-                } catch (NumberFormatException e) {
-                }
-                System.out.print(id);
-                Articles art = ArticlesService.findById(id);
-                if (art!=null) {
-                    request.setAttribute("article",art);
-                    ServletUtils.forward("/views/vwGeneral/Details.jsp",request,response);
-                } else {
-                    ServletUtils.redirect("/views/204.jsp", request, response);
-                }
-                break;
-            case "/ByParentCat":
-                getArticlesAndForward(1, request, response);
-                break;
-            case "/ByCat":
-                getArticlesAndForward(2, request, response);
-                break;
-            case "/ByTag":
-                getArticlesAndForward(3, request, response);
-                break;
-            default:
-                ServletUtils.forward("/views/404.jsp",request,response);
-                break;
+                ServletUtils.forward("/views/vwGeneral/Details.jsp",request,response);
+//                int id=0;
+//                try {
+//                    id = Integer.parseInt(request.getParameter("id"));
+//                } catch (NumberFormatException e) {
+//                }
+//                System.out.print(id);
+//                Articles art = ArticlesService.findById(id);
+//                if (art!=null) {
+//                    request.setAttribute("article",art);
+//                    ServletUtils.forward("/views/vwGeneral/Details.jsp",request,response);
+//                } else {
+//                    ServletUtils.redirect("/views/204.jsp", request, response);
+//                }
+//                break;
+//            case "/ByParentCat":
+//                getArticlesAndForward(1, request, response);
+//                break;
+//            case "/ByCat":
+//                getArticlesAndForward(2, request, response);
+//                break;
+//            case "/ByTag":
+//                getArticlesAndForward(3, request, response);
+//                break;
+//            default:
+//                ServletUtils.forward("/views/404.jsp",request,response);
+//                break;
         }
     }
 
