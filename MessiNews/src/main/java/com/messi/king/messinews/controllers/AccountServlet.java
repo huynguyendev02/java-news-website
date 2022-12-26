@@ -5,14 +5,13 @@ import com.messi.king.messinews.services.UsersService;
 import com.messi.king.messinews.utils.ServletUtils;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import org.sql2o.logging.SysOutLogger;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -20,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 public class AccountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
         String url = request.getPathInfo();
         switch (url) {
             case "/Login":
@@ -33,8 +33,15 @@ public class AccountServlet extends HttpServlet {
                 ServletUtils.forward("/views/vwAccount/Forgot.jsp",request,response);
                 break;
             case "/Profile":
+                Users user = (Users) session.getAttribute("authUser");
+                request.setAttribute("user",user);
                 ServletUtils.forward("/views/vwAccount/Profile.jsp",request,response);
                 break;
+            case "/Password":
+                ServletUtils.forward("/views/vwAccount/Password.jsp",request,response);
+                break;
+//
+
             case "/IsAvailable":
                 String username = request.getParameter("username");
                 String email = request.getParameter("email");
@@ -44,12 +51,12 @@ public class AccountServlet extends HttpServlet {
 
                 boolean isAvailable = (userByName == null && userByEmail == null);
 
-                PrintWriter out = response.getWriter();
+                PrintWriter outer = response.getWriter();
                 response.setContentType("application/json");
                 response.setCharacterEncoding("utf-8");
 
-                out.print(isAvailable);
-                out.flush();
+                outer.print(isAvailable);
+                outer.flush();
                 break;
             default:
                 ServletUtils.forward("/views/404.jsp",request,response);
@@ -70,18 +77,81 @@ public class AccountServlet extends HttpServlet {
             case "/Logout":
                 logout(request, response);
                 break;
+            case "/Profile":
+                editProfileUser(request,response);
+            case "/ChangePassword":
+                changePassword(request,response);
+            case "/ChangeAvatar":
+                changeAvatar(request,response);
             default:
                 ServletUtils.forward("/views/404.jsp",request,response);
                 break;
         }
     }
+
+    private void changeAvatar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Users user  = (Users)request.getSession().getAttribute("authUser");
+        String targetDir = this.getServletContext().getRealPath("photos/avatars/"+ user.getId());
+        File dir = new File(targetDir);
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        String destination = "";
+        for (Part part: request.getParts()) {
+            if (part.getName().equals("avatar")) {
+                destination = targetDir + "/" + "avatar.png";
+                part.write(destination);
+            }
+
+        }
+    }
+
+    private void changePassword(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+
+        String oldPassword = request.getParameter("oldPassword");
+        Users sessionUser = (Users) session.getAttribute("authUser");
+        BCrypt.Result result = BCrypt.verifyer().verify(oldPassword.toCharArray(), sessionUser.getPassword());
+
+       if (result.verified) {
+           String rawpwd = request.getParameter("rawpwd");
+           String bcryptHashString = BCrypt.withDefaults().hashToString(12, rawpwd.toCharArray());
+
+           UsersService.changePassword(sessionUser.getId(), bcryptHashString);
+           ServletUtils.redirect("/Account/Profile",request,response);
+       } else {
+           request.setAttribute("errorMessage", "Mật khẩu cũ không chính xác, vui lòng thử lại!");
+           ServletUtils.forward("/views/vwAccount/Password.jsp", request, response);
+       }
+    }
+
+    private void editProfileUser(HttpServletRequest request, HttpServletResponse response) {
+        String fullName = request.getParameter("newFullName");
+        String email = request.getParameter("newEmail");
+
+        int role =0;
+        try {
+            role = Integer.parseInt(request.getParameter("role"));
+        }catch (NumberFormatException e) {
+        }
+
+        String strDob = request.getParameter("newDob") + " 00:00";
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        LocalDateTime dob = LocalDateTime.parse(strDob, df);
+
+        Users user = (Users) request.getSession().getAttribute("authUser");
+        UsersService.updateProfile(user.getId(), fullName,role, email,dob);
+    }
+
     private void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+
         String rawpwd = request.getParameter("rawpwd");
         String bcryptHashString = BCrypt.withDefaults().hashToString(12, rawpwd.toCharArray());
 
-        String strDob = request.getParameter("dob");
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate dob = LocalDate.parse(strDob, df);
+        String strDob = request.getParameter("dob") + " 00:00";
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        LocalDateTime dob = LocalDateTime.parse(strDob, df);
 
         String username = request.getParameter("username");
         String fullName = request.getParameter("fullName");
@@ -101,7 +171,7 @@ public class AccountServlet extends HttpServlet {
             c = new Users(0, username,bcryptHashString, fullName, LocalDateTime.now(), 0,role,dob, email, null,null );
         }
         UsersService.add(c);
-        ServletUtils.forward("/views/vwAccount/Login.jsp", request, response);
+        ServletUtils.redirect("/Account/Login",request,response);
     }
     private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
@@ -121,12 +191,10 @@ public class AccountServlet extends HttpServlet {
                     url = "/Home";
                 ServletUtils.redirect(url, request, response);
             } else {
-                request.setAttribute("hasError", true);
                 request.setAttribute("errorMessage", "Thông tin đăng nhập không chính xác");
                 ServletUtils.forward("/views/vwAccount/Login.jsp", request, response);
             }
         } else {
-            request.setAttribute("hasError", true);
             request.setAttribute("errorMessage", "Thông tin đăng nhập không chính xác");
             ServletUtils.forward("/views/vwAccount/Login.jsp", request, response);
         }

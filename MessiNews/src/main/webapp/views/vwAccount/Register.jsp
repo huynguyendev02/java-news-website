@@ -3,10 +3,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Messi News | Register</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha512-f0tzWhCwVFS3WeYaofoLWkTP62ObhewQ1EZn65oSYDZUg1+CyywGKkWzm8BxaJj5HGKI72PnMH9jYyIFz+GH7g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
         body {
             scroll-behavior: auto;
@@ -34,40 +36,15 @@
 
         }
 
-        .form-control:focus {
-            border-color: transparent;
-            -webkit-box-shadow: none;
-            box-shadow: none;
-        }
-
-        .crop {
-            width: 1060px;
-            height: 300px;
-        }
 
         .crop img {
             width: 100%;
             height: 100%;
         }
 
-        .grad {
-            background-image: linear-gradient(to top right, black 5%, transparent);
-        }
 
         .bgColorGray {
             background-color: #F0F0F0;
-        }
-
-        .imageIcon {
-            width: 40px;
-            height: 40px;
-            border-radius: 40px
-        }
-
-        .boxShadow {
-            border: 1px solid;
-            border-left: none;
-            box-shadow: 0.5px 0.5px;
         }
 
         .inputStyle {
@@ -80,14 +57,6 @@
         .inputStyle:focus {
             outline: #F0F0F0;
         }
-
-        .imageIconInBT
-        {
-            width: 30px;
-            height: 30px;
-            border-radius: 30px
-        }
-
     </style>
 </head>
 <body>
@@ -113,7 +82,7 @@
         </div>
 
         <h6 class="mt-3 pl-2">Thông tin tài khoản</h6>
-        <input name="username" type="text" placeholder="Tài khoản" class="w-100 pl-2 inputStyle mt-1" required>
+        <input id="username" name="username" type="text" placeholder="Tài khoản" class="w-100 pl-2 inputStyle mt-1" required>
         <input name="rawpwd" id="pwd" type="password" placeholder="Mật khẩu" class="w-100 pl-2 inputStyle mt-3" required>
         <input id="confirmPwd" type="password" placeholder="Xác nhận mật khẩu" class="w-100 pl-2 inputStyle mt-3" required>
 
@@ -122,7 +91,7 @@
                 Vai trò
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=1','Phóng viên')"> Độc giả</a>
+                <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=1','Độc giả')"> Độc giả</a>
                 <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=2','Phóng viên')">Phóng viên</a>
                 <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=3','Biên tập')">Biên tập</a>
                 <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=4', 'Quản trị')">Quản trị</a>
@@ -131,8 +100,11 @@
 
         <h6 class="mt-4 pl-2">Thông tin cá nhân</h6>
         <input name="fullName" type="text" placeholder="Họ và tên" class="w-100 pl-2 inputStyle mt-1" required>
-        <input name="email" type="password" placeholder="Email" class="w-100 pl-2 inputStyle mt-3" required>
-        <input name="dob" type="text" placeholder="Ngày sinh: dd/MM/yyyy" class="w-100 pl-2 inputStyle mt-3" required>
+        <input id="email" name="email" type="email" placeholder="Email" class="w-100 pl-2 inputStyle mt-3" required>
+        <div class="d-flex justify-content-between align-items-center mt-3 pl-2">
+            <div>Ngày sinh</div>
+            <input name="dob" id="txtDOB" type="text" class=" inputStyle" required style="width: 80%">
+        </div>
 
         <button id="btRegister" type="submit" class="w-100 inputStyle btn btn-primary mt-3">Đăng ký</button>
     </div>
@@ -145,6 +117,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
         integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
         crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 <script>
     let urlRole
@@ -152,13 +125,28 @@
         document.getElementById('form').action = a
         document.getElementById('btRole').innerText = name;
     }
-
-    document.getElementById('btRegister').onclick = function (event){
+    $('#form').on('submit', function (e) {
+        e.preventDefault();
         if (document.getElementById('pwd').value != document.getElementById('confirmPwd').value){
             alert('Xác nhận mật khẩu chưa chính xác')
-            event.preventDefault()
-            return;
+            return
         }
-    }
+        const username = $('#username').val();
+        const email = $('#email').val();
+        $.getJSON('${pageContext.request.contextPath}/Account/IsAvailable?username='+username+'&email='+email, (data) => {
+            if (data==false) {
+                alert('Tên tài khoản hoặc email đã được sử dụng.')
+                return
+            } else {
+                $('#form').off('submit').submit();
+            }
+        })
+    })
+
+    $('#txtDOB').datetimepicker({
+        format: 'd/m/Y',
+        timepicker: false,
+        mask: true
+    });
 </script>
 </html>

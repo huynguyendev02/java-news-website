@@ -7,4 +7,13 @@
         <servlet-name>default</servlet-name>
         <url-pattern>/photos/*</url-pattern>
     </servlet-mapping>
+
+    <filter-mapping>
+        <filter-name>LayoutFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>SessionInitFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 </web-app>

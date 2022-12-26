@@ -1,7 +1,9 @@
 package com.messi.king.messinews.controllers;
 
 import com.messi.king.messinews.models.Articles;
+import com.messi.king.messinews.models.Categories;
 import com.messi.king.messinews.services.ArticlesService;
+import com.messi.king.messinews.services.UsersService;
 import com.messi.king.messinews.utils.ServletUtils;
 
 import javax.servlet.*;
@@ -20,36 +22,46 @@ public class HomeServlet extends HttpServlet {
         }
         switch (url) {
             case "/":
+
+                List <Articles> top10AllCate = ArticlesService.top10AllCate();
+                List <Articles> top5AllCateInWeek = ArticlesService.top5AllCateInWeek();
+                List <Articles> latestNewsAllCate = ArticlesService.latestNewsAllCate();
+                List <Articles> newest10PerCate = ArticlesService.newest10PerCate();
+
+                request.setAttribute("top10AllCate",  top10AllCate);
+                request.setAttribute("top5AllCateInWeek", top5AllCateInWeek);
+                request.setAttribute("latestNewsAllCate", latestNewsAllCate);
+                request.setAttribute("newest10PerCate",newest10PerCate);
+
                 ServletUtils.forward("/views/vwGeneral/General.jsp",request,response);
                 break;
             case "/Details":
-                ServletUtils.forward("/views/vwGeneral/Details.jsp",request,response);
-//                int id=0;
-//                try {
-//                    id = Integer.parseInt(request.getParameter("id"));
-//                } catch (NumberFormatException e) {
-//                }
-//                System.out.print(id);
-//                Articles art = ArticlesService.findById(id);
-//                if (art!=null) {
-//                    request.setAttribute("article",art);
-//                    ServletUtils.forward("/views/vwGeneral/Details.jsp",request,response);
-//                } else {
-//                    ServletUtils.redirect("/views/204.jsp", request, response);
-//                }
-//                break;
-//            case "/ByParentCat":
-//                getArticlesAndForward(1, request, response);
-//                break;
-//            case "/ByCat":
-//                getArticlesAndForward(2, request, response);
-//                break;
-//            case "/ByTag":
-//                getArticlesAndForward(3, request, response);
-//                break;
-//            default:
-//                ServletUtils.forward("/views/404.jsp",request,response);
-//                break;
+                int id=0;
+                try {
+                    id = Integer.parseInt(request.getParameter("id"));
+                } catch (NumberFormatException e) {
+                }
+                System.out.print(id);
+                Articles art = ArticlesService.findById(id);
+                if (art!=null) {
+                    request.setAttribute("article",art);
+                    ServletUtils.forward("/views/vwGeneral/Details.jsp",request,response);
+                } else {
+                    ServletUtils.redirect("/views/204.jsp", request, response);
+                }
+                break;
+            case "/ByParentCat":
+                getArticlesAndForward(1, request, response);
+                break;
+            case "/ByCat":
+                getArticlesAndForward(2, request, response);
+                break;
+            case "/ByTag":
+                getArticlesAndForward(3, request, response);
+                break;
+            default:
+                ServletUtils.forward("/views/404.jsp",request,response);
+                break;
         }
     }
 

@@ -9,14 +9,14 @@ public class Users {
     private String password;
     private String full_name;
     private LocalDateTime issue_at;
-    private int expiration ;
+    private int expiration;
     private int role;
-    private LocalDate dob;
+    private LocalDateTime dob;
     private String email;
     private String otp;
     private LocalDateTime otp_exp;
 
-    public Users(int id, String username, String password, String full_name, LocalDateTime issue_at, int expiration, int role, LocalDate dob, String email, String otp, LocalDateTime otp_exp) {
+    public Users(int id, String username, String password, String full_name, LocalDateTime issue_at, int expiration, int role, LocalDateTime dob, String email, String otp, LocalDateTime otp_exp) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -91,11 +91,11 @@ public class Users {
         this.role = role;
     }
 
-    public LocalDate getDob() {
+    public LocalDateTime getDob() {
         return dob;
     }
 
-    public void setDob(LocalDate dob) {
+    public void setDob(LocalDateTime dob) {
         this.dob = dob;
     }
 

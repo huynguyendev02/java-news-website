@@ -19,7 +19,7 @@ public class DefaultServlet extends HttpServlet {
         System.out.print(url);
         switch (url) {
             case "/":
-                ServletUtils.forward("/views/vwGeneral/General.jsp",request,response);
+                ServletUtils.redirect("/Home",request,response);
                 break;
             default:
                 ServletUtils.forward("/views/404.jsp",request,response);
