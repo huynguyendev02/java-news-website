@@ -33,4 +33,14 @@ public class CategoriesService {
             return cate;
         }
     }
+
+    public static String findNameById(int id) {
+        final String query = "select name_category from categories where id = :id";
+        try (Connection con = DbUtils.getConnection()) {
+            Categories cate = con.createQuery(query)
+                    .addParameter("id", id)
+                    .executeAndFetchFirst(Categories.class);
+            return cate.getName_category();
+        }
+    }
 }

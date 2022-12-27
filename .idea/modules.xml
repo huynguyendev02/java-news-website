@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/MessiNews/MessiNews.iml" filepath="$PROJECT_DIR$/MessiNews/MessiNews.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/news-website.iml" filepath="$PROJECT_DIR$/.idea/news-website.iml" />
+    </modules>
+  </component>
+</project>

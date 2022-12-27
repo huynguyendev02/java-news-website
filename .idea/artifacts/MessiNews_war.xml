@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="MessiNews:war">
+    <output-path>$PROJECT_DIR$/MessiNews/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>MessiNews</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="MessiNews-1.0.war">
+      <element id="artifact" artifact-name="MessiNews:war exploded" />
+    </root>
+  </artifact>
+</component>

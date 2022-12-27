@@ -1,5 +1,7 @@
 package com.messi.king.messinews.models;
 
+import com.messi.king.messinews.services.CategoriesService;
+
 import java.time.LocalDateTime;
 
 public class Articles {

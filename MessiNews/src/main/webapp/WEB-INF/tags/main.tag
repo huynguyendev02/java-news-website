@@ -25,15 +25,11 @@
         a{
             text-decoration: none;
             color: black;
-            font-weight: bold;
-
         }
 
         a:hover{
             text-decoration: none;
             color: cornflowerblue;
-            font-weight: bold;
-
         }
 
         .form-control:focus {
@@ -71,6 +67,43 @@
             border-left: none;
             box-shadow: 0.5px 0.5px;
         }
+
+
+
+
+
+
+        .dropbtn {
+            border: none;
+        }
+
+        dropbtn:hover {
+            background-color: darkgrey;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 4;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {background-color: darkgrey;}
+        .dropdown:hover .dropdown-content {display: block;}
 
     </style>
     <jsp:invoke fragment="css" />
