@@ -16,6 +16,15 @@ public class CategoriesService {
             return cate;
         }
     }
+    public static List<Categories> findAllByParentId(int pcatId) {
+        final String query = "select * from categories where parent_cate_id= :pcatId";
+        try (Connection con = DbUtils.getConnection()) {
+            List<Categories> cate = con.createQuery(query)
+                    .addParameter("pcatId", pcatId)
+                    .executeAndFetch(Categories.class);
+            return cate;
+        }
+    }
     public static List<ParentCategories> findAllParent() {
         final String query = "select * from parent_categories";
         try (Connection con = DbUtils.getConnection()) {
@@ -33,14 +42,14 @@ public class CategoriesService {
             return cate;
         }
     }
-
-    public static String findNameById(int id) {
-        final String query = "select name_category from categories where id = :id";
+    public static ParentCategories findPCatById(int id) {
+        final String query = "select * from parent_categories where id = :id";
         try (Connection con = DbUtils.getConnection()) {
-            Categories cate = con.createQuery(query)
+            ParentCategories cate = con.createQuery(query)
                     .addParameter("id", id)
-                    .executeAndFetchFirst(Categories.class);
-            return cate.getName_category();
+                    .executeAndFetchFirst(ParentCategories.class);
+            return cate;
         }
     }
+
 }

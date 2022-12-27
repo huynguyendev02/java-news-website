@@ -89,7 +89,7 @@
                             </a>
                             <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[0].id}">
                                 <h4>
-                                    <c:if test="${top5AllCateInWeek[0].premium == 0}">
+                                    <c:if test="${top5AllCateInWeek[0].premium == 1}">
                                         <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                     </c:if>
                                         ${top5AllCateInWeek[0].title}
@@ -110,7 +110,7 @@
                                     </c:forEach>
                                 <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[1].id}">
                                     <h6><b>
-                                        <c:if test="${top5AllCateInWeek[1].premium == 0}">
+                                        <c:if test="${top5AllCateInWeek[1].premium == 1}">
                                             <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                         </c:if>
                                             ${top5AllCateInWeek[1].title}</b> <br> <br>
@@ -136,7 +136,7 @@
                                     </c:forEach>
                                 </a> <br>
                                 <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[i].id}">
-                                    <c:if test="${top5AllCateInWeek[i].premium == 0}">
+                                    <c:if test="${top5AllCateInWeek[i].premium == 1}">
                                         <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                     </c:if>
                                         ${top5AllCateInWeek[i].title}
@@ -158,15 +158,15 @@
                             </div>
                             <div style="width: 69%" class="pl-2 d-flex flex-column justify-content-between">
                                 <div>
-                                    <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}">
+                                    <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}" style="font-size: 13px">
                                         <c:forEach items="${allCategories}" var="d">
                                             <c:if test="${d.id == c.categories_id}">
                                                 <b>${d.name_category}</b>
                                             </c:if>
                                         </c:forEach>
                                     </a> <br>
-                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}">
-                                        <c:if test="${c.premium == 0}">
+                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}" style="font-weight: bold">
+                                        <c:if test="${c.premium == 1}">
                                             <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                         </c:if>
                                             ${c.title} <br>
@@ -193,7 +193,7 @@
                             <div class="w-100 mb-3 pl-2 d-flex justify-content-between align-items-start" ;>
                                 <div style="width: 59%">
                                     <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}">
-                                        <c:if test="${c.premium == 0}">
+                                        <c:if test="${c.premium == 1}">
                                             <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                         </c:if>
                                         <c:forEach items="${allCategories}" var="d">

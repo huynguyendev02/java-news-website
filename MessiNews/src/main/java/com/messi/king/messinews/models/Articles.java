@@ -15,8 +15,17 @@ public class Articles {
     private int premium;
     private int writer_id;
     private int status;
+    private String reason;
 
-    public Articles(int id, String title, LocalDateTime publish_date, int views, String abstract_content, String content, int categories_id, int premium, int writer_id, int status) {
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public Articles(int id, String title, LocalDateTime publish_date, int views, String abstract_content, String content, int categories_id, int premium, int writer_id, int status, String reason) {
         this.id = id;
         this.title = title;
         this.publish_date = publish_date;
@@ -27,6 +36,7 @@ public class Articles {
         this.premium = premium;
         this.writer_id = writer_id;
         this.status = status;
+        this.reason = reason;
     }
 
     public Articles() {

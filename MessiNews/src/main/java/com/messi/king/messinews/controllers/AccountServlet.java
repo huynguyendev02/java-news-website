@@ -12,6 +12,7 @@ import javax.servlet.annotation.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -125,7 +126,9 @@ public class AccountServlet extends HttpServlet {
        }
     }
 
-    private void editProfileUser(HttpServletRequest request, HttpServletResponse response) {
+    private void editProfileUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
+
         String fullName = request.getParameter("newFullName");
         String email = request.getParameter("newEmail");
 
@@ -141,6 +144,7 @@ public class AccountServlet extends HttpServlet {
 
         Users user = (Users) request.getSession().getAttribute("authUser");
         UsersService.updateProfile(user.getId(), fullName,role, email,dob);
+        ServletUtils.redirect("/Account/Profile",request,response);
     }
 
     private void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

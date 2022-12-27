@@ -83,7 +83,7 @@ public class WriterServlet extends HttpServlet {
         } catch (NumberFormatException e) {
         }
 
-        int artId = ArticlesService.add(new Articles(0,title,null,0,abstractContent,content,cateId,premium,((Users)request.getSession().getAttribute("authUser")).getId(),-1));
+        int artId = ArticlesService.add(new Articles(0,title,null,0,abstractContent,content,cateId,premium,((Users)request.getSession().getAttribute("authUser")).getId(),-1, null));
 
         String targetDir = this.getServletContext().getRealPath("photos/articles/"+artId);
         File dir = new File(targetDir);
