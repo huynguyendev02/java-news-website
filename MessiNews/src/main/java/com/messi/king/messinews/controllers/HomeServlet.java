@@ -2,6 +2,7 @@ package com.messi.king.messinews.controllers;
 
 import com.messi.king.messinews.models.*;
 import com.messi.king.messinews.services.*;
+import com.messi.king.messinews.utils.PdfUtils;
 import com.messi.king.messinews.utils.ServletUtils;
 
 import javax.servlet.*;
@@ -45,6 +46,7 @@ public class HomeServlet extends HttpServlet {
 
                 Articles art = ArticlesService.findById(id);
                 if (art!=null) {
+
                     ArticlesService.viewArticle(id);
 
                     request.setAttribute("article",art);
@@ -60,9 +62,11 @@ public class HomeServlet extends HttpServlet {
                 getArticlesAndForward(1, request, response);
                 break;
             case "/ByCat":
+
                 getArticlesAndForward(2, request, response);
                 break;
             case "/ByTag":
+
                 getArticlesAndForward(3, request, response);
                 break;
             default:
@@ -91,6 +95,7 @@ public class HomeServlet extends HttpServlet {
                     arts = ArticlesService.findByPCatId(id);
                 } else
                     ServletUtils.forward("/views/204.jsp",request,response);
+
                 break;
             case 2:
                 Categories newCate = CategoriesService.findById(id);
@@ -174,8 +179,8 @@ public class HomeServlet extends HttpServlet {
 
         Articles art = ArticlesService.findById(artId);
         if (art!=null) {
-            String comment = request.getParameter("comment");
-
+            String comment = request.getParameter("commentAdd");
+            System.out.println(comment);
             Users user = (Users) request.getSession().getAttribute("authUser");
             CommentService.add(user.getId(), artId,comment );
 

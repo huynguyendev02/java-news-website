@@ -41,6 +41,7 @@ public class AccountServlet extends HttpServlet {
             case "/Password":
                 ServletUtils.forward("/views/vwAccount/Password.jsp",request,response);
                 break;
+
 //
 
             case "/IsAvailable":

@@ -4,6 +4,7 @@ import com.messi.king.messinews.models.Articles;
 import com.messi.king.messinews.models.Users;
 import com.messi.king.messinews.services.ArticlesService;
 import com.messi.king.messinews.services.EditorService;
+import com.messi.king.messinews.utils.PdfUtils;
 import com.messi.king.messinews.utils.ServletUtils;
 
 import javax.servlet.*;
@@ -22,10 +23,12 @@ public class EditorServlet extends HttpServlet {
 
         switch (url) {
             case "/List":
-//                List <Articles> arts = EditorService.findByEditor(user.getId());
-//                request.setAttribute("articles",arts);
-                List<Articles> articlesList = ArticlesService.top10AllCate();
-                request.setAttribute("articlesList", articlesList);
+                List <Articles> arts = null;
+                if (user.getRole()==3)
+                     arts = EditorService.findByEditor(user.getId());
+                else
+                    arts = EditorService.findAll();
+                request.setAttribute("articles",arts);
                 ServletUtils.forward("/views/vwEditor/List.jsp",request,response);
                 break;
             case "/Accept":
@@ -51,11 +54,21 @@ public class EditorServlet extends HttpServlet {
         HttpSession session = request.getSession();
         switch (url) {
             case "/Accept":
-                request.getAttribute("id");
+                int id=0;
+                try {
+                    id = Integer.parseInt(request.getParameter("id"));
+                } catch (NumberFormatException e) {
+                    ServletUtils.redirect("/views/204.jsp", request, response);
+                }
+                request.getParameter("premium");
                 request.getParameter("publish_time");
                 request.getSession().getAttribute("listTagId");
-
 //                EditorService.acceptArticle();
+
+                Articles art = ArticlesService.findById(id);
+                PdfUtils.createPdfFile(art, request,response);
+
+
                 ServletUtils.redirect("/Editor/List", request,response);
                 break;
             case "/Deny":

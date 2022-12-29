@@ -15,7 +15,7 @@ public class CommentService {
             con.createQuery(insertSql)
                     .addParameter("user_id",user_id)
                     .addParameter("article_id", article_id)
-                    .addParameter("content", content)
+                    .addParameter("comment", content)
                     .addParameter("date", LocalDateTime.now())
                     .executeUpdate();
         }

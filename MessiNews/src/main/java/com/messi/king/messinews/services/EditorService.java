@@ -17,12 +17,20 @@ public class EditorService {
                     .executeAndFetch(Articles.class);
         }
     }
-    public static void acceptArticle(int id, LocalDateTime publish_time, List<Integer> tagIds) {
-        final String query = "update articles set publish_time = :publish_time, status=1 where id = :id";
+    public static List<Articles> findAll() {
+        final String query = "SELECT * from articles";
+        try (Connection con = DbUtils.getConnection()) {
+            return con.createQuery(query)
+                    .executeAndFetch(Articles.class);
+        }
+    }
+    public static void acceptArticle(int id, LocalDateTime publish_time,int premium, List<Integer> tagIds) {
+        final String query = "update articles set publish_time = :publish_time, status=1, premium= :premium where id = :id";
         final String insertTag = "INSERT INTO article_has_tag (tag_id, article_id) VALUES (:tag_id, :article_id)";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
                     .addParameter("id", id)
+                    .addParameter("premium", premium)
                     .addParameter("publish_time", publish_time)
                     .executeUpdate();
             for (int tagId: tagIds) {

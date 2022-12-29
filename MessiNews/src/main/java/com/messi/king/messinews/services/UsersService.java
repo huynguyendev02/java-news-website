@@ -5,6 +5,7 @@ import com.messi.king.messinews.utils.DbUtils;
 import org.sql2o.Connection;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class UsersService {
     public static void add(Users user) {
@@ -35,6 +36,38 @@ public class UsersService {
         }
     }
 
+    public static List<Users> findAll() {
+        final String query = "select * from users";
+        try (Connection con = DbUtils.getConnection()) {
+            return con.createQuery(query)
+                    .executeAndFetch(Users.class);
+        }
+    }
+    public static void extendSubscriber(int id) {
+        final String query = "update users set issue_at = :issue_at, expiration= :expiration where id = :id";
+        try (Connection con = DbUtils.getConnection()) {
+            con.createQuery(query)
+                    .addParameter("id", id)
+                    .addParameter("issue_at", LocalDateTime.now())
+                    .addParameter("expiration",7*24*60 )
+                    .executeUpdate();
+        }
+    }
+    public static void assignCategories(int editor_id, List<Integer> catesId ) {
+        final String deleteSql = "delete from editor_manage_categories where editor_id = :editor_id";
+        String insertSql = "INSERT INTO editor_manage_categories (editor_id, category_id) VALUES (:editor_id, :category_id)";
+        try (Connection con = DbUtils.getConnection()) {
+            con.createQuery(deleteSql)
+                    .addParameter("editor_id",editor_id)
+                    .executeUpdate();
+            for (int cateId: catesId) {
+                con.createQuery(insertSql)
+                        .addParameter("editor_id", editor_id)
+                        .addParameter("category_id", cateId)
+                        .executeUpdate();
+            }
+        }
+    }
 
 
     public static Users findByUsername(String username) {
@@ -46,6 +79,16 @@ public class UsersService {
             return user;
         }
     }
+    public static List<Users> findAllByRole(int role) {
+        final String query = "select * from users where role = :role";
+        try (Connection con = DbUtils.getConnection()) {
+            return con.createQuery(query)
+                    .addParameter("role", role)
+                    .executeAndFetch(Users.class);
+        }
+    }
+
+
 
     public static Users findByEmail(String email) {
         final String query = "select * from users where email = :email";

@@ -1,6 +1,7 @@
 package com.messi.king.messinews.models;
 
 import com.messi.king.messinews.services.CategoriesService;
+import com.messi.king.messinews.services.UsersService;
 
 import java.time.LocalDateTime;
 
@@ -120,5 +121,8 @@ public class Articles {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+    public String getWriterName(int id) {
+        return UsersService.findById(id).getFull_name();
     }
 }
