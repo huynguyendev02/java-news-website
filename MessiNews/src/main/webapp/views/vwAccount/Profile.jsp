@@ -2,6 +2,8 @@
 <%@ taglib prefix="m" tagdir="/WEB-INF/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+<jsp:useBean id="authUser" scope="session" type="com.messi.king.messinews.models.Users"/>
+
 <m:main>
     <jsp:attribute name="css">
           <link rel="stylesheet"
@@ -47,8 +49,11 @@
                 integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw=="
                 crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
-            document.getElementById('editProfile').onclick = function () {
 
+            function editClick(strTime) {
+                $('#newDob').datetimepicker({
+                    value: new Date((strTime.split('T')[0].replaceAll('-', '/')))
+                });
                 document.getElementById("newFullName").classList.add('inputOn');
                 document.getElementById("newFullName").classList.remove('inputOff');
                 document.getElementById('newFullName').readOnly = false;
@@ -66,12 +71,14 @@
                 document.getElementById("btRole").classList.remove('inputOff');
 
                 document.getElementById('save').style.display = 'block';
+                document.getElementById('exChangeDob').style.visibility = 'visible';
                 document.getElementById('editProfile').style.visibility = 'hidden';
+
             }
 
             function chooseRole(a, name) {
                 document.getElementById('btRole').innerText = name;
-                document.getElementById('form').action = a
+                document.getElementById('frAction').action = a
             }
 
             $('#newDob').datetimepicker({
@@ -82,14 +89,33 @@
         </script>
   </jsp:attribute>
     <jsp:body>
-        <form action="" method="post">
+        <form id="frAction" action="" method="post">
             <div class="w-100 bgColorPink" align="center">
                 <div class="py-4">
                     <img class="bigImageIcon mb-1"
-                         src="${pageContext.request.contextPath}/photos/articles/29/a.png"
+                         src="${pageContext.request.contextPath}/photos/userAvatar/${authUser.id}/avatar.png"
                          alt="">
-                    <h2>Dương Quá</h2>
-                    <p>Vai trò: Nhà báo</p>
+                    <h2>${authUser.username}</h2>
+                    <p>
+                        Vai trò:
+                        <c:choose>
+                            <c:when test="${authUser.role == 1}">
+                                Độc giả
+                            </c:when>
+
+                            <c:when test="${authUser.role == 2}">
+                                Phóng viên
+                            </c:when>
+
+                            <c:when test="${authUser.role == 3}">
+                                Nhà báo
+                            </c:when>
+
+                            <c:when test="${authUser.role == 4}">
+                                Quản trị viên
+                            </c:when>
+                        </c:choose>
+                    </p>
                 </div>
             </div>
             <div class="d-flex justify-content-center bgColorGray">
@@ -102,15 +128,16 @@
                 <div style="width: 70%; background-color: white" class="mt-4 p-3">
                     <div class="d-flex justify-content-between">
                         <h3>Thông tin cá nhân</h3>
-                        <button id="editProfile" class="px-3 btn btn-outline-primary" style="border-radius: 20px" type="button">
+                        <button onclick="editClick('${authUser.dob}')" class="px-3 btn btn-outline-primary"
+                                style="border-radius: 20px" type="button">
                             <i class="fa fa-pencil" aria-hidden="true"></i>
                             Chỉnh sửa thông tin
                         </button>
                     </div>
                     <hr>
-                    <input id="newFullName" name="newFullName" type="text" placeholder="Họ và tên"
+                    <input id="newFullName" name="newFullName" type="text" value="${authUser.full_name}"
                            class="w-100 pl-2 inputOff mt-1" readonly="readonly">
-                    <input id="newEmail" name="newEmail" type="text" placeholder="Email"
+                    <input id="newEmail" name="newEmail" type="email" value="${authUser.email}"
                            class="w-100 pl-2 inputOff mt-3" readonly="readonly">
                     <div class="dropdown mt-3">
                         <button id="btRole"
@@ -121,24 +148,17 @@
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item"
-                               onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=1','Phóng viên')">
+                               onclick="chooseRole('${pageContext.request.contextPath}/Account/Profile?role=1','Phóng viên')">
                                 Độc giả</a>
                             <a class="dropdown-item"
-                               onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=2','Phóng viên')">Phóng
+                               onclick="chooseRole('${pageContext.request.contextPath}/Account/Profile?role=2','Phóng viên')">Phóng
                                 viên</a>
                             <a class="dropdown-item"
-                               onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=3','Biên tập')">Biên
+                               onclick="chooseRole('${pageContext.request.contextPath}/Account/Profile?role=3','Biên tập')">Biên
                                 tập</a>
-                            <a class="dropdown-item"
-                               onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=4', 'Quản trị')">Quản
-                                trị</a>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mt-3 pl-2">
-                        <div>Ngày sinh</div>
-                        <input id="newDob" name="newDob" type="text" class="inputOff" required style="width: 80%"
-                               readonly="readonly">
-                    </div>
+                    <input id="newDob" name="newDob" type="text" class="inputOff w-100 my-3">
                     <br>
                     <div id="save" align="end" style="display: none">
                         <a href="${pageContext.request.contextPath}/Account/Profile" class="btn btn-secondary mr-2">

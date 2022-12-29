@@ -62,15 +62,6 @@
             height: 40px;
             border-radius: 40px
         }
-        .boxShadow {
-            border: 1px solid;
-            border-left: none;
-            box-shadow: 0.5px 0.5px;
-        }
-
-
-
-
 
 
         .dropbtn {
@@ -101,7 +92,6 @@
             text-decoration: none;
             display: block;
         }
-
         .dropdown-content a:hover {background-color: darkgrey;}
         .dropdown:hover .dropdown-content {display: block;}
 

@@ -2,6 +2,8 @@
 <%@ taglib prefix="m" tagdir="/WEB-INF/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+<jsp:useBean id="authUser" scope="session" type="com.messi.king.messinews.models.Users"/>
+
 <m:main>
     <jsp:attribute name="css">
           <link rel="stylesheet"
@@ -31,15 +33,38 @@
               }
           </style>
       </jsp:attribute>
+    <jsp:attribute name="js">
+        <script>
+        </script>
+    </jsp:attribute>
     <jsp:body>
         <form action="" method="post">
             <div class="w-100 bgColorPink" align="center">
                 <div class="py-4">
                     <img class="bigImageIcon mb-1"
-                         src="${pageContext.request.contextPath}/photos/PhotoOfArticle/22/a.png"
+                         src="${pageContext.request.contextPath}/photos/userAvatar/${authUser.id}/avatar.png"
                          alt="">
-                    <h2>Dương Quá</h2>
-                    <p>Vai trò: Nhà báo</p>
+                    <h2>${authUser.username}</h2>
+                    <p>
+                        Vai trò:
+                        <c:choose>
+                            <c:when test="${authUser.role == 1}">
+                                Độc giả
+                            </c:when>
+
+                            <c:when test="${authUser.role == 2}">
+                                Phóng viên
+                            </c:when>
+
+                            <c:when test="${authUser.role == 3}">
+                                Nhà báo
+                            </c:when>
+
+                            <c:when test="${authUser.role == 4}">
+                                Quản trị viên
+                            </c:when>
+                        </c:choose>
+                    </p>
                 </div>
             </div>
             <div class="d-flex justify-content-center bgColorGray">
@@ -55,14 +80,15 @@
                     </div>
                     <hr>
                     <input id="oldPassword" name="oldPassword" type="password" placeholder="Mật khẩu cũ"
-                           class="w-100 pl-2  mt-1" >
+                           class="w-100 pl-2  mt-1">
                     <input id="newPassword" name="newPassword" type="password" placeholder="Mật khẩu mới"
-                           class="w-100 pl-2  mt-3" >
-                    <input id="ConfirmNewPassword" name="ConfirmNewPassword" type="password" placeholder="Xác nhận mật khẩu mới"
-                           class="w-100 pl-2  mt-3" >
+                           class="w-100 pl-2  mt-3">
+                    <input id="ConfirmNewPassword" name="ConfirmNewPassword" type="password"
+                           placeholder="Xác nhận mật khẩu mới"
+                           class="w-100 pl-2  mt-3">
                     <br> <br>
                     <div id="save" align="end">
-                        <a href="${pageContext.request.contextPath}/" class="btn btn-secondary mr-2">
+                        <a href="${pageContext.request.contextPath}/Home" class="btn btn-secondary mr-2">
                             <i class="fa fa-times" aria-hidden="true"></i>
                             Hủy bỏ
                         </a>

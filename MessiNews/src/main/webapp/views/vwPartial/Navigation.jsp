@@ -1,10 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<jsp:useBean id="authUser" scope="session" type="com.messi.king.messinews.models.Users"/>
 <jsp:useBean id="allPCategories" scope="request" type="java.util.List<com.messi.king.messinews.models.ParentCategories>"/>
 <jsp:useBean id="allCategories" scope="request" type="java.util.List<com.messi.king.messinews.models.Categories>"/>
 
 <nav>
+    <form action="" method="post">
     <div class="collapse navbar-collapse d-flex justify-content-between px-4 py-3">
         <div class="d-flex align-items-center" style="width: 50%">
             <div class="pl-3">
@@ -33,7 +35,7 @@
             </div>
         </div>
 
-        <div class="dropleft">
+        <div onload="check(${authUser.role})" class="dropleft">
             <a class="btn bgColorGray" href="#" role="button" data-toggle="dropdown"
                aria-expanded="false" style="border-radius: 40px">
                 <div class="d-flex justify-items-center align-items-center">
@@ -48,8 +50,43 @@
                 </div>
             </a>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Login">Đăng nhập</a>
-                <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Register">Đăng ký</a>
+                <c:choose>
+                    <c:when test = "${authUser.role == 1}">
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Profile">Thông tin cá nhân</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Thay đổi mật khẩu</a>
+                        <button class="dropdown-item" formaction="${pageContext.request.contextPath}/Account/Logout">Đăng xuất</button>
+                    </c:when>
+
+                    <c:when test = "${authUser.role == 2}">
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Profile">Thông tin cá nhân</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Thay đổi mật khẩu</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Writer/Upload">Đăng bài viết</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Writer/List">Danh sách bài viết</a>
+                        <button class="dropdown-item" formaction="${pageContext.request.contextPath}/Account/Logout">Đăng xuất</button>
+                    </c:when>
+
+                    <c:when test = "${authUser.role == 3}">
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Profile">Thông tin cá nhân</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Thay đổi mật khẩu</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Editor/List">Danh sách các bản thảo</a>
+                        <button class="dropdown-item" formaction="${pageContext.request.contextPath}/Account/Logout">Đăng xuất</button>
+                    </c:when>
+
+                    <c:when test = "${authUser.role == 4}">
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Profile">Thông tin cá nhân</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Thay đổi mật khẩu</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Quản lý chuyên mục</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Quản lý nhãn</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Quản lý bài viết</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Quản lý người dùng</a>
+                        <button class="dropdown-item" formaction="${pageContext.request.contextPath}/Account/Logout">Đăng xuất</button>
+                    </c:when>
+
+                    <c:otherwise>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Login">Đăng nhập</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Register">Đăng ký</a>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div>
@@ -62,7 +99,7 @@
             <c:forEach items="${allPCategories}" var="c">
                 <div class="dropdown">
                     <a href="${pageContext.request.contextPath}/Home/ByPCat?id=${c.id}" role="button" class="dropbtn btn btn-outline-secondary">
-                        ${c.name_parent_cate}
+                            ${c.name_parent_cate}
                     </a>
                     <div class="dropdown-content">
                         <c:forEach items="${allCategories}" var="d">
@@ -81,4 +118,5 @@
             document.getElementById('PCat').visible = 'visible'
         }
     </script>
+    </form>
 </nav>

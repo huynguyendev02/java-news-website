@@ -94,7 +94,6 @@
                 <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=1','Độc giả')"> Độc giả</a>
                 <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=2','Phóng viên')">Phóng viên</a>
                 <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=3','Biên tập')">Biên tập</a>
-                <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=4', 'Quản trị')">Quản trị</a>
             </div>
         </div>
 
@@ -125,6 +124,7 @@
         document.getElementById('form').action = a
         document.getElementById('btRole').innerText = name;
     }
+
     $('#form').on('submit', function (e) {
         e.preventDefault();
         if (document.getElementById('pwd').value != document.getElementById('confirmPwd').value){

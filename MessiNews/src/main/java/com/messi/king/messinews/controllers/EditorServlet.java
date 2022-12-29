@@ -22,9 +22,23 @@ public class EditorServlet extends HttpServlet {
 
         switch (url) {
             case "/List":
-                List <Articles> arts = EditorService.findByEditor(user.getId());
-                request.setAttribute("articles",arts);
+//                List <Articles> arts = EditorService.findByEditor(user.getId());
+//                request.setAttribute("articles",arts);
+                List<Articles> articlesList = ArticlesService.top10AllCate();
+                request.setAttribute("articlesList", articlesList);
                 ServletUtils.forward("/views/vwEditor/List.jsp",request,response);
+                break;
+            case "/Accept":
+                int id = Integer.parseInt(request.getParameter("id"));
+                Articles article = ArticlesService.findById(id);
+                request.setAttribute("article", article);
+                ServletUtils.forward("/views/vwEditor/Accept.jsp",request,response);
+                break;
+            case "/Deny":
+                int id2 = Integer.parseInt(request.getParameter("id"));
+                Articles article2 = ArticlesService.findById(id2);
+                request.setAttribute("article", article2);
+                ServletUtils.forward("/views/vwEditor/Deny.jsp",request,response);
                 break;
             default:
                 ServletUtils.forward("/views/404.jsp",request,response);

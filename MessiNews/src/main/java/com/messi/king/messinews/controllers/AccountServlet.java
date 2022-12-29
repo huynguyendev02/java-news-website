@@ -129,22 +129,26 @@ public class AccountServlet extends HttpServlet {
     private void editProfileUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
 
+        Users user = (Users) request.getSession().getAttribute("authUser");
         String fullName = request.getParameter("newFullName");
         String email = request.getParameter("newEmail");
 
-        int role =0;
+
+        int role = user.getRole();
         try {
             role = Integer.parseInt(request.getParameter("role"));
-        }catch (NumberFormatException e) {
+        }catch (NumberFormatException e) {}
+
+        LocalDateTime dob = user.getDob();
+        if (!request.getParameter("newDob").equals("__/__/____"))
+        {
+            String strDob = request.getParameter("newDob") + " 00:00";
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            dob = LocalDateTime.parse(strDob, df);
         }
 
-        String strDob = request.getParameter("newDob") + " 00:00";
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        LocalDateTime dob = LocalDateTime.parse(strDob, df);
-
-        Users user = (Users) request.getSession().getAttribute("authUser");
-        UsersService.updateProfile(user.getId(), fullName,role, email,dob);
-        ServletUtils.redirect("/Account/Profile",request,response);
+        UsersService.updateProfile(user.getId(), fullName, role, email, dob);
+        ServletUtils.redirect("/Account/Profile", request, response);
     }
 
     private void registerUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

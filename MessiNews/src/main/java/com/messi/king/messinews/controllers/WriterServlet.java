@@ -26,10 +26,12 @@ public class WriterServlet extends HttpServlet {
         HttpSession session = request.getSession();
         switch (url) {
             case "/List":
-                Users user = (Users) session.getAttribute("authUser");
-                List<Articles> articlesList = ArticlesService.findByWriterId(user.getId());
-                request.setAttribute("articlesList", articlesList);
+//                Users user = (Users) session.getAttribute("authUser");
+//                List<Articles> articlesList = ArticlesService.findByWriterId(user.getId());
+//                request.setAttribute("articlesList", articlesList);
 
+                List<Articles> articlesList = ArticlesService.top10AllCate();
+                request.setAttribute("articlesList", articlesList);
                 ServletUtils.forward("/views/vwWriter/List.jsp",request,response);
                 break;
             case "/Upload":
@@ -52,6 +54,7 @@ public class WriterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String url = request.getPathInfo();
         HttpSession session = request.getSession();
         switch (url) {
@@ -75,6 +78,10 @@ public class WriterServlet extends HttpServlet {
         String title = request.getParameter("title");
         String abstractContent = request.getParameter("abstract");
         String content = request.getParameter("content");
+
+        System.out.println(title);
+        System.out.println(abstractContent);
+        System.out.println(content);
         int cateId = 0;
         int premium =0;
         try {
@@ -92,11 +99,11 @@ public class WriterServlet extends HttpServlet {
         }
         String destination = "";
         for (Part part: request.getParts()) {
-            if (part.getName().equals("backgroundMain")) {
+            if (part.getName().equals("imgMain")) {
                 destination = targetDir + "/" + "a.png";
                 part.write(destination);
             }
-            if (part.getName().equals("imgMain")) {
+            if (part.getName().equals("backgroundMain")) {
                 destination = targetDir + "/" + "b.png";
                 part.write(destination);
             }

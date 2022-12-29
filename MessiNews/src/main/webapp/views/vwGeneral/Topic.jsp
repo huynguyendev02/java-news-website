@@ -3,13 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <jsp:useBean id="articles" scope="request" type="java.util.List<com.messi.king.messinews.models.Articles>"/>
+<jsp:useBean id="titleTopic" scope="request" type="java.lang.String"/>
+<jsp:useBean id="cateRelated" scope="request" type="java.util.List<com.messi.king.messinews.models.Categories>"/>
+
 
 <m:main>
     <jsp:attribute name="css">
-          <link rel="stylesheet"
-                href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
-                integrity="sha512-f0tzWhCwVFS3WeYaofoLWkTP62ObhewQ1EZn65oSYDZUg1+CyywGKkWzm8BxaJj5HGKI72PnMH9jYyIFz+GH7g=="
-                crossorigin="anonymous" referrerpolicy="no-referrer"/>
           <style>
               /*.bgColorGray {*/
               /*    border-radius: 10px;*/
@@ -22,16 +21,13 @@
             <div style="width: 15%"></div>
             <div style="width: 70%">
 
-<%--            Tiêu đề và danh mục--%>
+                    <%--            Tiêu đề và danh mục--%>
                 <div align="center">
-                    <h1><i><b>Thế giới</b></i></h1>
+                    <h1><i><b>${titleTopic}</b></i></h1>
                     <div class="d-flex justify-content-center w-100 my-4">
-                        <a href="" class="mx-4">Hello1</a>
-                        <a href="" class="mx-4">Hello2</a>
-                        <a href="" class="mx-4">Hello3</a>
-                        <a href="" class="mx-4">Hello4</a>
-                        <a href="" class="mx-4">Hello5</a>
-                        <a href="" class="mx-4">Hello6</a>
+                        <c:forEach items="${cateRelated}" var="c">
+                            <a class="mx-3" href="${pageContext.request.contextPath}/Home/ByCat?id=${c.id}"><b>${c.name_category}</b></a>
+                        </c:forEach>
                     </div>
                     <hr>
                 </div>
@@ -48,10 +44,10 @@
                             <div>
                                 <a href="${pageContext.request.contextPath}/Home/Details?id=${articles[0].id}">
                                     <h3 class="mb-0">
-                                        <c:if test="${articles[0].premium == 0}">
+                                        <c:if test="${articles[0].premium == 1}">
                                             <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                         </c:if>
-                                        ${articles[0].title}
+                                            ${articles[0].title}
                                     </h3>
                                     <p>${articles[0].publish_date}</p>
                                     <p>${articles[0].abstract_content}</p>
@@ -80,10 +76,10 @@
                                 <div>
                                     <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}">
                                         <h4 class="mb-0">
-                                            <c:if test="${c.premium == 0}">
+                                            <c:if test="${c.premium == 1}">
                                                 <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                             </c:if>
-                                            ${c.title}
+                                                ${c.title}
                                         </h4>
                                         <p>${c.publish_date}</p>
                                         <p>${c.abstract_content}</p>
@@ -94,7 +90,7 @@
                                     <img class="imageIcon"
                                          src="https://static2.yan.vn/YanNews/202109/202109210147413038-a77aa638-beca-4e89-a0e7-a679dc39daa5_1250x833.gif"
                                          alt="">
-                                    ${c.writer_id}
+                                        ${c.writer_id}
                                 </div>
                             </div>
                         </div>

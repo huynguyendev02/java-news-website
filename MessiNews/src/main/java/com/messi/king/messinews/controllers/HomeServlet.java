@@ -42,7 +42,7 @@ public class HomeServlet extends HttpServlet {
                     ServletUtils.redirect("/views/204.jsp", request, response);
 
                 }
-                System.out.print(id);
+
                 Articles art = ArticlesService.findById(id);
                 if (art!=null) {
                     ArticlesService.viewArticle(id);
@@ -50,6 +50,7 @@ public class HomeServlet extends HttpServlet {
                     request.setAttribute("article",art);
                     request.setAttribute("related", ArticlesService.newsRelated(id));
                     request.setAttribute("comments", CommentService.findByArtId(id));
+
                     ServletUtils.forward("/views/vwGeneral/Details.jsp",request,response);
                 } else {
                     ServletUtils.redirect("/views/204.jsp", request, response);
@@ -110,6 +111,7 @@ public class HomeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String url = request.getPathInfo();
         switch (url) {
             case "/Details/Comment/Add":
@@ -145,11 +147,11 @@ public class HomeServlet extends HttpServlet {
         }
     }
     private static void deleteComment(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         int commentId=0;
         try {
             commentId = Integer.parseInt(request.getParameter("commentId"));
         } catch (NumberFormatException e) {
-
         }
         Comments comment = CommentService.findById(commentId);
         if (comment!=null){
