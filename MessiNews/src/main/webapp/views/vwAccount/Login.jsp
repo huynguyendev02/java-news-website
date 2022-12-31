@@ -38,40 +38,14 @@
 
         }
 
-        .form-control:focus {
-            border-color: transparent;
-            -webkit-box-shadow: none;
-            box-shadow: none;
-        }
-
-        .crop {
-            width: 1060px;
-            height: 300px;
-        }
-
         .crop img {
             width: 100%;
             height: 100%;
         }
 
-        .grad {
-            background-image: linear-gradient(to top right, black 5%, transparent);
-        }
 
         .bgColorGray {
             background-color: #F0F0F0;
-        }
-
-        .imageIcon {
-            width: 40px;
-            height: 40px;
-            border-radius: 40px
-        }
-
-        .boxShadow {
-            border: 1px solid;
-            border-left: none;
-            box-shadow: 0.5px 0.5px;
         }
 
         .inputStyle {
@@ -110,11 +84,11 @@
             <img src="${pageContext.request.contextPath}/photos/logos/LogoMessi.png" alt="" style="width: 120px">
         </div>
 
-        <input name="username" type="text" placeholder="Tên hoặc tài khoản" class="w-100 pl-2 inputStyle mt-4" required>
+        <input name="username" type="text" placeholder="Tài khoản" class="w-100 pl-2 inputStyle mt-4" required>
         <input name="password" type="password" placeholder="Mật khẩu" class="w-100 pl-2 inputStyle mt-3" required>
 
         <div class=" pt-1 pb-4" align="end">
-            <a href="" style="font-weight: normal; font-size: 15px">Quên mật khẩu</a>
+            <a href="${pageContext.request.contextPath}/Account/Forgot" style="font-weight: normal; font-size: 15px">Quên mật khẩu</a>
         </div>
 
         <button class="w-100 inputStyle btn btn-primary" type="submit">Đăng nhập</button>

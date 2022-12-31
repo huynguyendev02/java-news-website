@@ -6,6 +6,7 @@
 <jsp:useBean id="allPCategories" scope="request"
              type="java.util.List<com.messi.king.messinews.models.ParentCategories>"/>
 <jsp:useBean id="allCategories" scope="request" type="java.util.List<com.messi.king.messinews.models.Categories>"/>
+<jsp:useBean id="tags" scope="request" type="java.util.List<com.messi.king.messinews.models.Tags>"/>
 
 <m:main>
      <jsp:attribute name="css">
@@ -58,24 +59,30 @@
                 crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
             function showListCart(idPCat, namePCat) {
-                let list = $('.listCat');
+                $('.listCat').each(function (index, value) {
+                    $(this).css('display', 'none');
+                });
+                document.getElementById(idPCat).style.display = 'block';
                 document.getElementById('btPCat').innerText = namePCat;
-                for (let i = 0; i <= 10; i++) {
-                    if (i == idPCat-1) {
-                        list.get(i).style.display = 'block';
-                    } else {
-                        list.get(i).style.display = 'none';
-                    }
-                }
+
             }
 
-            function btCatClick(idPCat, idCat, nameCat, url){
-                $('.btCat').get(idPCat-1).innerHTML = nameCat
-                // $('#formAction').action = url
+            function btCatClick(idBtCat, nameCat, url) {
+                document.getElementById(idBtCat).innerText = nameCat;
                 document.getElementById('formAction').action = url
             }
 
-            $('#txtDOB').datetimepicker({
+            function setArrTag(){
+                let list = []
+                $('.ckBox').each(function (index, value) {
+                    if ($(this).is(':checked')){
+                        list.push($(this).val())
+                    }
+                });
+                document.getElementById('listTagId').value = list;
+            }
+
+            $('#publish_time').datetimepicker({
                 format: 'd/m/Y',
                 timepicker: false,
                 mask: true
@@ -97,56 +104,71 @@
                     <hr>
                     <br>
                     <h5>Đang xử lý bài: ${article.title}</h5> <br>
-                    <div style=" width: 100%">
-                        <div class="w-100 d-flex">
-                            <div class="dropdown mt-3">
-                                <button class="btn btn-outline-secondary btStyle" type="button" id="btPCat"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Chuyên mục lớn
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <c:forEach items="${allPCategories}" var="c">
-                                        <a class="dropdown-item"
-                                           onclick="showListCart('${c.id}','${c.name_parent_cate}')">${c.name_parent_cate}</a>
-                                    </c:forEach>
-                                </div>
-                            </div>
-                            <c:forEach items="${allPCategories}" var="c">
-                                <div class="dropdown mt-3 ml-5 listCat" style="display: none">
-                                    <button class="btn btn-outline-secondary btStyle btCat" type="button"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Chuyên mục nhỏ
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <c:forEach items="${allCategories}" var="d">
-                                            <c:if test="${c.id == d.parent_cate_id}">
-                                                <a class="dropdown-item" onclick="btCatClick('${d.parent_cate_id}','${d.id}','${d.name_category}','${pageContext.request.contextPath}/Editor/Allow?idArticle=${article.id}&idCat=${d.id}')">${d.name_category}</a>
-                                            </c:if>
-                                        </c:forEach>
+                    <div class="w-100 d-flex">
+                        <table width="100%" cellpadding="15px">
+                            <tr>
+                                <td style="width: 20%;" align="top" >Chuyên mục</td>
+                                <td style="width: 40%">
+                                    <div class="dropdown mt-3">
+                                        <button class="btn btn-outline-secondary btStyle" type="button" id="btPCat"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Chuyên mục lớn
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <c:forEach items="${allPCategories}" var="c">
+                                                <a class="dropdown-item"
+                                                   onclick="showListCart('divCat${c.id}','${c.name_parent_cate}')">${c.name_parent_cate}</a>
+                                            </c:forEach>
+                                        </div>
                                     </div>
-                                </div>
-                            </c:forEach>
-                        </div>
-                        <br>
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary btStyle" type="button" data-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="false">
-                                Nhãn
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <c:forEach items="${allCategories}" var="c">
-                                    <a onclick="choosePCat(1)" class="dropdown-item">${c.name_category}</a>
+                                </td>
+                                <td style="width: 40%"><c:forEach items="${allPCategories}" var="c">
+                                    <div id="divCat${c.id}" class="dropdown mt-3 ml-5 listCat"
+                                         style="display: none">
+                                        <button id="btChillCat${c.id}" class="btn btn-outline-secondary btStyle btCat" type="button"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Chuyên mục nhỏ
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <c:forEach items="${allCategories}" var="d">
+                                                <c:if test="${c.id == d.parent_cate_id}">
+                                                    <a class="dropdown-item"
+                                                       onclick="btCatClick('btChillCat${c.id}','${d.name_category}','${pageContext.request.contextPath}/Editor/Accept?id=${article.id}&idCat=${d.id}')">${d.name_category}</a>
+                                                </c:if>
+                                            </c:forEach>
+                                        </div>
+                                    </div>
                                 </c:forEach>
-                            </div>
-                        </div>
-                        <br>
-                        <br>
-
-                        <div class="pl-2 btStyle d-flex justify-content-between">
-                            <div align="center">Ngày phát hành</div>
-                            <input name="dob" id="txtDOB" type="text" class=" inputStyle">
-                        </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Ngày phát hành</td>
+                                <td>
+                                    <input name="publish_time" id="publish_time" type="text" class=" inputStyle">
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Loại báo</td>
+                                <td>
+                                    <input type="radio" id="normal" name="premium" value="0">
+                                    <label for="normal">Thường</label><br>
+                                    <input type="radio" id="premium" name="premium" value="1">
+                                    <label for="premium">Cao cấp</label><br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Chọn nhãn</td>
+                                <td colspan="2">
+                                    <input id="listTagId" name="listTagId" type="text" style="display: none">
+                                    <c:forEach items="${tags}" var="c">
+                                        <input class="ckBox" type="checkbox" id="checkBox${c.id}" value="${c.id}">
+                                        <label for="${c.id}">${c.name_tags} &ensp;</label>
+                                    </c:forEach>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <br>
                     <br>
@@ -155,14 +177,13 @@
                             <i class="fa fa-times" aria-hidden="true"></i>
                             Hủy bỏ
                         </a>
-                        <button class="btn btn-success" type="submit">
+                        <button onclick="setArrTag()" class="btn btn-success" type="submit">
                             <i class="fa fa-check" aria-hidden="true"></i>
                             Hoàn thành
                         </button>
                     </div>
 
                 </div>
-
 
                 <!--    right-->
                 <div style="width: 15%" class="d-flex align-items-end flex-column bgColorGray">

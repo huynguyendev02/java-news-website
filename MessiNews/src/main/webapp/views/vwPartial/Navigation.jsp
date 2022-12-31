@@ -75,10 +75,13 @@
                     <c:when test = "${authUser.role == 4}">
                         <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Profile">Thông tin cá nhân</a>
                         <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Thay đổi mật khẩu</a>
-                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Quản lý chuyên mục</a>
-                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Quản lý nhãn</a>
-                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Quản lý bài viết</a>
-                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Account/Password">Quản lý người dùng</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Admin/Categories/ListCate">Quản lý chuyên mục nhỏ</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Admin/Categories/ListPCate">Quản lý chuyên mục lớn</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Admin/Tags/List">Quản lý nhãn</a>
+<%--                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Editor/List">Quản lý bài viết</a>--%>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Admin/Users/ListSub">Quản lý độc giả</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Admin/Users/ListWriter">Quản lý phóng viên</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/Admin/Users/ListEditor">Quản lý biên tập</a>
                         <button class="dropdown-item" formaction="${pageContext.request.contextPath}/Account/Logout">Đăng xuất</button>
                     </c:when>
 

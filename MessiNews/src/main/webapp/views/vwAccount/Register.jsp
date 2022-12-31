@@ -119,7 +119,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 <script>
-    let urlRole
     function chooseRole(a, name){
         document.getElementById('form').action = a
         document.getElementById('btRole').innerText = name;

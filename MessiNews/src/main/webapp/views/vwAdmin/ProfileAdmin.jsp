@@ -1,8 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="m" tagdir="/WEB-INF/tags" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<jsp:useBean id="authUser" scope="session" type="com.messi.king.messinews.models.Users"/>
+<jsp:useBean id="user" scope="request" type="com.messi.king.messinews.models.Users"/>
 
 <m:main>
     <jsp:attribute name="css">
@@ -66,19 +66,7 @@
                 document.getElementById("newDob").classList.remove('inputOff');
                 document.getElementById('newDob').readOnly = false;
 
-                document.getElementById('btRole').disabled = false;
-                document.getElementById("btRole").classList.add('inputOn');
-                document.getElementById("btRole").classList.remove('inputOff');
-
                 document.getElementById('save').style.display = 'block';
-                document.getElementById('exChangeDob').style.visibility = 'visible';
-                document.getElementById('editProfile').style.visibility = 'hidden';
-
-            }
-
-            function chooseRole(a, name) {
-                document.getElementById('btRole').innerText = name;
-                document.getElementById('frAction').action = a
             }
 
             $('#newDob').datetimepicker({
@@ -89,35 +77,7 @@
         </script>
   </jsp:attribute>
     <jsp:body>
-        <form id="frAction" action="" method="post">
-            <div class="w-100 bgColorPink" align="center">
-                <div class="py-4">
-                    <img class="bigImageIcon mb-1"
-                         src="${pageContext.request.contextPath}/photos/userAvatar/${authUser.id}/avatar.png"
-                         alt="">
-                    <h2>${authUser.username}</h2>
-                    <p>
-                        Vai trò:
-                        <c:choose>
-                            <c:when test="${authUser.role == 1}">
-                                Độc giả
-                            </c:when>
-
-                            <c:when test="${authUser.role == 2}">
-                                Phóng viên
-                            </c:when>
-
-                            <c:when test="${authUser.role == 3}">
-                                Nhà báo
-                            </c:when>
-
-                            <c:when test="${authUser.role == 4}">
-                                Quản trị viên
-                            </c:when>
-                        </c:choose>
-                    </p>
-                </div>
-            </div>
+        <form id="form" action="" method="post">
             <div class="d-flex justify-content-center bgColorGray">
                 <!--    left-->
                 <div class="bgColorGray" style="width: 15%">
@@ -125,10 +85,10 @@
                 </div>
 
                 <!--    center-->
-                <div style="width: 70%; background-color: white" class="mt-4 p-3">
+                <div style="width: 70%; background-color: white" class="m-4 p-3">
                     <div class="d-flex justify-content-between">
                         <h3>Thông tin cá nhân</h3>
-                        <button onclick="editClick('${authUser.dob}')" class="px-3 btn btn-outline-primary"
+                        <button onclick="editClick('${user.dob}')" class="px-3 btn btn-outline-primary"
                                 style="border-radius: 20px" type="button">
                             <i class="fa fa-pencil" aria-hidden="true"></i>
                             Chỉnh sửa thông tin
@@ -139,40 +99,15 @@
                         <tr>
                             <td style="width: 10%">Họ vàn tên:</td>
                             <td>
-                                <input id="newFullName" name="newFullName" type="text" value="${authUser.full_name}"
+                                <input id="newFullName" name="newFullName" type="text" value="${user.full_name}"
                                        class="w-100 pl-2 inputOff" readonly="readonly">
                             </td>
                         </tr>
                         <tr>
                             <td>Email:</td>
                             <td>
-                                <input id="newEmail" name="newEmail" type="email" value="${authUser.email}"
+                                <input id="newEmail" name="newEmail" type="email" value="${user.email}"
                                        class="w-100 pl-2 inputOff" readonly="readonly">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Vai trò:</td>
-                            <td>
-                                <div class="dropdown">
-                                    <button id="btRole"
-                                            class="btn inputOff dropdown-toggle w-100 d-flex justify-content-between align-items-center "
-                                            type="button" data-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false"
-                                            disabled>
-                                        Vai trò
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item"
-                                           onclick="chooseRole('${pageContext.request.contextPath}/Account/Profile?role=1','Phóng viên')">
-                                            Độc giả</a>
-                                        <a class="dropdown-item"
-                                           onclick="chooseRole('${pageContext.request.contextPath}/Account/Profile?role=2','Phóng viên')">Phóng
-                                            viên</a>
-                                        <a class="dropdown-item"
-                                           onclick="chooseRole('${pageContext.request.contextPath}/Account/Profile?role=3','Biên tập')">Biên
-                                            tập</a>
-                                    </div>
-                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -182,7 +117,7 @@
                     </table>
                     <br>
                     <div id="save" align="end" style="display: none">
-                        <a href="${pageContext.request.contextPath}/Account/Profile" class="btn btn-secondary mr-2">
+                        <a href="${pageContext.request.contextPath}/Admin/Users/Profile?id=${user.id}" class="btn btn-secondary mr-2">
                             <i class="fa fa-times" aria-hidden="true"></i>
                             Hủy bỏ
                         </a>
@@ -192,8 +127,14 @@
                         </button>
                     </div>
                 </div>
+
                 <!--    right-->
                 <div style="width: 15%" class="d-flex align-items-end flex-column bgColorGray">
+                    <div class="mt-auto p-2" style="position: fixed; bottom: 10px; right: 10px">
+                        <a href="">
+                            <i class="fa fa-arrow-circle-o-up fa-3x" aria-hidden="true"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </form>

@@ -1,9 +1,11 @@
 package com.messi.king.messinews.controllers;
 
 import com.messi.king.messinews.models.Articles;
+import com.messi.king.messinews.models.Tags;
 import com.messi.king.messinews.models.Users;
 import com.messi.king.messinews.services.ArticlesService;
 import com.messi.king.messinews.services.EditorService;
+import com.messi.king.messinews.services.TagsService;
 import com.messi.king.messinews.utils.PdfUtils;
 import com.messi.king.messinews.utils.ServletUtils;
 
@@ -33,8 +35,10 @@ public class EditorServlet extends HttpServlet {
                 break;
             case "/Accept":
                 int id = Integer.parseInt(request.getParameter("id"));
+                List<Tags> tags = TagsService.findAll();
                 Articles article = ArticlesService.findById(id);
                 request.setAttribute("article", article);
+                request.setAttribute("tags",tags);
                 ServletUtils.forward("/views/vwEditor/Accept.jsp",request,response);
                 break;
             case "/Deny":

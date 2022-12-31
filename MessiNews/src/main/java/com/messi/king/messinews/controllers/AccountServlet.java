@@ -33,6 +33,9 @@ public class AccountServlet extends HttpServlet {
             case "/Forgot":
                 ServletUtils.forward("/views/vwAccount/Forgot.jsp",request,response);
                 break;
+            case "/OTP":
+                ServletUtils.forward("/views/vwAccount/OTP.jsp",request,response);
+                break;
             case "/Profile":
                 Users user = (Users) session.getAttribute("authUser");
                 request.setAttribute("user",user);

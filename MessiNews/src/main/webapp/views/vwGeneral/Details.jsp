@@ -1,4 +1,3 @@
-<%@ page import="com.messi.king.messinews.services.UsersService" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="m" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -11,6 +10,7 @@
 <jsp:useBean id="comments" scope="request" type="java.util.List<com.messi.king.messinews.models.Comments>"/>
 <jsp:useBean id="auth" scope="session" type="java.lang.Boolean"/>
 <jsp:useBean id="authUser" scope="session" type="com.messi.king.messinews.models.Users"/>
+
 <m:main>
      <jsp:attribute name="css">
           <style>
@@ -100,7 +100,7 @@
                                 <div class="pl-3">
                                     <div>
                                         <a href="">
-                                            ${article.getWriterName(article.writer_id)}
+                                                ${article.writer_id}
                                         </a>
                                     </div>
                                     <div style="font-size: 13px">
@@ -163,7 +163,7 @@
                                     <img class="imageIcon"
                                          src="${pageContext.request.contextPath}/photos/userAvatar/${authUser.id}/avatar.png"
                                          alt="">
-                                    <textarea name="commentAdd" class="bgColorGray w-100 ml-3 p-3" rows="4"
+                                    <textarea name="realCmt" class="bgColorGray w-100 ml-3 p-3" rows="4"
                                               style="border-radius: 10px; border-style: none"
                                               placeholder="Bình luận ngay nào..."></textarea>
                                 </div>
