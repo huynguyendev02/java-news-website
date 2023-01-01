@@ -2,10 +2,12 @@ package com.messi.king.messinews.controllers;
 
 import com.messi.king.messinews.models.Users;
 import com.messi.king.messinews.services.UsersService;
+import com.messi.king.messinews.utils.SendMailUtils;
 import com.messi.king.messinews.utils.ServletUtils;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
+import javax.mail.MessagingException;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
@@ -31,10 +33,9 @@ public class AccountServlet extends HttpServlet {
                 ServletUtils.forward("/views/vwAccount/Register.jsp",request,response);
                 break;
             case "/Forgot":
+                request.setAttribute("errorForgot", "");
+
                 ServletUtils.forward("/views/vwAccount/Forgot.jsp",request,response);
-                break;
-            case "/OTP":
-                ServletUtils.forward("/views/vwAccount/OTP.jsp",request,response);
                 break;
             case "/Profile":
                 Users user = (Users) session.getAttribute("authUser");
@@ -45,8 +46,10 @@ public class AccountServlet extends HttpServlet {
                 ServletUtils.forward("/views/vwAccount/Password.jsp",request,response);
                 break;
 
-//
-
+            case "/OTP":
+                request.setAttribute("errorOTP", "");
+                ServletUtils.forward("/views/vwAccount/OTP.jsp",request,response);
+                break;
             case "/IsAvailable":
                 String username = request.getParameter("username");
                 String email = request.getParameter("email");
@@ -69,6 +72,8 @@ public class AccountServlet extends HttpServlet {
         }
     }
 
+
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String url = request.getPathInfo();
@@ -84,14 +89,73 @@ public class AccountServlet extends HttpServlet {
                 break;
             case "/Profile":
                 editProfileUser(request,response);
-            case "/ChangePassword":
+                break;
+            case "/Password":
                 changePassword(request,response);
+                break;
+            case "/Forgot":
+                try {
+                    forgotPassword(request,response);
+                } catch (MessagingException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "/OTP":
+
+                checkOTP(request,response);
+                break;
             case "/ChangeAvatar":
                 changeAvatar(request,response);
+                break;
             default:
                 ServletUtils.forward("/views/404.jsp",request,response);
                 break;
         }
+    }
+
+    private void checkOTP(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        if  (LocalDateTime.now().isAfter(LocalDateTime.parse(session.getAttribute("timeForgot").toString()))) {
+            request.setAttribute("errorForgot", "Hết thời gian quy định. Vui lòng thử lại sau");
+            ServletUtils.redirect("/Account/Forgot", request, response);
+        } else {
+            Users user = (Users) session.getAttribute("forgotUser");
+
+            String otp = request.getParameter("otp");
+
+            BCrypt.Result result = BCrypt.verifyer().verify(otp.toCharArray(), user.getOtp());
+
+            if (result.verified) {
+                String rawpwd = request.getParameter("rawpwd");
+                String haspwd = BCrypt.withDefaults().hashToString(12, rawpwd.toCharArray());
+                UsersService.changePassword(user.getId(), haspwd);
+                ServletUtils.redirect("/Account/Login",request,response);
+            } else {
+                request.setAttribute("errorOTP", "Mã OTP không đúng, vui lòng thử lại");
+                ServletUtils.forward("/views/vwAccount/OTP.jsp",request,response);
+            }
+        }
+    }
+
+    private void forgotPassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, MessagingException {
+        String username = request.getParameter("username");
+        Users user = UsersService.findByUsername(username);
+        if (user==null){
+            System.out.println("chay");
+            user = UsersService.findByEmail(username);
+
+        }
+
+        String code = SendMailUtils.sendEmail(user);
+
+        String otpHash = BCrypt.withDefaults().hashToString(12, code.toCharArray());
+
+        UsersService.updateOTP(user.getId(),otpHash);
+
+        request.getSession().setAttribute("forgotUser", UsersService.findById(user.getId()));
+        request.getSession().setAttribute("timeForgot", LocalDateTime.now().plusMinutes(5));
+
+        ServletUtils.redirect("/Account/OTP", request, response);
     }
 
     private void changeAvatar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

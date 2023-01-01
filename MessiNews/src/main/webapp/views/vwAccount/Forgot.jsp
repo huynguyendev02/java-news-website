@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="errorForgot" scope="request" type="java.lang.String"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,12 +70,17 @@
             <img src="${pageContext.request.contextPath}/photos/logos/LogoMessi.png" alt="" style="width: 120px">
         </div>
 
-        <input name="username" type="text" placeholder="Tài khoản hoặc Email" class="w-100 pl-2 inputStyle my-4"
+        <input name="username" id="username" type="text" placeholder="Tên tài khoản hoặc Email" class="w-100 pl-2 inputStyle my-4"
                required>
 
         <button class="w-100 inputStyle btn btn-primary" type="submit">Tiếp tục</button>
     </div>
 </form>
+<c:if test="${errorForgot.length()!=0}">
+    <script>
+        alert("${errorForgot}");
+    </script>
+</c:if>
 
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
@@ -88,17 +95,18 @@
 </body>
 <script>
     $('#form').on('submit', function (e) {
+
         e.preventDefault();
         const username = $('#username').val();
-        const email = $('#email').val();
-        $.getJSON('${pageContext.request.contextPath}/Account/IsAvailable?username=' + username + '&email=' + email, (data) => {
-            if (data == false) {
-                alert('Tên tài khoản hoặc email đã được sử dụng.')
+        $.getJSON('${pageContext.request.contextPath}/Account/IsAvailable?username=' + username + '&email=' + username, (data) => {
+            if (data === true) {
+                alert('Tài khoản hoặc Email không tồn tại')
                 return
             } else {
                 $('#form').off('submit').submit();
             }
         })
     })
+
 </script>
 </html>

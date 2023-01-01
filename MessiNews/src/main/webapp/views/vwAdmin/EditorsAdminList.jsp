@@ -17,7 +17,7 @@
         <div style="width: 70%; background-color: white" class="m-4 p-3">
           <div class="d-flex justify-content-between">
             <h4>Danh sách các biên tập</h4>
-            <a href="${pageContext.request.contextPath}/Admin/Users//ListSub"
+            <a href="${pageContext.request.contextPath}/Admin/Users/Add"
                class="mx-3 px-3 btn btn-outline-success"
                style="border-radius: 20px" type="button">
               <i class="fa fa-plus" aria-hidden="true"></i>

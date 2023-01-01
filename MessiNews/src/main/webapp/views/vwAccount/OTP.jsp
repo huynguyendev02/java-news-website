@@ -1,4 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="errorOTP" scope="request" type="java.lang.String"/>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,7 +58,7 @@
 <body>
 <form id="form" action="" method="post"
       class="d-flex justify-content-center w-100 h-100 bgColorGray align-items-center">
-    <div id="divBackGround" class="p-4" style="background-color: white; width: 30%; height: 50%">
+    <div id="divBackGround" class="p-4" style="background-color: white; width: 30%; height: 70%">
         <div class="d-flex justify-content-between">
             <h4>
                 Xác thực mật khẩu
@@ -69,12 +73,12 @@
             <img src="${pageContext.request.contextPath}/photos/logos/LogoMessi.png" alt="" style="width: 120px">
         </div>
 
-        <input name="otp" type="text" placeholder="Vui lòng nhập mã OTP" class="w-100 pl-2 inputStyle my-4"
+        <input  id="otp" name="otp" type="text" placeholder="Vui lòng nhập mã OTP" class="w-100 pl-2 inputStyle my-4"
                required>
 
-        <button id="btXacNhan" class="w-100 inputStyle btn btn-primary " type="button" onclick="xacNhanClick()">Tiếp tục</button>
+<%--        <button id="btXacNhan" class="w-100 inputStyle btn btn-primary " type="button" onclick="xacNhanClick()">Tiếp tục</button>--%>
 
-        <div id="resetPass" style="display: none">
+        <div id="resetPass" style="display: block">
             <h6>Tạo mật khẩu mới</h6>
             <input name="rawpwd" id="pwd" type="password" placeholder="Mật khẩu" class="w-100 pl-2 inputStyle" required>
             <input id="confirmPwd" type="password" placeholder="Xác nhận mật khẩu" class="w-100 pl-2 inputStyle mt-3"
@@ -84,6 +88,11 @@
 
     </div>
 </form>
+<c:if test="${errorOTP.length()!=0}">
+    <script>
+        alert("${errorOTP}");
+    </script>
+</c:if>
 
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
@@ -97,10 +106,17 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 <script>
-    function xacNhanClick(){
-        $('#btXacNhan').css('display','none');
-        $('#resetPass').css('display','block');
-        $('#divBackGround').css('height','70%');
-    }
+    <%--function xacNhanClick(){--%>
+    <%--    let value = $('#otp').val();--%>
+    <%--    if (value == ${code}) {--%>
+    <%--        $('#btXacNhan').css('display','none');--%>
+    <%--        $('#resetPass').css('display','block');--%>
+    <%--        $('#divBackGround').css('height','70%');--%>
+    <%--    }--%>
+    <%--    else {--%>
+    <%--        alert("Mã OTP không đúng, vui lòng thử lại")--%>
+    <%--    }--%>
+
+    <%--}--%>
 </script>
 </html>

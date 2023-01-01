@@ -14,6 +14,8 @@ import java.util.List;
 public class AdminTagsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+
         String url = request.getPathInfo();
         switch (url){
             case "/List":
@@ -46,11 +48,13 @@ public class AdminTagsServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String url = request.getPathInfo();
         switch (url){
             case "/Add":
                 String nameTag = request.getParameter("nameTag");
                 TagsService.add(nameTag);
+                ServletUtils.redirect("/Admin/Tag/List", request, response);
                 break;
             case "/Edit":
                 editTag(request,response);

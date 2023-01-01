@@ -5,6 +5,7 @@ import com.messi.king.messinews.models.Users;
 import com.messi.king.messinews.utils.DbUtils;
 import org.sql2o.Connection;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class ArticlesService {
         final String query = "select * from articles where writer_id = :writerId";
         try (Connection con = DbUtils.getConnection()) {
             List<Articles> arts = con.createQuery(query)
-                    .addParameter("writer_id", writerId)
+                    .addParameter("writerId", writerId)
                     .executeAndFetch(Articles.class);
             return arts;
         }
@@ -130,7 +131,7 @@ public class ArticlesService {
     public static int add(Articles articles) {
         String insertSql = "INSERT INTO articles (title, views, abstract_content, content, categories_id,premium, writer_id, status) VALUES (:title, :views, :abstract_content, :content, :categories_id,:premium, :writer_id, :status)";
         try (Connection con = DbUtils.getConnection()) {
-            return (int)con.createQuery(insertSql, true)
+            BigInteger bigInt =  (BigInteger)con.createQuery(insertSql, true)
                     .addParameter("title",articles.getTitle())
                     .addParameter("views",0)
                     .addParameter("abstract_content", articles.getAbstract_content())
@@ -141,6 +142,7 @@ public class ArticlesService {
                     .addParameter("status",-1)
                     .executeUpdate()
                     .getKey();
+            return bigInt.intValue();
         }
     }
 

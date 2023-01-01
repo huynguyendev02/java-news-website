@@ -8,7 +8,7 @@ import com.messi.king.messinews.utils.ServletUtils;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
-import java.io.IOException;
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.util.List;
 
@@ -41,7 +41,6 @@ public class HomeServlet extends HttpServlet {
                     id = Integer.parseInt(request.getParameter("id"));
                 } catch (NumberFormatException e) {
                     ServletUtils.redirect("/views/204.jsp", request, response);
-
                 }
 
                 Articles art = ArticlesService.findById(id);
@@ -69,10 +68,36 @@ public class HomeServlet extends HttpServlet {
 
                 getArticlesAndForward(3, request, response);
                 break;
+            case "/Download":
+                download(request,response);
+                break;
             default:
                 ServletUtils.forward("/views/404.jsp",request,response);
                 break;
         }
+    }
+
+    private void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int id = 0;
+        try {
+            id = Integer.parseInt(request.getParameter("id"));
+        } catch (NumberFormatException e) {
+        }
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-disposition","attachment; filename="+id+".pdf");
+
+        File filePDF = new File(request.getServletContext().getRealPath("/pdfs/articles/"+id+".pdf"));
+
+        OutputStream out = response.getOutputStream();
+        FileInputStream in = new FileInputStream(filePDF);
+        byte[] buffer = new byte[4096];
+        int length;
+        while ((length = in.read(buffer)) > 0){
+            out.write(buffer, 0, length);
+        }
+        in.close();
+        out.flush();
     }
 
     private void getArticlesAndForward(int service, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -80,8 +105,6 @@ public class HomeServlet extends HttpServlet {
         try {
             id = Integer.parseInt(request.getParameter("id"));
         } catch (NumberFormatException e) {
-
-
         }
         List<Articles> arts = null;
         String title="";

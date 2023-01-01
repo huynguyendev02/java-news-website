@@ -26,12 +26,11 @@ public class WriterServlet extends HttpServlet {
         HttpSession session = request.getSession();
         switch (url) {
             case "/List":
-//                Users user = (Users) session.getAttribute("authUser");
-//                List<Articles> articlesList = ArticlesService.findByWriterId(user.getId());
-//                request.setAttribute("articlesList", articlesList);
-
-                List<Articles> articlesList = ArticlesService.top10AllCate();
+                Users user = (Users) session.getAttribute("authUser");
+                System.out.println(user.getId());
+                List<Articles> articlesList = ArticlesService.findByWriterId(user.getId());
                 request.setAttribute("articlesList", articlesList);
+
                 ServletUtils.forward("/views/vwWriter/List.jsp",request,response);
                 break;
             case "/Upload":
@@ -74,22 +73,21 @@ public class WriterServlet extends HttpServlet {
     }
 
     private void upload(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+
         String title = request.getParameter("title");
         String abstractContent = request.getParameter("abstract");
         String content = request.getParameter("content");
 
-        System.out.println(title);
-        System.out.println(abstractContent);
-        System.out.println(content);
-        int cateId = 0;
-        int premium =0;
-        try {
-            cateId = Integer.parseInt(request.getParameter("cateId"));
-            premium = Integer.parseInt(request.getParameter("premium"));
-        } catch (NumberFormatException e) {
-        }
 
-        int artId = ArticlesService.add(new Articles(0,title,null,0,abstractContent,content,cateId,premium,((Users)request.getSession().getAttribute("authUser")).getId(),-1, null));
+
+        int cateId = 2;
+//        try {
+//            cateId = Integer.parseInt(request.getParameter("cateId"));
+//        } catch (NumberFormatException e) {
+//        }
+
+        int artId = ArticlesService.add(new Articles(0,title,null,0,abstractContent,content,cateId,0,((Users)request.getSession().getAttribute("authUser")).getId(),-1, null));
 
         String targetDir = this.getServletContext().getRealPath("photos/articles/"+artId);
         File dir = new File(targetDir);
@@ -107,5 +105,6 @@ public class WriterServlet extends HttpServlet {
                 part.write(destination);
             }
         }
+        ServletUtils.redirect("/Writer/List", request, response);
     }
 }

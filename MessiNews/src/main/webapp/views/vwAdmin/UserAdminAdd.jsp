@@ -68,10 +68,10 @@
                             Vai trò
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=1','Độc giả')"> Độc giả</a>
-                            <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=2','Phóng viên')">Phóng viên</a>
-                            <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=3','Biên tập')">Biên tập</a>
-                            <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Account/Register?role=4','Quản lý')">Quản lý</a>
+                            <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Admin/Users/Add?role=1','Độc giả')"> Độc giả</a>
+                            <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Admin/Users/Add?role=2','Phóng viên')">Phóng viên</a>
+                            <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Admin/Users/Add?role=3','Biên tập')">Biên tập</a>
+                            <a class="dropdown-item"  onclick="chooseRole('${pageContext.request.contextPath}/Admin/Users/Add?role=4','Quản lý')">Quản lý</a>
                         </div>
                     </div>
 

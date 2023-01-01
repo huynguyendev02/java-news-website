@@ -14,6 +14,8 @@ import java.io.IOException;
 public class AdminCategoriesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+
         String url = request.getPathInfo();
         switch (url) {
             case "/ListCate":
@@ -65,6 +67,7 @@ public class AdminCategoriesServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String url = request.getPathInfo();
         switch (url) {
             case "/AddCate":

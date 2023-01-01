@@ -1,10 +1,13 @@
 package com.messi.king.messinews.services;
 
+import com.messi.king.messinews.models.EditorManageCategories;
 import com.messi.king.messinews.models.Users;
 import com.messi.king.messinews.utils.DbUtils;
 import org.sql2o.Connection;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UsersService {
@@ -35,6 +38,15 @@ public class UsersService {
             return user;
         }
     }
+    public static void delete(Users user) {
+        final String query = "delete from users where id = :id";
+        try (Connection con = DbUtils.getConnection()) {
+            con.createQuery(query)
+                    .addParameter("id", user.getId())
+                    .executeUpdate();
+        }
+    }
+
 
     public static List<Users> findAll() {
         final String query = "select * from users";
@@ -53,19 +65,38 @@ public class UsersService {
                     .executeUpdate();
         }
     }
-    public static void assignCategories(int editor_id, List<Integer> catesId ) {
-        final String deleteSql = "delete from editor_manage_categories where editor_id = :editor_id";
+    public static void assignCategories(int editor_id, int[] catesId ) {
+        List<Integer> newCateId = Arrays.stream(catesId).boxed().toList();
+        for (int cateId : catesId) {
+            String queryCheck = "Select * from editor_manage_categories where category_id= :cateId and editor_id= :editor_id";
+            try (Connection con = DbUtils.getConnection()) {
+                boolean check = con.createQuery(queryCheck)
+                        .addParameter("editor_id", editor_id)
+                        .addParameter("cateId", cateId)
+                        .executeAndFetchFirst(EditorManageCategories.class) != null;
+                if (check)
+                    newCateId.remove(cateId);
+            }
+        }
         String insertSql = "INSERT INTO editor_manage_categories (editor_id, category_id) VALUES (:editor_id, :category_id)";
         try (Connection con = DbUtils.getConnection()) {
-            con.createQuery(deleteSql)
-                    .addParameter("editor_id",editor_id)
-                    .executeUpdate();
-            for (int cateId: catesId) {
+            for (int cateId: newCateId) {
                 con.createQuery(insertSql)
                         .addParameter("editor_id", editor_id)
                         .addParameter("category_id", cateId)
                         .executeUpdate();
             }
+        }
+    }
+
+    public static void updateOTP(int id, String otp) {
+        final String query = "update users set otp= :otp, otp_exp= :otp_exp where id = :id";
+        try (Connection con = DbUtils.getConnection()) {
+            con.createQuery(query)
+                    .addParameter("id", id)
+                    .addParameter("otp", otp)
+                    .addParameter("otp_exp", LocalDateTime.now().plusMinutes(5))
+                    .executeUpdate();
         }
     }
 

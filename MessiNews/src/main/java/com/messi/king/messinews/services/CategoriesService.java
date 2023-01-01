@@ -18,16 +18,16 @@ public class CategoriesService {
         }
     }
     public static void addCate(String nameCate, int pcateId) {
-        String insertSql = "INSERT INTO categories (nameCate, parent_cate_id) VALUES (:nameCate, :parent_cate_id)";
+        String insertSql = "INSERT INTO categories (name_category, parent_cate_id) VALUES (:nameCate, :parent_cate_id)";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(insertSql)
                     .addParameter("nameCate", nameCate)
-                    .addParameter("pcateId", pcateId)
+                    .addParameter("parent_cate_id", pcateId)
                     .executeUpdate();
         }
     }
     public static void addPCate(String namePCate) {
-        String insertSql = "INSERT INTO categories (namePCate) VALUES (:namePCate)";
+        String insertSql = "INSERT INTO parent_categories (name_parent_cate) VALUES (:namePCate)";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(insertSql)
                     .addParameter("namePCate", namePCate)
@@ -64,7 +64,7 @@ public class CategoriesService {
         final String query = "update parent_categories set name_parent_cate= :name_parent_cate where id = :pcateId";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
-                    .addParameter("id", pcateId)
+                    .addParameter("pcateId", pcateId)
                     .addParameter("name_parent_cate", name_parent_cate)
                     .executeUpdate();
         }
@@ -83,7 +83,7 @@ public class CategoriesService {
         final String query = "update categories set name_category= :nameCate, parent_cate_id= :idPCate where id = :idCate";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
-                    .addParameter("id", idCate)
+                    .addParameter("idCate", idCate)
                     .addParameter("nameCate", nameCate)
                     .addParameter("idPCate", idPCate)
                     .executeUpdate();
@@ -93,7 +93,7 @@ public class CategoriesService {
         final String query = "delete from categories where id = :idCate";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
-                    .addParameter("id", idCate)
+                    .addParameter("idCate", idCate)
                     .executeUpdate();
         }
     }
@@ -102,7 +102,7 @@ public class CategoriesService {
         final String query = "delete from parent_categories where id = :idPCate";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
-                    .addParameter("id", idPCate)
+                    .addParameter("idPCate", idPCate)
                     .executeUpdate();
         }
     }

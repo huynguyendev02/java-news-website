@@ -81,7 +81,7 @@
                     <hr>
                     <input id="oldPassword" name="oldPassword" type="password" placeholder="Mật khẩu cũ"
                            class="w-100 pl-2  mt-1">
-                    <input id="newPassword" name="newPassword" type="password" placeholder="Mật khẩu mới"
+                    <input id="newPassword" name="rawpwd" type="password" placeholder="Mật khẩu mới"
                            class="w-100 pl-2  mt-3">
                     <input id="ConfirmNewPassword" name="ConfirmNewPassword" type="password"
                            placeholder="Xác nhận mật khẩu mới"

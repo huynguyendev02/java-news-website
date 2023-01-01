@@ -110,10 +110,10 @@
                             </div>
                             <div>
                                 <c:if test="${auth}">
-                                    <button type="button" class="btn btn-outline-info">
+                                    <a href="${pageContext.request.contextPath}/Home/Download?id=${article.id}" class="btn btn-outline-info">
                                         <i class="fa fa-download" aria-hidden="true"></i>
                                         Tải xuống
-                                    </button>
+                                    </a>
                                 </c:if>
                             </div>
                         </div>
