@@ -15,8 +15,8 @@ import javax.mail.internet.MimeMessage;
 
 public class SendMailUtils {
     private static String fromEmail = "20110103@student.hcmute.edu.vn";
-    private static String username = "b91a9e0f06c97b4ecf5b87e27fc1bc34";
-    private static String password = "406502b0c816267f21c3e8805fc45c5c";
+    private static String username = "";
+    private static String password = "";
 
     private static String getRandom() {
         return new DecimalFormat("000000").format(new Random().nextInt(999999));
