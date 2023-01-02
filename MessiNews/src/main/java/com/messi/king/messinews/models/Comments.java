@@ -1,5 +1,7 @@
 package com.messi.king.messinews.models;
 
+import com.messi.king.messinews.services.UsersService;
+
 import java.time.LocalDateTime;
 
 public class Comments {
@@ -59,5 +61,7 @@ public class Comments {
         this.date = date;
     }
 
-
+    public String getCommenterName(int id) {
+        return UsersService.findById(id).getFull_name();
+    }
 }

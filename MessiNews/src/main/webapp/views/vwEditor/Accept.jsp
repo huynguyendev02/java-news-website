@@ -72,10 +72,10 @@
                 document.getElementById('formAction').action = url
             }
 
-            function setArrTag(){
+            function setArrTag() {
                 let list = []
                 $('.ckBox').each(function (index, value) {
-                    if ($(this).is(':checked')){
+                    if ($(this).is(':checked')) {
                         list.push($(this).val())
                     }
                 });
@@ -87,7 +87,7 @@
                 timepicker: false,
                 mask: true
             });
-            let a=5;
+            let a = 5;
 
         </script>
     </jsp:attribute>
@@ -108,7 +108,7 @@
                     <div class="w-100 d-flex">
                         <table width="100%" cellpadding="15px">
                             <tr>
-                                <td style="width: 20%;" align="top" >Chuyên mục</td>
+                                <td style="width: 20%;" align="top">Chuyên mục</td>
                                 <td style="width: 40%">
                                     <div class="dropdown mt-3">
                                         <button class="btn btn-outline-secondary btStyle" type="button" id="btPCat"
@@ -123,23 +123,25 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td style="width: 40%"><c:forEach items="${allPCategories}" var="c">
-                                    <div id="divCat${c.id}" class="dropdown mt-3 ml-5 listCat"
-                                         style="display: none">
-                                        <button id="btChillCat${c.id}" class="btn btn-outline-secondary btStyle btCat" type="button"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Chuyên mục nhỏ
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <c:forEach items="${allCategories}" var="d">
-                                                <c:if test="${c.id == d.parent_cate_id}">
-                                                    <a class="dropdown-item"
-                                                       onclick="btCatClick('btChillCat${c.id}','${d.name_category}','${pageContext.request.contextPath}/Editor/Accept?id=${article.id}&idCat=${d.id}')">${d.name_category}</a>
-                                                </c:if>
-                                            </c:forEach>
+                                <td style="width: 40%">
+                                    <c:forEach items="${allPCategories}" var="c">
+                                        <div id="divCat${c.id}" class="dropdown mt-3 ml-5 listCat"
+                                             style="display: none">
+                                            <button id="btChillCat${c.id}"
+                                                    class="btn btn-outline-secondary btStyle btCat" type="button"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Chuyên mục nhỏ
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <c:forEach items="${allCategories}" var="d">
+                                                    <c:if test="${c.id == d.parent_cate_id}">
+                                                        <a class="dropdown-item"
+                                                           onclick="btCatClick('btChillCat${c.id}','${d.name_category}','${pageContext.request.contextPath}/Editor/Accept?id=${article.id}&idCat=${d.id}')">${d.name_category}</a>
+                                                    </c:if>
+                                                </c:forEach>
+                                            </div>
                                         </div>
-                                    </div>
-                                </c:forEach>
+                                    </c:forEach>
                                 </td>
                             </tr>
                             <tr>
@@ -151,7 +153,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Loại báo</td>
+                                <td style="vertical-align: top">Loại báo</td>
                                 <td>
                                     <input type="radio" id="normal" name="premium" value="0">
                                     <label for="normal">Thường</label><br>
@@ -160,12 +162,12 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Chọn nhãn</td>
+                                <td style="vertical-align: top"> Chọn nhãn</td>
                                 <td colspan="2">
                                     <input id="listTagId" name="listTagId" type="text" style="display: none">
                                     <c:forEach items="${tags}" var="c">
                                         <input class="ckBox" type="checkbox" id="checkBox${c.id}" value="${c.id}">
-                                        <label for="${c.id}">${c.name_tags} &ensp;</label>
+                                        <label for="checkBox${c.id}">${c.name_tags} &ensp;</label>
                                     </c:forEach>
                                 </td>
                             </tr>
@@ -174,7 +176,7 @@
                     <br>
                     <br>
                     <div align="end">
-                        <a href="${pageContext.request.contextPath}/Editor/List" class="btn btn-secondary mr-2">
+                        <a href="${pageContext.request.contextPath}/Editor/ListDraft" class="btn btn-secondary mr-2">
                             <i class="fa fa-times" aria-hidden="true"></i>
                             Hủy bỏ
                         </a>

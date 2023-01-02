@@ -6,9 +6,10 @@
 <jsp:useBean id="top5AllCateInWeek" scope="request" type="java.util.List<com.messi.king.messinews.models.Articles>"/>
 <jsp:useBean id="latestNewsAllCate" scope="request" type="java.util.List<com.messi.king.messinews.models.Articles>"/>
 <jsp:useBean id="newest10PerCate" scope="request" type="java.util.List<com.messi.king.messinews.models.Articles>"/>
-
 <jsp:useBean id="allCategories" scope="request" type="java.util.List<com.messi.king.messinews.models.Categories>"/>
 
+<jsp:useBean id="currentPage" scope="request" type="java.lang.Integer"/>
+<jsp:useBean id="maxPage" scope="request" type="java.lang.Integer"/>
 <m:main>
     <jsp:attribute name="css">
           <style>
@@ -98,18 +99,15 @@
 
                     <div style=" width: 68% ">
                         <div class="w-100 d-flex justify-content-between">
-
                             <!--                    Bài báo top 1 trong tuần-->
                             <div style=" width: 66%">
-                                <img src="${pageContext.request.contextPath}/photos/articles/${top5AllCateInWeek[0].id}/a.png"
-                                     alt="" class="w-100">
-                                <a href="${pageContext.request.contextPath}/Home/ByCat?id=${top5AllCateInWeek[0].id}"
+                                <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[0].id}">
+                                    <img src="${pageContext.request.contextPath}/photos/articles/${top5AllCateInWeek[0].id}/a.png"
+                                         alt="" class="w-100">
+                                </a>
+                                <a href="${pageContext.request.contextPath}/Home/ByCat?id=${top5AllCateInWeek[0].categories_id}"
                                    class="ATitle">
-                                    <c:forEach items="${allCategories}" var="c">
-                                        <c:if test="${c.id == top5AllCateInWeek[0].categories_id}">
-                                            <b>${c.name_category}</b>
-                                        </c:if>
-                                    </c:forEach>
+                                    <b>${top5AllCateInWeek[0].getCategoriesName(top5AllCateInWeek[0].categories_id)}</b>
                                 </a>
                                 <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[0].id}">
                                     <h4>
@@ -123,25 +121,24 @@
 
                             <!--                    Bài báo top 2 trong tuần-->
                             <div style=" width: 32%; background-image: linear-gradient(to bottom, #EEEEEE, #EEEEEE, transparent) ">
-                                <img src="${pageContext.request.contextPath}/photos/articles/${top5AllCateInWeek[1].id}/a.png"
-                                     alt="" class="w-100">
+                                <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[1].id}">
+                                    <img src="${pageContext.request.contextPath}/photos/articles/${top5AllCateInWeek[1].id}/a.png"
+                                         alt="" class="w-100">
+                                </a>
                                 <div class="p-2" style="">
-                                    <a href="${pageContext.request.contextPath}/Home/ByCat?id=${top5AllCateInWeek[1].id}"
+                                    <a href="${pageContext.request.contextPath}/Home/ByCat?id=${top5AllCateInWeek[1].categories_id}"
                                        class="ATitle">
-                                        <c:forEach items="${allCategories}" var="c">
-                                        <c:if test="${c.id == top5AllCateInWeek[1].categories_id}">
-                                        <b>${c.name_category}</b>
-                                        </c:if>
-                                        </c:forEach>
-                                        <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[1].id}">
-                                            <h6><b>
-                                                <c:if test="${top5AllCateInWeek[1].premium == 1}">
-                                                    <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
-                                                </c:if>
-                                                    ${top5AllCateInWeek[1].title}</b> <br> <br>
-                                                <p>${top5AllCateInWeek[1].abstract_content}</p>
-                                            </h6>
-                                        </a>
+                                        <b>${top5AllCateInWeek[1].getCategoriesName(top5AllCateInWeek[1].categories_id)}</b>
+                                    </a>
+                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[1].id}">
+                                        <h6><b>
+                                            <c:if test="${top5AllCateInWeek[1].premium == 1}">
+                                                <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                                            </c:if>
+                                                ${top5AllCateInWeek[1].title}</b> <br> <br>
+                                            <p>${top5AllCateInWeek[1].abstract_content}</p>
+                                        </h6>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -153,13 +150,9 @@
                                 <div style=" width: 32%">
                                     <img src="${pageContext.request.contextPath}/photos/articles/${top5AllCateInWeek[i].id}/a.png"
                                          alt="" class="w-100">
-                                    <a href="${pageContext.request.contextPath}/Home/ByCat?id=${top5AllCateInWeek[i].id}"
+                                    <a href="${pageContext.request.contextPath}/Home/ByCat?id=${top5AllCateInWeek[i].categories_id}"
                                        class="ATitle">
-                                        <c:forEach items="${allCategories}" var="c">
-                                            <c:if test="${c.id == top5AllCateInWeek[i].categories_id}">
-                                                <b>${c.name_category}</b>
-                                            </c:if>
-                                        </c:forEach>
+                                        <b>${top5AllCateInWeek[i].getCategoriesName(top5AllCateInWeek[i].categories_id)}</b>
                                     </a> <br>
                                     <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[i].id}">
                                         <c:if test="${top5AllCateInWeek[i].premium == 1}">
@@ -174,47 +167,95 @@
                         <hr>
 
                         <!--                Chục hình bên dưới cùng-->
-                        <h5>Một số thông tin liên quan</h5>
+                        <h5>Một số thông tin khác</h5>
                         <c:forEach items="${latestNewsAllCate}" var="c">
                             <div class=" mb-3 w-100 d-flex justify-content-between">
                                 <div style="width: 30%">
-                                    <img style="width: 100%"
-                                         src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
-                                         alt="">
+                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}">
+                                        <img style="width: 100%"
+                                             src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
+                                             alt="">
+                                    </a>
                                 </div>
                                 <div style="width: 69%" class="pl-2 d-flex flex-column justify-content-between">
                                     <div>
-                                        <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
-                                           style="font-weight: bold">
+                                        <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}">
                                             <c:if test="${c.premium == 1}">
                                                 <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                             </c:if>
-                                                ${c.title} <br>
+                                            <b>${c.title}</b><br>
                                                 ${c.abstract_content}
                                         </a>
                                     </div>
                                     <div class="d-flex w-100 justify-content-between">
                                         <div>
-                                            <a href="" class="mr-3">
-                                                <img src="https://i.pinimg.com/originals/08/65/f1/0865f1362bb63020b5a5aa5a9994ee5a.jpg"
-                                                     alt="" style="width: 30px; height: 30px; border-radius: 30px">
-                                                Anh 7 cute
-                                            </a>
+                                            <img src="${pageContext.request.contextPath}/photos/userAvatar/${c.writer_id}/avatar.png"
+                                                 alt="" style="width: 30px; height: 30px; border-radius: 30px">
+                                                ${c.getWriterName(c.writer_id)}
                                         </div>
                                         <div class="pr-4">
                                             <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
                                                class="ATitle">
-                                                <c:forEach items="${allCategories}" var="d">
-                                                    <c:if test="${d.id == c.categories_id}">
-                                                        <b>${d.name_category}</b>
-                                                    </c:if>
-                                                </c:forEach>
+                                                <b>${c.getCategoriesName(c.categories_id)}</b>
                                             </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </c:forEach>
+
+                            <%--                        Phân trang--%>
+                            <%--                        <c:set var="page" value="<%= request.getAttribute("page") %>"/>--%>
+                            <%--                        <c:set var="maxPage" value="<%= request.getAttribute("maxPage") %>"/>--%>
+                        <div class="mt-5 mb-3 w-100 d-flex justify-content-center">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item">
+                                        <a class="page-link" href="${pageContext.request.contextPath}/Home?page=1">
+                                            <i class="fa fa-fast-backward" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <c:if test="${currentPage==1}">
+                                            <a class="page-link" href="${pageContext.request.contextPath}/Home?page=1">
+                                                <i class="fa fa-step-backward" aria-hidden="true"></i>
+                                            </a>
+                                        </c:if>
+                                        <c:if test="${currentPage>1}">
+                                            <a class="page-link"
+                                               href="${pageContext.request.contextPath}/Home?page=${currentPage-1}">
+                                                <i class="fa fa-step-backward" aria-hidden="true"></i>
+                                            </a>
+                                        </c:if>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="${pageContext.request.contextPath}/Home?page=2">
+                                                ${currentPage}
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <c:if test="${currentPage==maxPage}">
+                                            <a class="page-link"
+                                               href="${pageContext.request.contextPath}/Home?page=${maxPage}">
+                                                <i class="fa fa-step-forward" aria-hidden="true"></i>
+                                            </a>
+                                        </c:if>
+                                        <c:if test="${currentPage<maxPage}">
+                                            <a class="page-link"
+                                               href="${pageContext.request.contextPath}/Home?page=${currentPage+1}">
+                                                <i class="fa fa-step-forward" aria-hidden="true"></i>
+                                            </a>
+                                        </c:if>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="${pageContext.request.contextPath}/Home?page=${maxPage}">
+                                            <i class="fa fa-fast-forward" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
 
                     <!--            10 bài có lượt xem cao nhất theo mỗi danh mục-->
@@ -226,12 +267,7 @@
                                     <div style="width: 59%">
                                         <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
                                            class="ATitle">
-
-                                            <c:forEach items="${allCategories}" var="d">
-                                                <c:if test="${d.id == c.categories_id}">
-                                                    <b>${d.name_category}</b>
-                                                </c:if>
-                                            </c:forEach>
+                                            <b>${c.getCategoriesName(c.categories_id)}</b>
                                         </a> <br>
                                         <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
                                            style="line-height: 0">

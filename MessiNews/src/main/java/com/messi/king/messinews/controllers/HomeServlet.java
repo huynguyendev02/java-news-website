@@ -22,21 +22,26 @@ public class HomeServlet extends HttpServlet {
         }
         switch (url) {
             case "/":
+                List<Articles> top10AllCate = ArticlesService.top10AllCate();
+                List<Articles> top5AllCateInWeek = ArticlesService.top5AllCateInWeek();
+                List<Articles> latestNewsAllCate = ArticlesService.latestNewsAllCate();
+                List<Articles> newest10PerCate = ArticlesService.newest10PerCate();
 
-                List <Articles> top10AllCate = ArticlesService.top10AllCate();
-                List <Articles> top5AllCateInWeek = ArticlesService.top5AllCateInWeek();
-                List <Articles> latestNewsAllCate = ArticlesService.latestNewsAllCate();
-                List <Articles> newest10PerCate = ArticlesService.newest10PerCate();
-
-                request.setAttribute("top10AllCate",  top10AllCate);
+                request.setAttribute("top10AllCate", top10AllCate);
                 request.setAttribute("top5AllCateInWeek", top5AllCateInWeek);
                 request.setAttribute("latestNewsAllCate", latestNewsAllCate);
-                request.setAttribute("newest10PerCate",newest10PerCate);
+                request.setAttribute("newest10PerCate", newest10PerCate);
 
-                ServletUtils.forward("/views/vwGeneral/General.jsp",request,response);
+//                Trang đang hiển thị
+                Integer currentPage = 4;
+//                Số trang tối đa
+                Integer maxPage = 15;
+                request.setAttribute("currentPage", currentPage);
+                request.setAttribute("maxPage", maxPage);
+                ServletUtils.forward("/views/vwGeneral/General.jsp", request, response);
                 break;
             case "/Details":
-                int id=0;
+                int id = 0;
                 try {
                     id = Integer.parseInt(request.getParameter("id"));
                 } catch (NumberFormatException e) {
@@ -44,15 +49,18 @@ public class HomeServlet extends HttpServlet {
                 }
 
                 Articles art = ArticlesService.findById(id);
-                if (art!=null) {
+                if (art != null) {
 
                     ArticlesService.viewArticle(id);
 
-                    request.setAttribute("article",art);
+                    request.setAttribute("article", art);
                     request.setAttribute("related", ArticlesService.newsRelated(id));
                     request.setAttribute("comments", CommentService.findByArtId(id));
 
-                    ServletUtils.forward("/views/vwGeneral/Details.jsp",request,response);
+//                    Viết tạm để chạy web -> sửa thành tìm list theo ID
+                    request.setAttribute("tags", TagsService.findAll());
+
+                    ServletUtils.forward("/views/vwGeneral/Details.jsp", request, response);
                 } else {
                     ServletUtils.redirect("/views/204.jsp", request, response);
                 }
@@ -69,12 +77,13 @@ public class HomeServlet extends HttpServlet {
                 getArticlesAndForward(3, request, response);
                 break;
             case "/Download":
-                download(request,response);
+                download(request, response);
                 break;
             default:
-                ServletUtils.forward("/views/404.jsp",request,response);
+                ServletUtils.forward("/views/404.jsp", request, response);
                 break;
         }
+
     }
 
     private void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -85,15 +94,15 @@ public class HomeServlet extends HttpServlet {
         }
 
         response.setContentType("application/pdf");
-        response.setHeader("Content-disposition","attachment; filename="+id+".pdf");
+        response.setHeader("Content-disposition", "attachment; filename=" + id + ".pdf");
 
-        File filePDF = new File(request.getServletContext().getRealPath("/pdfs/articles/"+id+".pdf"));
+        File filePDF = new File(request.getServletContext().getRealPath("/pdfs/articles/" + id + ".pdf"));
 
         OutputStream out = response.getOutputStream();
         FileInputStream in = new FileInputStream(filePDF);
         byte[] buffer = new byte[4096];
         int length;
-        while ((length = in.read(buffer)) > 0){
+        while ((length = in.read(buffer)) > 0) {
             out.write(buffer, 0, length);
         }
         in.close();
@@ -107,17 +116,17 @@ public class HomeServlet extends HttpServlet {
         } catch (NumberFormatException e) {
         }
         List<Articles> arts = null;
-        String title="";
+        String title = "";
         List<Categories> cate = null;
-        switch (service){
+        switch (service) {
             case 1:
                 ParentCategories pcate = CategoriesService.findPCatById(id);
-                if (pcate!= null) {
+                if (pcate != null) {
                     title = pcate.getName_parent_cate();
                     cate = CategoriesService.findAllByParentId(id);
                     arts = ArticlesService.findByPCatId(id);
                 } else
-                    ServletUtils.forward("/views/204.jsp",request,response);
+                    ServletUtils.forward("/views/204.jsp", request, response);
 
                 break;
             case 2:
@@ -131,9 +140,18 @@ public class HomeServlet extends HttpServlet {
                 arts = ArticlesService.findByTagId(id);
                 break;
         }
+
         request.setAttribute("titleTopic", title);
         request.setAttribute("cateRelated", cate);
-        request.setAttribute("articles",arts);
+        request.setAttribute("articles", arts);
+
+//                Trang đang hiển thị
+        Integer currentPage = 4;
+//                Số trang tối đa
+        Integer maxPage = 15;
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("maxPage", maxPage);
+
         ServletUtils.forward("/views/vwGeneral/Topic.jsp", request, response);
     }
 
@@ -149,51 +167,66 @@ public class HomeServlet extends HttpServlet {
                 editComment(request, response);
                 break;
             case "/Details/Comment/Delete":
-                deleteComment(request,response);
+                deleteComment(request, response);
+                break;
+            case "/Search":
+                List<Articles> articleList = ArticlesService.newest10PerCate();
+                request.setAttribute("articleList", articleList);
+
+//                key lấy về
+                String key = request.getParameter("key");
+//                Trang đang hiển thị
+                Integer currentPage = 4;
+//                Số trang tối đa
+                Integer maxPage = 15;
+                request.setAttribute("currentPage", currentPage);
+                request.setAttribute("maxPage", maxPage);
+                ServletUtils.forward("/views/vwGeneral/Search.jsp", request, response);
                 break;
             default:
-                ServletUtils.forward("/views/204.jsp",request,response);
+                ServletUtils.forward("/views/204.jsp", request, response);
                 break;
         }
     }
 
     private static void editComment(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int commentId=0;
+        int commentId = 0;
         try {
             commentId = Integer.parseInt(request.getParameter("commentId"));
         } catch (NumberFormatException e) {
         }
         Comments comment = CommentService.findById(commentId);
-        if (comment!=null){
+        if (comment != null) {
             String content = request.getParameter("comment");
             CommentService.updateComment(commentId, content);
 
-            ServletUtils.redirect(request.getServletPath(),request,response);
+            ServletUtils.redirect(request.getServletPath(), request, response);
 
         } else {
             ServletUtils.redirect("/views/204.jsp", request, response);
         }
     }
+
     private static void deleteComment(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        int commentId=0;
+        int commentId = 0;
         try {
             commentId = Integer.parseInt(request.getParameter("commentId"));
         } catch (NumberFormatException e) {
         }
         Comments comment = CommentService.findById(commentId);
-        if (comment!=null){
+        if (comment != null) {
 
             CommentService.delete(commentId);
-            ServletUtils.redirect(request.getServletPath(),request,response);
+            ServletUtils.redirect(request.getServletPath(), request, response);
 
         } else {
             ServletUtils.redirect("/views/204.jsp", request, response);
         }
     }
 
-    private static void addComment(HttpServletRequest request,HttpServletResponse response ) throws IOException {
-        int artId=0;
+    private static void addComment(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int artId = 0;
         try {
             artId = Integer.parseInt(request.getParameter("artId"));
         } catch (NumberFormatException e) {
@@ -201,13 +234,12 @@ public class HomeServlet extends HttpServlet {
         }
 
         Articles art = ArticlesService.findById(artId);
-        if (art!=null) {
+        if (art != null) {
             String comment = request.getParameter("commentAdd");
-            System.out.println(comment);
             Users user = (Users) request.getSession().getAttribute("authUser");
-            CommentService.add(user.getId(), artId,comment );
+            CommentService.add(user.getId(), artId, comment);
 
-            ServletUtils.redirect(request.getServletPath(),request,response);
+            ServletUtils.redirect(request.getServletPath(), request, response);
         }
     }
 }

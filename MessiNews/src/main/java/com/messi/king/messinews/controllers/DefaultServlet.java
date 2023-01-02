@@ -13,11 +13,9 @@ public class DefaultServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String url = request.getServletPath();
-        System.out.print(url);
         if (url == null || url.equals("/")) {
             url = "/";
         }
-        System.out.print(url);
         switch (url) {
             case "/":
                 ServletUtils.redirect("/Home",request,response);

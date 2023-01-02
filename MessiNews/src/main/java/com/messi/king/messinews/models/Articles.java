@@ -125,4 +125,6 @@ public class Articles {
     public String getWriterName(int id) {
         return UsersService.findById(id).getFull_name();
     }
+    public String getCategoriesName(int id) {return CategoriesService.findById(id).getName_category();}
+
 }

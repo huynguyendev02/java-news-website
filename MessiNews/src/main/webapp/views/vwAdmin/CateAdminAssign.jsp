@@ -74,7 +74,7 @@
                             <c:forEach items="${allCategories}" var="d">
                                 <c:if test="${c.id == d.parent_cate_id}">
                                     <input class="ckBox" onclick="chooseCheckBox('checkBox${d.id}')" type="checkbox" id="checkBox${d.id}" name="fav_language" value="${d.id}">
-                                    <label for="${d.id}">${d.name_category}</label><br>
+                                    <label for="checkBox${d.id}">${d.name_category}</label><br>
                                 </c:if>
                             </c:forEach>
                         </div>
@@ -82,7 +82,7 @@
 
                     <hr>
                     <div id="save" align="end">
-                        <a href="${pageContext.request.contextPath}/Admin/Categories/ListCate"
+                        <a href="${pageContext.request.contextPath}/Admin/Users/ListEditor"
                            class="btn btn-secondary mr-2">
                             <i class="fa fa-times" aria-hidden="true"></i>
                             Hủy bỏ

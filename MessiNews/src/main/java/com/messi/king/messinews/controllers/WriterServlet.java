@@ -1,8 +1,10 @@
 package com.messi.king.messinews.controllers;
 
 import com.messi.king.messinews.models.Articles;
+import com.messi.king.messinews.models.Tags;
 import com.messi.king.messinews.models.Users;
 import com.messi.king.messinews.services.ArticlesService;
+import com.messi.king.messinews.services.TagsService;
 import com.messi.king.messinews.utils.ServletUtils;
 
 import javax.servlet.*;
@@ -34,6 +36,8 @@ public class WriterServlet extends HttpServlet {
                 ServletUtils.forward("/views/vwWriter/List.jsp",request,response);
                 break;
             case "/Upload":
+                List<Tags> tagsList = TagsService.findAll();
+                request.setAttribute("tags", tagsList);
                 ServletUtils.forward("/views/vwWriter/Upload.jsp",request,response);
                 break;
             case "/Edit":
@@ -73,19 +77,22 @@ public class WriterServlet extends HttpServlet {
     }
 
     private void upload(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         request.setCharacterEncoding("UTF-8");
 
         String title = request.getParameter("title");
         String abstractContent = request.getParameter("abstract");
         String content = request.getParameter("content");
 
+//        Mới bổ sung ListTagsID với CateID
+        String listTagsID = request.getParameter("listTagId");
 
 
-        int cateId = 2;
-//        try {
-//            cateId = Integer.parseInt(request.getParameter("cateId"));
-//        } catch (NumberFormatException e) {
-//        }
+        int cateId = 0;
+        try {
+            cateId = Integer.parseInt(request.getParameter("cateId"));
+        } catch (NumberFormatException e) {
+        }
 
         int artId = ArticlesService.add(new Articles(0,title,null,0,abstractContent,content,cateId,0,((Users)request.getSession().getAttribute("authUser")).getId(),-1, null));
 

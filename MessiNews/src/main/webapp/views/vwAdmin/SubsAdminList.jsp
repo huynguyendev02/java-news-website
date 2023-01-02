@@ -5,6 +5,17 @@
 <jsp:useBean id="subs" scope="request" type="java.util.List<com.messi.king.messinews.models.Users>"/>
 
 <m:main>
+    <jsp:attribute name="css">
+        <style>
+            .btExtendExp{
+                border-style: none;
+                background-color: transparent;
+            }
+            .btExtendExp:hover{
+                color: cornflowerblue;
+            }
+        </style>
+    </jsp:attribute>
     <jsp:body>
         <form action="" method="post">
             <div class="d-flex justify-content-center bgColorGray">
@@ -42,16 +53,20 @@
                                                 ${c.username}
                                         </a>
                                     </td>
-                                    <td align="center">${c.issue_at}</td>
+                                    <td align="center">
+                                        <script>
+                                            document.write('${c.issue_at}'.slice(8, 10) + '/' + '${c.issue_at}'.slice(5, 7) + '/' + '${c.issue_at}'.slice(0, 4))
+                                        </script>
+                                    </td>
                                     <td align="center">${c.email}</td>
                                     <td align="center">
-                                        <a href="${pageContext.request.contextPath}/Admin/Users/Profile?id=${c.id}">
+                                        <button type="submit" class="btExtendExp" formaction="${pageContext.request.contextPath}/Admin/Users/ExtendExp?id=${c.id}">
                                                 ${c.expiration}
-                                        </a>
+                                        </button>
                                     </td>
                                     <td align="center">
                                         <button type="submit"
-                                                formaction="${pageContext.request.contextPath}/Admin/User/Delete?id=${c.id}"
+                                                formaction="${pageContext.request.contextPath}/Admin/Users/Delete?id=${c.id}"
                                                 class="btn btn-danger">Xóa
                                         </button>
                                     </td>

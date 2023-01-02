@@ -32,20 +32,20 @@ public class AdminUsersServlet extends HttpServlet {
                 } catch (NumberFormatException e) {
                 }
                 Users user = UsersService.findById(id);
-                request.setAttribute("user",user);
-                ServletUtils.forward("/views/vwAdmin/ProfileAdmin.jsp",request,response);
-
+                request.setAttribute("user", user);
+                ServletUtils.forward("/views/vwAdmin/ProfileAdmin.jsp", request, response);
+                break;
             case "/ListSub":
                 request.setAttribute("subs", UsersService.findAllByRole(1));
-                ServletUtils.forward("/views/vwAdmin/SubsAdminList.jsp",request,response);
+                ServletUtils.forward("/views/vwAdmin/SubsAdminList.jsp", request, response);
                 break;
             case "/ListWriter":
                 request.setAttribute("writers", UsersService.findAllByRole(2));
-                ServletUtils.forward("/views/vwAdmin/WritersAdminList.jsp",request,response);
+                ServletUtils.forward("/views/vwAdmin/WritersAdminList.jsp", request, response);
                 break;
             case "/ListEditor":
                 request.setAttribute("editors", UsersService.findAllByRole(3));
-                ServletUtils.forward("/views/vwAdmin/EditorsAdminList.jsp",request,response);
+                ServletUtils.forward("/views/vwAdmin/EditorsAdminList.jsp", request, response);
                 break;
             case "/AssignCategory":
                 int editorId = 0;
@@ -54,19 +54,19 @@ public class AdminUsersServlet extends HttpServlet {
                 } catch (NumberFormatException e) {
                 }
                 Users editor = UsersService.findById(editorId);
-                if (editor!=null) {
+                if (editor != null) {
                     request.setAttribute("editor", editor);
                     request.setAttribute("cates", CategoriesService.findAllByEditorId(editor.getId()));
-                    ServletUtils.forward("/views/vwAdmin/CateAdminAssign.jsp",request,response);
-                }else  {
-                    ServletUtils.forward("/views/204.jsp",request,response);
+                    ServletUtils.forward("/views/vwAdmin/CateAdminAssign.jsp", request, response);
+                } else {
+                    ServletUtils.forward("/views/204.jsp", request, response);
                 }
                 break;
             case "/Add":
                 ServletUtils.forward("/views/vwAdmin/UserAdminAdd.jsp", request, response);
                 break;
             default:
-                ServletUtils.forward("/views/404.jsp",request,response);
+                ServletUtils.forward("/views/404.jsp", request, response);
                 break;
         }
     }
@@ -77,18 +77,21 @@ public class AdminUsersServlet extends HttpServlet {
         String url = request.getPathInfo();
         switch (url) {
             case "/Profile":
-                adminUpdateUser(request,response);
+                adminUpdateUser(request, response);
             case "/AssignCategory":
                 assignCategories(request, response);
                 break;
             case "/Add":
-                adminAddUser(request,response);
+                adminAddUser(request, response);
                 break;
             case "/Delete":
-                adminDeleteUser(request,response);
-
+                adminDeleteUser(request, response);
+                break;
+            case "/ExtendExp":
+                adminExtendExpUser(request, response);
+                break;
             default:
-                ServletUtils.forward("/views/404.jsp",request,response);
+                ServletUtils.forward("/views/404.jsp", request, response);
                 break;
         }
     }
@@ -100,19 +103,19 @@ public class AdminUsersServlet extends HttpServlet {
         } catch (NumberFormatException e) {
         }
         Users editor = UsersService.findById(editorId);
-        if (editor!=null) {
+        if (editor != null) {
 
-            String[] catesIdStr =  request.getParameter("catesId")
+            String[] catesIdStr = request.getParameter("catesId")
                     .split(",");
             int[] catesId = Arrays
                     .stream(catesIdStr)
                     .mapToInt(Integer::parseInt)
                     .toArray();
 
-            UsersService.assignCategories(editorId,catesId);
+            UsersService.assignCategories(editorId, catesId);
 
-            ServletUtils.redirect("/Admin/Users/Profile?id="+editorId, request, response);
-        }else  {
+            ServletUtils.redirect("/Admin/Users/Profile?id=" + editorId, request, response);
+        } else {
             ServletUtils.forward("/views/204.jsp", request, response);
         }
     }
@@ -126,16 +129,16 @@ public class AdminUsersServlet extends HttpServlet {
         } catch (NumberFormatException e) {
         }
         Users user = UsersService.findById(id);
-        if (user!=null) {
+        if (user != null) {
             String fullName = request.getParameter("newFullName");
             String email = request.getParameter("newEmail");
             int role = user.getRole();
             try {
                 role = Integer.parseInt(request.getParameter("role"));
-            }catch (NumberFormatException e) {}
+            } catch (NumberFormatException e) {
+            }
             LocalDateTime dob = user.getDob();
-            if (!request.getParameter("newDob").equals("__/__/____"))
-            {
+            if (!request.getParameter("newDob").equals("__/__/____")) {
                 String strDob = request.getParameter("newDob") + " 00:00";
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
                 dob = LocalDateTime.parse(strDob, df);
@@ -150,12 +153,23 @@ public class AdminUsersServlet extends HttpServlet {
             id = Integer.parseInt(request.getParameter("id"));
         } catch (NumberFormatException e) {
         }
-        Users user  = UsersService.findById(id);
-        if (user!=null) {
+        Users user = UsersService.findById(id);
+        if (user != null) {
             UsersService.delete(user);
-
-        } else  {
-            ServletUtils.forward("/views/204.jsp",request,response);
+            int role = user.getRole();
+            switch (role) {
+                case 1:
+                    ServletUtils.redirect("/Admin/Users/ListSub", request, response);
+                    break;
+                case 2:
+                    ServletUtils.redirect("/Admin/Users/ListWriter", request, response);
+                    break;
+                case 3:
+                    ServletUtils.redirect("/Admin/Users/ListEditor", request, response);
+                    break;
+            }
+        } else {
+            ServletUtils.forward("/views/204.jsp", request, response);
         }
 
     }
@@ -174,17 +188,17 @@ public class AdminUsersServlet extends HttpServlet {
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
 
-        int role =0;
+        int role = 0;
         try {
             role = Integer.parseInt(request.getParameter("role"));
-        }catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
         }
 
         Users c = new Users();
-        if (role==1) {
-            c = new Users(0, username,bcryptHashString, fullName, LocalDateTime.now(), 7*24*60,1,dob, email, null,null );
+        if (role == 1) {
+            c = new Users(0, username, bcryptHashString, fullName, LocalDateTime.now(), 7 * 24 * 60, 1, dob, email, null, null);
         } else {
-            c = new Users(0, username,bcryptHashString, fullName, LocalDateTime.now(), 0,role,dob, email, null,null );
+            c = new Users(0, username, bcryptHashString, fullName, LocalDateTime.now(), 0, role, dob, email, null, null);
         }
         UsersService.add(c);
         switch (role) {
@@ -197,6 +211,23 @@ public class AdminUsersServlet extends HttpServlet {
             case 3:
                 ServletUtils.redirect("/Admin/Users/ListEditor", request, response);
                 break;
+        }
+    }
+
+    private void adminExtendExpUser(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        int id = 0;
+        try {
+            id = Integer.parseInt(request.getParameter("id"));
+        } catch (NumberFormatException e) {
+        }
+        Users user = UsersService.findById(id);
+        if (user != null) {
+
+//            Xử lý gia hạn 7 ngày cho em User này
+
+            ServletUtils.redirect("/Admin/Users/ListSub", request, response);
+        } else {
+            ServletUtils.forward("/views/204.jsp", request, response);
         }
     }
 }

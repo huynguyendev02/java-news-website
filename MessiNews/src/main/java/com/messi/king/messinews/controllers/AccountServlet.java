@@ -101,7 +101,6 @@ public class AccountServlet extends HttpServlet {
                 }
                 break;
             case "/OTP":
-
                 checkOTP(request,response);
                 break;
             case "/ChangeAvatar":

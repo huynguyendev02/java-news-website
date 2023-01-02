@@ -30,7 +30,7 @@
                         <br>
                         <br>
                         <div align="end">
-                            <a href="${pageContext.request.contextPath}/Editor/List" class="btn btn-secondary mr-2">
+                            <a href="${pageContext.request.contextPath}/Editor/ListDraft" class="btn btn-secondary mr-2">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                                 Hủy bỏ
                             </a>

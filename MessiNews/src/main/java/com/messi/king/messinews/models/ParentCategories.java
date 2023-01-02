@@ -1,5 +1,7 @@
 package com.messi.king.messinews.models;
 
+import com.messi.king.messinews.services.CategoriesService;
+
 public class ParentCategories {
     private int id;
     private String name_parent_cate;
@@ -26,5 +28,7 @@ public class ParentCategories {
 
     public void setName_parent_cate(String name_parent_cate) {
         this.name_parent_cate = name_parent_cate;
+    }
+    public String getParentCategoriesName(int id) {return CategoriesService.findPCatById(id).getName_parent_cate();
     }
 }

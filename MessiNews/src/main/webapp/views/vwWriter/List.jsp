@@ -33,7 +33,7 @@
           </style>
     </jsp:attribute>
     <jsp:body>
-        <form action="" method="post">
+        <form action="" method="post" class="h-100">
             <div class="d-flex justify-content-center bgColorGray">
                 <!--    left-->
                 <div class="bgColorGray" style="width: 15%">
@@ -41,7 +41,7 @@
                 </div>
 
                 <!--    center-->
-                <div style="width: 70%; background-color: white" class="mt-3 p-3">
+                <div style="width: 70%; background-color: white" class="my-3 p-3">
                     <h4>Những bài viết của bạn</h4>
                     <hr>
                     <br>
@@ -58,7 +58,9 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${c.status != 1}">
-                                            <a href="">${c.title}</a>
+                                            <a href="${pageContext.request.contextPath}/Writer/Edit?id=${c.id}">
+                                                    ${c.title}
+                                            </a>
                                         </c:when>
                                         <c:otherwise>
                                             ${c.title}
@@ -80,7 +82,11 @@
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
-                                <td align="center"> ${c.publish_date}</td>
+                                <td align="center">
+                                    <script>
+                                        document.write('${c.publish_date}'.slice(8, 10) + '/' + '${c.publish_date}'.slice(5, 7) + '/' + '${c.publish_date}'.slice(0, 4))
+                                    </script>
+                                </td>
                                 <td align="center"> ${c.views}</td>
                                 <td align="center">
                                     <button type="button" formaction="" class="btn btn-danger">Xóa</button>

@@ -13,6 +13,7 @@
     <style>
         body{
             scroll-behavior: auto;
+
         }
         div {
             border-radius: 10px;

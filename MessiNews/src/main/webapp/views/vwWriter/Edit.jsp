@@ -47,7 +47,7 @@
                 </div>
 
                 <!--    center-->
-                <div style="width: 70%; background-color: white" class="mt-3 p-3">
+                <div style="width: 70%; background-color: white" class="my-3 p-3">
                     <div class="card">
                         <h4 class="card-header">
                             Chỉnh sửa bài báo

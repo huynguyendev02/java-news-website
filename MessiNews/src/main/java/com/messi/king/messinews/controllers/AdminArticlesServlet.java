@@ -19,10 +19,15 @@ public class AdminArticlesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String url = request.getPathInfo();
         switch (url) {
-            case "/List":
-                List<Articles> arts = EditorService.findAll();
-                request.setAttribute("articles",arts);
-                ServletUtils.forward("/views/vwEditor/List.jsp",request,response);
+            case "/ListDraft":
+                List<Articles> artsDraft = EditorService.findAll();
+                request.setAttribute("articlesList", artsDraft);
+                ServletUtils.forward("/views/vwAdmin/ArticleDraftAdminList.jsp", request, response);
+                break;
+            case "/ListComplete":
+                List<Articles> artsComplete = EditorService.findAll();
+                request.setAttribute("articlesList", artsComplete);
+                ServletUtils.forward("/views/vwAdmin/ArticleCompleteAdminList.jsp", request, response);
                 break;
             case "/Accept":
                 int id = Integer.parseInt(request.getParameter("id"));
