@@ -1,12 +1,7 @@
 package com.messi.king.messinews.controllers;
 
-import com.messi.king.messinews.models.Articles;
-import com.messi.king.messinews.models.Tags;
-import com.messi.king.messinews.models.Users;
-import com.messi.king.messinews.services.ArticlesService;
-import com.messi.king.messinews.services.CommentService;
-import com.messi.king.messinews.services.EditorService;
-import com.messi.king.messinews.services.TagsService;
+import com.messi.king.messinews.models.*;
+import com.messi.king.messinews.services.*;
 import com.messi.king.messinews.utils.PdfUtils;
 import com.messi.king.messinews.utils.ServletUtils;
 
@@ -16,6 +11,7 @@ import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,6 +39,18 @@ public class EditorServlet extends HttpServlet {
                 int id = Integer.parseInt(request.getParameter("id"));
                 List<Tags> tags = TagsService.findAll();
                 Articles article = ArticlesService.findById(id);
+
+//                Truyền list CCat mà Editor được quyền
+                List<Categories> CatList = new ArrayList<>();
+                CatList.add(new Categories(100, "Oh yeah" ,1));
+                CatList.add(new Categories(102, "Oh yeah2" ,1));
+                CatList.add(new Categories(103, "Oh yeah3" ,1));
+                CatList.add(new Categories(104, "Oh yeah4" ,5));
+                CatList.add(new Categories(105, "Oh yeah5" ,5));
+                CatList.add(new Categories(106, "Oh yeah6" ,5));
+                CatList.add(new Categories(107, "Oh yeah7" ,6));
+
+                request.setAttribute("Categories", CatList);
                 request.setAttribute("article", article);
                 request.setAttribute("tags", tags);
                 ServletUtils.forward("/views/vwEditor/Accept.jsp", request, response);

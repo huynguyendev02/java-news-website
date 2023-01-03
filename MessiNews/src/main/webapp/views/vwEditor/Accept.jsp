@@ -5,7 +5,7 @@
 <jsp:useBean id="article" scope="request" type="com.messi.king.messinews.models.Articles"/>
 <jsp:useBean id="allPCategories" scope="request"
              type="java.util.List<com.messi.king.messinews.models.ParentCategories>"/>
-<jsp:useBean id="allCategories" scope="request" type="java.util.List<com.messi.king.messinews.models.Categories>"/>
+<jsp:useBean id="Categories" scope="request" type="java.util.List<com.messi.king.messinews.models.Categories>"/>
 <jsp:useBean id="tags" scope="request" type="java.util.List<com.messi.king.messinews.models.Tags>"/>
 
 <m:main>
@@ -108,8 +108,8 @@
                     <div class="w-100 d-flex">
                         <table width="100%" cellpadding="15px">
                             <tr>
-                                <td style="width: 20%;" align="top">Chuyên mục</td>
-                                <td style="width: 40%">
+                                <td style="width: 30%;" align="top">Chuyên mục</td>
+                                <td style="width: 35%">
                                     <div class="dropdown mt-3">
                                         <button class="btn btn-outline-secondary btStyle" type="button" id="btPCat"
                                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -123,23 +123,39 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td style="width: 40%">
+                                <td style="width: 35%">
                                     <c:forEach items="${allPCategories}" var="c">
                                         <div id="divCat${c.id}" class="dropdown mt-3 ml-5 listCat"
                                              style="display: none">
-                                            <button id="btChillCat${c.id}"
-                                                    class="btn btn-outline-secondary btStyle btCat" type="button"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Chuyên mục nhỏ
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <c:forEach items="${allCategories}" var="d">
-                                                    <c:if test="${c.id == d.parent_cate_id}">
-                                                        <a class="dropdown-item"
-                                                           onclick="btCatClick('btChillCat${c.id}','${d.name_category}','${pageContext.request.contextPath}/Editor/Accept?id=${article.id}&idCat=${d.id}')">${d.name_category}</a>
-                                                    </c:if>
-                                                </c:forEach>
-                                            </div>
+                                            <c:set var="check" value="0"/>
+                                            <c:forEach items="${Categories}" var="d">
+                                                <c:if test="${c.id == d.parent_cate_id}">
+                                                    <c:set var="check" value="1"/>
+                                                </c:if>
+                                            </c:forEach>
+
+                                            <c:choose>
+                                                <c:when test="${check == 0}">
+                                                    Chuyên mục này không thuộc quyền quan lý của bạn
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <button id="btChillCat${c.id}"
+                                                            class="btn btn-outline-secondary btStyle btCat"
+                                                            type="button"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                        Chuyên mục nhỏ
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <c:forEach items="${Categories}" var="d">
+                                                            <c:if test="${c.id == d.parent_cate_id}">
+                                                                <a class="dropdown-item"
+                                                                   onclick="btCatClick('btChillCat${c.id}','${d.name_category}','${pageContext.request.contextPath}/Editor/Accept?id=${article.id}&idCat=${d.id}')">${d.name_category}</a>
+                                                            </c:if>
+                                                        </c:forEach>
+                                                    </div>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
                                     </c:forEach>
                                 </td>

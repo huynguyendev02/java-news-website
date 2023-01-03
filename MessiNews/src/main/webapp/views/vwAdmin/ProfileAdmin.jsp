@@ -189,10 +189,10 @@
                                                 </c:when>
                                             </c:choose>
                                         </button>
-                                        <input name="role" type="text" value="${user.role}" style="display: none">
+                                        <input id="role" name="role" type="text" value="${user.role}" style="display: none">
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <a class="dropdown-item"
-                                               onclick="chooseRole('1','Phóng viên')">
+                                               onclick="chooseRole('1','Độc giả')">
                                                 Độc giả</a>
                                             <a class="dropdown-item"
                                                onclick="chooseRole('2','Phóng viên')">Phóng

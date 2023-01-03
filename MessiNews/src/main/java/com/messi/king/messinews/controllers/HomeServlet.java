@@ -57,10 +57,31 @@ public class HomeServlet extends HttpServlet {
                     request.setAttribute("related", ArticlesService.newsRelated(id));
                     request.setAttribute("comments", CommentService.findByArtId(id));
 
-//                    Viết tạm để chạy web -> sửa thành tìm list theo ID
+//                    Viết tạm để chạy web -> sửa thành tìm list tags của bài báo
                     request.setAttribute("tags", TagsService.findAll());
 
                     ServletUtils.forward("/views/vwGeneral/Details.jsp", request, response);
+                } else {
+                    ServletUtils.redirect("/views/204.jsp", request, response);
+                }
+                break;
+            case "/ByTags":
+                int idTags = 0;
+                try {
+                    idTags = Integer.parseInt(request.getParameter("idTags"));
+                } catch (NumberFormatException e) {
+                    ServletUtils.redirect("/views/204.jsp", request, response);
+                }
+
+//                List chạy tạm -> sửa thành list Article theo Tags mới tìm ở  trên
+                List<Articles> artList = ArticlesService.newest10PerCate();
+
+                if (artList != null) {
+
+//                    Truyền vào tên của Tags mới tìm ởi trên
+                    request.setAttribute("titleTags", "Đua xe đạp 1 bánh");
+                    request.setAttribute("articles", artList);
+                    ServletUtils.forward("/views/vwGeneral/ByTags.jsp", request, response);
                 } else {
                     ServletUtils.redirect("/views/204.jsp", request, response);
                 }

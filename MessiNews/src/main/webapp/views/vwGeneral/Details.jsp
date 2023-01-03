@@ -169,7 +169,7 @@
                     <h4>Tags:</h4>
                     <div>
                         <c:forEach items="${tags}" var="c">
-                            <a href="" class="aTags btn btn-outline-info" role="button" aria-pressed="true">
+                            <a href="${pageContext.request.contextPath}/Home/ByTags?idTags=${c.id}" class="aTags btn btn-outline-info" role="button" aria-pressed="true">
                                     ${c.name_tags}
                             </a>
                         </c:forEach>

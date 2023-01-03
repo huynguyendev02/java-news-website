@@ -57,7 +57,7 @@
                                     <td align="center">${c.premiumCount()}</td>
                                     <td align="center">
                                         <button type="submit"
-                                                formaction="${pageContext.request.contextPath}/Admin/User/Delete?id=${c.id}"
+                                                formaction="${pageContext.request.contextPath}/Admin/Users/Delete?id=${c.id}"
                                                 class="btn btn-danger">Xóa
                                         </button>
                                     </td>
