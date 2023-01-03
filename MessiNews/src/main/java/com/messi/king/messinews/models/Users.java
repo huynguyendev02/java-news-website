@@ -1,7 +1,13 @@
 package com.messi.king.messinews.models;
 
+import com.messi.king.messinews.services.ArticlesService;
+import com.messi.king.messinews.services.CategoriesService;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Users {
     private int id;
@@ -117,6 +123,54 @@ public class Users {
 
     public LocalDateTime getOtp_exp() {
         return otp_exp;
+    }
+    public int publishArticlesCount() {
+        int count =0;
+        List<Articles> arts = ArticlesService.findByWriterId(this.id);
+        for (Articles art : arts) {
+            if (art.getPublish_date()!=null)
+                count++;
+        }
+        return count;
+    }
+    public int denyArticlesCount() {
+        int count =0;
+        List<Articles> arts = ArticlesService.findByWriterId(this.id);
+        for (Articles art : arts) {
+            if (art.getStatus()==0)
+                count++;
+        }
+        return count;
+    }
+    public int cateSum() {
+        List<Categories> cates = CategoriesService.findAllByEditorId(this.id);
+        return cates.size();
+    }
+    public int pcateSum() {
+        Set<Integer> set = new HashSet<Integer>();
+        List<Categories> cates = CategoriesService.findAllByEditorId(this.id);
+        for (Categories cate:cates) {
+            set.add(cate.getParent_cate_id());
+        }
+        return set.size();
+    }
+
+    public int premiumCount() {
+        int count =0;
+        List<Articles> arts = ArticlesService.findByWriterId(this.id);
+        for (Articles art : arts) {
+            if (art.getPremium()==1)
+                count++;
+        }
+        return count;
+    }
+    public int sumViews() {
+        int views =0;
+        List<Articles> arts = ArticlesService.findByWriterId(this.id);
+        for (Articles art : arts) {
+            views+=art.getViews();
+        }
+        return views;
     }
 
     public void setOtp_exp(LocalDateTime otp_exp) {

@@ -20,12 +20,12 @@ public class AdminArticlesServlet extends HttpServlet {
         String url = request.getPathInfo();
         switch (url) {
             case "/ListDraft":
-                List<Articles> artsDraft = EditorService.findAll();
+                List<Articles> artsDraft = EditorService.findAllDraft();
                 request.setAttribute("articlesList", artsDraft);
                 ServletUtils.forward("/views/vwAdmin/ArticleDraftAdminList.jsp", request, response);
                 break;
             case "/ListComplete":
-                List<Articles> artsComplete = EditorService.findAll();
+                List<Articles> artsComplete = EditorService.findAllComplete();
                 request.setAttribute("articlesList", artsComplete);
                 ServletUtils.forward("/views/vwAdmin/ArticleCompleteAdminList.jsp", request, response);
                 break;

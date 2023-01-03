@@ -259,33 +259,33 @@
                     </div>
 
                     <!--            10 bài có lượt xem cao nhất theo mỗi danh mục-->
-                    <div class="" style="width: 30%">
-                        <h5>Top 10 bài báo nhiều lượt xem nhất theo mỗi danh mục</h5> <br>
-                        <div style="border-style: solid; border-color: cornflowerblue ; border-top: none; border-right:none; border-top-left-radius: 0; border-bottom-right-radius: 0">
-                            <c:forEach items="${newest10PerCate}" var="c">
-                                <div class="w-100 mb-3 pl-2 d-flex justify-content-between align-items-start" ;>
-                                    <div style="width: 59%">
-                                        <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
-                                           class="ATitle">
-                                            <b>${c.getCategoriesName(c.categories_id)}</b>
-                                        </a> <br>
-                                        <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
-                                           style="line-height: 0">
-                                            <c:if test="${c.premium == 1}">
-                                                <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
-                                            </c:if>
-                                            <b>${c.title}</b>
-                                        </a>
+                        <div class="" style="width: 30%">
+                            <h5>Top 10 bài báo nhiều lượt xem nhất theo mỗi danh mục</h5> <br>
+                            <div style="border-style: solid; border-color: cornflowerblue ; border-top: none; border-right:none; border-top-left-radius: 0; border-bottom-right-radius: 0">
+                                <c:forEach items="${newest10PerCate}" var="c">
+                                    <div class="w-100 mb-3 pl-2 d-flex justify-content-between align-items-start" ;>
+                                        <div style="width: 59%">
+                                            <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
+                                               class="ATitle">
+                                                <b>${c.getCategoriesName(c.categories_id)}</b>
+                                            </a> <br>
+                                            <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                               style="line-height: 0">
+                                                <c:if test="${c.premium == 1}">
+                                                    <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                                                </c:if>
+                                                <b>${c.title}</b>
+                                            </a>
+                                        </div>
+                                        <div class=" align-items-center" style="width: 40%">
+                                            <img class="w-100"
+                                                 src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
+                                                 alt="">
+                                        </div>
                                     </div>
-                                    <div class=" align-items-center" style="width: 40%">
-                                        <img class="w-100"
-                                             src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
-                                             alt="">
-                                    </div>
-                                </div>
-                            </c:forEach>
+                                </c:forEach>
+                            </div>
                         </div>
-                    </div>
                 </div>
             </div>
             <div style="width: 15%" class="d-flex align-items-end flex-column">

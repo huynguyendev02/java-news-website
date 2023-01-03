@@ -48,8 +48,8 @@
                                             document.write('${c.issue_at}'.slice(8, 10) + '/' + '${c.issue_at}'.slice(5, 7) + '/' + '${c.issue_at}'.slice(0, 4))
                                         </script>
                                     </td>
-                                    <td align="center">Số chuyên mục nhỏ đang quản lý</td>
-                                    <td align="center">Số chuyên mục lớn đang quản lý</td>
+                                    <td align="center">${c.cateSum()}</td>
+                                    <td align="center">${c.pcateSum()}</td>
                                     <td align="center">
                                         <a type="submit"
                                            href="${pageContext.request.contextPath}/Admin/Users/AssignCategory?editorId=${c.id}"

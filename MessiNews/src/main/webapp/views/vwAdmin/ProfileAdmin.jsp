@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="m" tagdir="/WEB-INF/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -131,7 +131,7 @@
                 </div>
                 <hr>
                 <div id="divEditProfile">
-                    <form action="${pageContext.request.contextPath}/Admin/Users/Profile" method="post">
+                    <form action="${pageContext.request.contextPath}/Admin/Users/Profile?id=${user.id}" method="post">
                         <table cellpadding="5px" class="w-100">
                             <tr>
                                 <td>

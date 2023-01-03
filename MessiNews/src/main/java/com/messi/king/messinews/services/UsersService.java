@@ -5,16 +5,18 @@ import com.messi.king.messinews.models.Users;
 import com.messi.king.messinews.utils.DbUtils;
 import org.sql2o.Connection;
 
+import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class UsersService {
-    public static void add(Users user) {
+    public static int add(Users user) {
         String insertSql = "INSERT INTO users (username, password, full_name, issue_at, expiration,role, dob, email, otp, otp_exp) VALUES (:username, :password, :full_name, :issue_at, :expiration,:role, :dob, :email, :otp, :otp_exp)";
         try (Connection con = DbUtils.getConnection()) {
-            con.createQuery(insertSql)
+            BigInteger id = (BigInteger) con.createQuery(insertSql, true)
                     .addParameter("username", user.getUsername())
                     .addParameter("password", user.getPassword())
                     .addParameter("full_name", user.getFull_name())
@@ -25,7 +27,8 @@ public class UsersService {
                     .addParameter("email", user.getEmail())
                     .addParameter("otp",user.getOtp())
                     .addParameter("otp_exp",user.getOtp_exp())
-                    .executeUpdate();
+                    .executeUpdate().getKey();
+            return id.intValue();
         }
     }
 
@@ -55,13 +58,14 @@ public class UsersService {
                     .executeAndFetch(Users.class);
         }
     }
-    public static void extendSubscriber(int id) {
+    public static void extendSubscriber(int id, LocalDateTime expireDate) {
         final String query = "update users set issue_at = :issue_at, expiration= :expiration where id = :id";
+        Duration duration = Duration.between(LocalDateTime.now(), expireDate);
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
                     .addParameter("id", id)
                     .addParameter("issue_at", LocalDateTime.now())
-                    .addParameter("expiration",7*24*60 )
+                    .addParameter("expiration",duration.toMinutes() )
                     .executeUpdate();
         }
     }

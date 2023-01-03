@@ -59,7 +59,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <img class="imageIcon"
-                                             src="https://haycafe.vn/wp-content/uploads/2022/02/Hi%CC%80nh-avatar-trang-ne%CC%80n-den.jpg">
+                                             src="${pageContext.request.contextPath}/photos/userAvatar/defaultAvatar.jpg">
                                     </c:otherwise>
                                 </c:choose>
                             </div>

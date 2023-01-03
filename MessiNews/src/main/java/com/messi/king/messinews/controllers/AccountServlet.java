@@ -15,10 +15,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @WebServlet(name = "AccountServlet", value = "/Account/*")
+@MultipartConfig(
+        fileSizeThreshold = 2 * 1024 *1024,
+        maxFileSize = 50*1024*1024,
+        maxRequestSize = 50*1024*1024
+)
 public class AccountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -159,7 +166,7 @@ public class AccountServlet extends HttpServlet {
 
     private void changeAvatar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Users user  = (Users)request.getSession().getAttribute("authUser");
-        String targetDir = this.getServletContext().getRealPath("photos/avatars/"+ user.getId());
+        String targetDir = this.getServletContext().getRealPath("photos/userAvatar/"+ user.getId());
         File dir = new File(targetDir);
         if (!dir.exists()) {
             dir.mkdir();
@@ -170,9 +177,24 @@ public class AccountServlet extends HttpServlet {
                 destination = targetDir + "/" + "avatar.png";
                 part.write(destination);
             }
-
         }
+        ServletUtils.redirect("/Account/Profile", request, response);
     }
+
+    private void setDefaultAvatar(int userId, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String targetDir = this.getServletContext().getRealPath("photos/userAvatar/"+ userId);
+        File userDir = new File(targetDir);
+        if (!userDir.exists()) {
+            userDir.mkdir();
+        }
+        userDir = new File(targetDir+"/avatar.png");
+        String defaultDir = this.getServletContext().getRealPath("photos/userAvatar/defaultAvatar.jpg");
+        File defaultAvaDir = new File(defaultDir);
+
+
+        Files.copy(defaultAvaDir.toPath(), userDir.toPath());
+    }
+
 
     private void changePassword(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
@@ -215,6 +237,7 @@ public class AccountServlet extends HttpServlet {
         }
 
         UsersService.updateProfile(user.getId(), fullName, role, email, dob);
+        request.getSession().setAttribute("authUser", UsersService.findById(user.getId()));
         ServletUtils.redirect("/Account/Profile", request, response);
     }
 
@@ -245,7 +268,8 @@ public class AccountServlet extends HttpServlet {
         } else {
             c = new Users(0, username,bcryptHashString, fullName, LocalDateTime.now(), 0,role,dob, email, null,null );
         }
-        UsersService.add(c);
+        int userId = UsersService.add(c);
+        setDefaultAvatar(userId, request, response);
         ServletUtils.redirect("/Account/Login",request,response);
     }
     private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

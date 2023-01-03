@@ -78,6 +78,7 @@ public class AdminUsersServlet extends HttpServlet {
         switch (url) {
             case "/Profile":
                 adminUpdateUser(request, response);
+                break;
             case "/AssignCategory":
                 assignCategories(request, response);
                 break;
@@ -120,7 +121,7 @@ public class AdminUsersServlet extends HttpServlet {
         }
     }
 
-    private void adminUpdateUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void adminUpdateUser(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
 
         int id = 0;
@@ -128,6 +129,7 @@ public class AdminUsersServlet extends HttpServlet {
             id = Integer.parseInt(request.getParameter("id"));
         } catch (NumberFormatException e) {
         }
+        System.out.println(id);
         Users user = UsersService.findById(id);
         if (user != null) {
             String fullName = request.getParameter("newFullName");
@@ -144,7 +146,10 @@ public class AdminUsersServlet extends HttpServlet {
                 dob = LocalDateTime.parse(strDob, df);
             }
             UsersService.updateProfile(user.getId(), fullName, role, email, dob);
-        }
+            ServletUtils.redirect("/Admin/Users/Profile?id="+id, request, response);
+        } else
+            ServletUtils.forward("/views/204.jsp", request, response);
+
     }
 
     private void adminDeleteUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -223,8 +228,11 @@ public class AdminUsersServlet extends HttpServlet {
         Users user = UsersService.findById(id);
         if (user != null) {
 
-//            Xử lý gia hạn 7 ngày cho em User này
+            String expireDateStr = request.getParameter("expireDate") + " 00:00";
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            LocalDateTime expireDate = LocalDateTime.parse(expireDateStr, df);
 
+            UsersService.extendSubscriber(id, expireDate);
             ServletUtils.redirect("/Admin/Users/ListSub", request, response);
         } else {
             ServletUtils.forward("/views/204.jsp", request, response);

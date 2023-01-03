@@ -134,7 +134,8 @@
                     <h4>Có thể bạn sẽ quan tâm</h4>
 
                     <div class="w-100 p-3 d-flex justify-content-between">
-                        <c:forEach var="i" begin="0" end="4">
+                        <c:forEach var="i" begin="0" end="5">
+                            <c:if test = "${article.id != related[i].id}">
                             <div class="w-100 Shadown mr-3">
                                 <a href="${pageContext.request.contextPath}/Home/Details?id=${related[i].id}">
                                     <img src="${pageContext.request.contextPath}/photos/articles/${related[i].id}/a.png"
@@ -158,6 +159,7 @@
                                 </a>
                             </div>
                             <br>
+                            </c:if>
                         </c:forEach>
                     </div>
                     <hr>

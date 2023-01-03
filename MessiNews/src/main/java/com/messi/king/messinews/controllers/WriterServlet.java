@@ -13,6 +13,7 @@ import javax.servlet.annotation.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @WebServlet(name = "WriterServlet", value = "/Writer/*")
@@ -67,26 +68,65 @@ public class WriterServlet extends HttpServlet {
             case "/Edit":
                 edit(request,response);
                 break;
+            case "/Delete":
+                delete(request,response);
+                break;
             default:
                 ServletUtils.forward("/views/404.jsp",request,response);
         }
     }
 
-    private void edit(HttpServletRequest request, HttpServletResponse response) {
+    private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        int id = 0;
+        Articles art = ArticlesService.findById(id);
+        if (art!=null) {
+            ArticlesService.delete(art);
+            ServletUtils.redirect("/Writer/List", request, response);
+        } else
+            ServletUtils.forward("/views/204.jsp",request,response);
 
+    }
+
+    private void edit(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        int id = 0;
+
+        String title = request.getParameter("title");
+        String abstractContent = request.getParameter("abstract");
+        String content = request.getParameter("content");
+        String[] listTagsID = request.getParameter("listTagId").split(",");;
+
+        int[] tagsId = Arrays
+                .stream(listTagsID)
+                .mapToInt(Integer::parseInt)
+                .toArray();
+        int cateId = 0;
+        try {
+            cateId = Integer.parseInt(request.getParameter("cateId"));
+            id = Integer.parseInt(request.getParameter("id"));
+        } catch (NumberFormatException e) {
+        }
+        Articles art = ArticlesService.findById(id);
+        if (art!=null) {
+            ArticlesService.edit(id, title, abstractContent, content, cateId);
+            TagsService.editTagsByArticle(id, tagsId);
+            ServletUtils.redirect("/Writer/List", request, response);
+        } else
+            ServletUtils.forward("/views/204.jsp",request,response);
     }
 
     private void upload(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        request.setCharacterEncoding("UTF-8");
 
         String title = request.getParameter("title");
         String abstractContent = request.getParameter("abstract");
         String content = request.getParameter("content");
 
-//        Mới bổ sung ListTagsID với CateID
-        String listTagsID = request.getParameter("listTagId");
+        String[] listTagsID = request.getParameter("listTagId").split(",");;
 
+        int[] tagsId = Arrays
+                .stream(listTagsID)
+                .mapToInt(Integer::parseInt)
+                .toArray();
 
         int cateId = 0;
         try {
@@ -95,6 +135,8 @@ public class WriterServlet extends HttpServlet {
         }
 
         int artId = ArticlesService.add(new Articles(0,title,null,0,abstractContent,content,cateId,0,((Users)request.getSession().getAttribute("authUser")).getId(),-1, null));
+
+        TagsService.addTagsByArticle(artId, tagsId);
 
         String targetDir = this.getServletContext().getRealPath("photos/articles/"+artId);
         File dir = new File(targetDir);

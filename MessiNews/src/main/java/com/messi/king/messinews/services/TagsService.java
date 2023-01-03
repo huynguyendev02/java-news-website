@@ -36,6 +36,36 @@ public class TagsService {
         }
     }
 
+    public static void addTagsByArticle(int artId, int[] tagsId) {
+        String insertSql = "INSERT INTO article_has_tag (tag_id, article_id) VALUES (:tag_id, :article_id)";
+        try (Connection con = DbUtils.getConnection()) {
+            for(int tagId: tagsId) {
+                con.createQuery(insertSql)
+                        .addParameter("tag_id", tagId)
+                        .addParameter("article_id", artId)
+                        .executeUpdate();
+            }
+
+        }
+    }
+
+    public static void editTagsByArticle(int artId, int[] tagsId) {
+        String deleteSql = "delete from article_has_tag where article_id = :article_id";
+        String insertSql = "INSERT INTO article_has_tag (tag_id, article_id) VALUES (:tag_id, :article_id)";
+        try (Connection con = DbUtils.getConnection()) {
+            con.createQuery(deleteSql)
+                    .addParameter("article_id", artId)
+                    .executeUpdate();
+            for(int tagId: tagsId) {
+                con.createQuery(insertSql)
+                        .addParameter("tag_id", tagId)
+                        .addParameter("article_id", artId)
+                        .executeUpdate();
+            }
+
+        }
+    }
+
     public static void delete(Tags tag) {
         final String query = "delete from tags where id = :id";
         try (Connection con = DbUtils.getConnection()) {
@@ -44,6 +74,7 @@ public class TagsService {
                     .executeUpdate();
         }
     }
+
 
     public static void edit(String nameTag, Tags tag) {
         final String query = "update tags set name_tags = :name_tags where id = :id";

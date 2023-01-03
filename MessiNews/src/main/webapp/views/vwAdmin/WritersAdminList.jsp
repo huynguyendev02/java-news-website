@@ -50,11 +50,11 @@
                                             document.write('${c.issue_at}'.slice(8, 10) + '/' + '${c.issue_at}'.slice(5, 7) + '/' + '${c.issue_at}'.slice(0, 4))
                                         </script>
                                     </td>
-                                    <td align="center">Bút danh</td>
-                                    <td align="center">Bài đã đăng</td>
-                                    <td align="center">Tổng lượt xem</td>
-                                    <td align="center">Bài bị từ chối</td>
-                                    <td align="center">Bài cao cấp</td>
+                                    <td align="center">${c.full_name}</td>
+                                    <td align="center">${c.publishArticlesCount()}</td>
+                                    <td align="center">${c.sumViews()}</td>
+                                    <td align="center">${c.denyArticlesCount()}</td>
+                                    <td align="center">${c.premiumCount()}</td>
                                     <td align="center">
                                         <button type="submit"
                                                 formaction="${pageContext.request.contextPath}/Admin/User/Delete?id=${c.id}"

@@ -24,7 +24,7 @@
                     <div style=" width: 100%">
                         <h5 id="titleTuChoi"></h5>
                         <label for="txtTuChoi"><b>Lý do từ chối</b></label>
-                        <textarea id="txtTuChoi" class="bgColorGray w-100 p-3" rows="4"
+                        <textarea id="txtTuChoi" name="reason" class="bgColorGray w-100 p-3" rows="4"
                                   style="border-radius: 10px; border-style: none">
                         </textarea>
                         <br>

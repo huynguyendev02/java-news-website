@@ -1,14 +1,14 @@
 package com.messi.king.messinews.services;
 
 import com.messi.king.messinews.models.Articles;
-import com.messi.king.messinews.models.Users;
 import com.messi.king.messinews.utils.DbUtils;
 import org.sql2o.Connection;
 
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArticlesService {
     public static List<Articles> top10AllCate() {
@@ -31,9 +31,22 @@ public class ArticlesService {
         Articles art = ArticlesService.findById(artId);
         List<Articles> arts = ArticlesService.findByCatId(art.getCategories_id());
         int pcatId = CategoriesService.findById(art.getCategories_id()).getParent_cate_id();
+
+
         if (arts.size() < 5) {
-            arts.addAll(ArticlesService.findByPCatId(pcatId));
+            List<Articles> artsByPCat =  ArticlesService.findByPCatId(pcatId);
+            for (Articles artP: artsByPCat) {
+                int check = 1;
+                for (Articles artC : arts)
+                    if (artC.getId()==artP.getId()){
+                        check = 0;
+                        break;
+                    }
+                if (check==1)
+                    arts.add(artP);
+            }
         }
+        System.out.println(arts.size());
         return arts;
     }
     public static List<Articles> newest10PerCate() {
@@ -54,6 +67,19 @@ public class ArticlesService {
             return con.createQuery(query)
                     .executeAndFetch(Articles.class);
 //            return articlesList;
+        }
+    }
+
+    public static void edit(int id, String title, String abstractContent, String content, int cateId) {
+        final String query = "update articles set title= :title, abstract_content= :abstract_content, content= :content, categories_id= :categories_id  where id = :id";
+        try (Connection con = DbUtils.getConnection()) {
+            con.createQuery(query)
+                    .addParameter("id", id)
+                    .addParameter("title", title)
+                    .addParameter("abstract_content", abstractContent)
+                    .addParameter("content", content)
+                    .addParameter("categories_id", cateId)
+                    .executeUpdate();
         }
     }
     public static List<Articles> latestNewsAllCate() {
@@ -128,6 +154,16 @@ public class ArticlesService {
             return arts;
         }
     }
+
+    public static void delete(Articles art) {
+        final String query = "delete from tags where id = :id";
+        try (Connection con = DbUtils.getConnection()) {
+            con.createQuery(query)
+                    .addParameter("id", art.getId())
+                    .executeUpdate();
+        }
+    }
+
     public static int add(Articles articles) {
         String insertSql = "INSERT INTO articles (title, views, abstract_content, content, categories_id,premium, writer_id, status) VALUES (:title, :views, :abstract_content, :content, :categories_id,:premium, :writer_id, :status)";
         try (Connection con = DbUtils.getConnection()) {

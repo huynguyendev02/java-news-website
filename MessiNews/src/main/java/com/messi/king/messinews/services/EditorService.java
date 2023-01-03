@@ -33,23 +33,31 @@ public class EditorService {
                     .executeAndFetch(Articles.class);
         }
     }
-    public static void acceptArticle(int id, LocalDateTime publish_time, int premium, int[] tagIds) {
-        final String query = "update articles set publish_date = :publish_time, status=1, premium= :premium where id = :id";
-        final String insertTag = "INSERT INTO article_has_tag (tag_id, article_id) VALUES (:tag_id, :article_id)";
+    public static List<Articles> findAllDraft() {
+        final String query = "SELECT * from articles where status=-1";
+        try (Connection con = DbUtils.getConnection()) {
+            return con.createQuery(query)
+                    .executeAndFetch(Articles.class);
+        }
+    }
+    public static List<Articles> findAllComplete() {
+        final String query = "SELECT * from articles where status=1";
+        try (Connection con = DbUtils.getConnection()) {
+            return con.createQuery(query)
+                    .executeAndFetch(Articles.class);
+        }
+    }
+    public static void acceptArticle(int id, LocalDateTime publish_time, int premium, int idCat, int[] tagIds) {
+        final String query = "update articles set publish_date = :publish_time,categories_id= :categories_id , status=1, premium= :premium where id = :id";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
                     .addParameter("id", id)
                     .addParameter("premium", premium)
+                    .addParameter("categories_id", idCat)
                     .addParameter("publish_time", publish_time)
                     .executeUpdate();
-            for (int tagId: tagIds) {
-                con.createQuery(insertTag)
-                        .addParameter("article_id", id)
-                        .addParameter("tag_id", tagId)
-                        .executeUpdate();
-            }
         }
-
+        TagsService.editTagsByArticle(id, tagIds);
     }
     public static void declineArticle(int id,String reason) {
         final String query = "update articles set reason = :reason, status=0 where id = :id";

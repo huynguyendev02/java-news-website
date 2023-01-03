@@ -38,26 +38,7 @@ public class EditorServlet extends HttpServlet {
                 request.setAttribute("articlesList", listFull);
                 ServletUtils.forward("/views/vwEditor/ListComplete.jsp", request, response);
                 break;
-            case "/ViewArticle":
-                int idArt = 0;
-                try {
-                    idArt = Integer.parseInt(request.getParameter("id"));
-                } catch (NumberFormatException e) {
-                    ServletUtils.redirect("/views/204.jsp", request, response);
-                }
-                Articles art = ArticlesService.findById(idArt);
-                if (art != null) {
-                    ArticlesService.viewArticle(idArt);
-                    request.setAttribute("article", art);
 
-//                    Viết tạm để chạy web -> sửa thành tìm list theo ID
-                    request.setAttribute("tags", TagsService.findAll());
-
-                    ServletUtils.forward("/views/vwEditor/ViewArticle.jsp", request, response);
-                } else {
-                    ServletUtils.redirect("/views/204.jsp", request, response);
-                }
-                break;
             case "/Accept":
                 int id = Integer.parseInt(request.getParameter("id"));
                 List<Tags> tags = TagsService.findAll();
@@ -79,6 +60,7 @@ public class EditorServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String url = request.getPathInfo();
         HttpSession session = request.getSession();
         switch (url) {
@@ -100,15 +82,17 @@ public class EditorServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             ServletUtils.redirect("/views/204.jsp", request, response);
         }
-        String reason = request.getParameter("reason");
+        String reason = request.getParameter("reason").trim();
         EditorService.declineArticle(id, reason);
-        ServletUtils.redirect("/Editor/List", request, response);
+        ServletUtils.redirect("/Editor/ListDraft", request, response);
+
     }
 
     private static void acceptArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int id = 0, premium = 0;
+        int id = 0, premium = 0, idCat=0;
         try {
             id = Integer.parseInt(request.getParameter("id"));
+            idCat = Integer.parseInt(request.getParameter("idCat"));
             premium = Integer.parseInt(request.getParameter("premium"));
         } catch (NumberFormatException e) {
             ServletUtils.redirect("/views/204.jsp", request, response);
@@ -126,12 +110,12 @@ public class EditorServlet extends HttpServlet {
                 .stream(tagsIdStr)
                 .mapToInt(Integer::parseInt)
                 .toArray();
-        EditorService.acceptArticle(id, publish_time, premium, tagsId);
+
+        EditorService.acceptArticle(id, publish_time, premium,idCat, tagsId);
 
         Articles art = ArticlesService.findById(id);
         PdfUtils.createPdfFile(art, request, response);
 
-
-        ServletUtils.redirect("/Editor/List", request, response);
+        ServletUtils.redirect("/Editor/ListComplete", request, response);
     }
 }
