@@ -68,6 +68,12 @@ public class WriterServlet extends HttpServlet {
             case "/Edit":
                 edit(request,response);
                 break;
+            case "/EditBackground":
+                editImage("backgroundMain",request,response);
+                break;
+            case "/EditMain":
+                editImage("imgMain",request,response);
+                break;
             case "/Delete":
                 delete(request,response);
                 break;
@@ -75,6 +81,29 @@ public class WriterServlet extends HttpServlet {
                 ServletUtils.forward("/views/404.jsp",request,response);
         }
     }
+
+    private void editImage(String type, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = 0;
+        try {
+            id = Integer.parseInt(request.getParameter("id"));
+        } catch (NumberFormatException e) {
+        }
+        Articles art = ArticlesService.findById(id);
+        if (art!=null) {
+            String targetDir = this.getServletContext().getRealPath("photos/articles/"+id);
+            String destination = "";
+            for (Part part: request.getParts()) {
+                if (part.getName().equals(type)) {
+                    destination = targetDir + "/" + (type.equals("imgMain") ? "a.png" : "b.png");
+                    part.write(destination);
+                }
+            }
+            ServletUtils.redirect("/Writer/List", request, response);
+        } else
+            ServletUtils.forward("/views/204.jsp",request,response);
+    }
+
+
 
     private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         int id = 0;

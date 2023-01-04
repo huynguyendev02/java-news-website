@@ -8,13 +8,22 @@
 
 
 <m:main>
-    <jsp:attribute name="css">
-          <style>
-              /*.bgColorGray {*/
-              /*    border-radius: 10px;*/
-              /*    background-color:#EEEEEE;*/
-              /*}*/
-          </style>
+    <jsp:attribute name="js">
+          <script>
+              function checkPermission(premium, event) {
+                  if (premium == 1) {
+                      if (!${auth}) {
+                          alert("Bạn phải đăng nhập mới xem được bài này")
+                          event.preventDefault();
+                      } else {
+                          if (${authUser.checkExpiration()==0}) {
+                              alert("Bạn cần phải gia hạn tài khoản để có thể xem bài này")
+                              event.preventDefault();
+                          }
+                      }
+                  }
+              }
+          </script>
       </jsp:attribute>
     <jsp:body>
         <div class="d-flex justify-content-center">
@@ -42,7 +51,7 @@
                         <%--            các bài báo--%>
                         <div>
                                 <%--                Bài lớn nhất--%>
-                            <a href="${pageContext.request.contextPath}/Home/Details?id=${articles[0].id}">
+                            <a href="${pageContext.request.contextPath}/Home/Details?id=${articles[0].id}" onclick="checkPermission(${articles[0].premium},event)">
                                 <div class="d-flex justify-content-between bgColorGray">
 
                                     <div style="width: 60%">
@@ -79,7 +88,7 @@
 
                                 <%--                các bài nhỏ--%>
                             <c:forEach items="${articles}" begin="1" var="c">
-                                <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}">
+                                <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}" onclick="checkPermission(${c.premium},event)">
                                     <div class="d-flex justify-content-between bgColorGray">
                                         <div style="width: 30%">
                                             <img src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"

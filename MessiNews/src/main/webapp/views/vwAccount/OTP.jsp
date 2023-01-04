@@ -118,5 +118,21 @@
     <%--    }--%>
 
     <%--}--%>
+
+    $('#form').on('submit', function (e) {
+        e.preventDefault();
+        let pwd = document.getElementById('pwd').value;
+
+        if (/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/.test(pwd)==false){
+            alert('Mật khẩu phải có tối thiểu 8 kí tự, gồm ít nhất 1 số, 1 chữ thường, 1 chữ in hoa')
+            return
+        }
+        if (document.getElementById('pwd').value != document.getElementById('confirmPwd').value){
+            alert('Xác nhận mật khẩu chưa chính xác')
+            return
+        }
+        $('#form').off('submit').submit();
+
+    })
 </script>
 </html>

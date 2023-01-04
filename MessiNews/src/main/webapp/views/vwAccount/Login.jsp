@@ -2,6 +2,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <jsp:useBean id="errorMessage" scope="request" type="java.lang.String"/>
+<jsp:useBean id="googleLogin" scope="request" type="java.lang.String"/>
+<jsp:useBean id="githubLogin" scope="request" type="java.lang.String"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -103,17 +105,17 @@
             </div>
         </div>
 
-        <button class="w-100 inputStyle " style="background-color: #f9f9fb">
+        <a href="${googleLogin}" class="w-100 inputStyle " style="background-color: #f9f9fb">
             <img class="imageIconInBT mr-1" src="${pageContext.request.contextPath}/photos/logos/LogoGoogle.png"
                  alt="">
             Đăng nhập bằng Google
-        </button>
+        </a>
 
-        <button class="w-100 inputStyle mt-3" style="background-color: #f9f9fb">
+        <a href="${githubLogin}" class="w-100 inputStyle mt-3" style="background-color: #f9f9fb">
             <img class="imageIconInBT mr-1" src="${pageContext.request.contextPath}/photos/logos/LogoFacebook.png"
                  alt="">
-            Đăng nhập bằng Facebook
-        </button>
+            Đăng nhập bằng Githube
+        </a>
         <div align="center" class="mt-4">
             Chưa có tài khoản? <a href="${pageContext.request.contextPath}/Account/Register">Đăng ký</a>
         </div>

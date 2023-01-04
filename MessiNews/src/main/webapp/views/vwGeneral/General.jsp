@@ -8,6 +8,9 @@
 <jsp:useBean id="newest10PerCate" scope="request" type="java.util.List<com.messi.king.messinews.models.Articles>"/>
 <jsp:useBean id="allCategories" scope="request" type="java.util.List<com.messi.king.messinews.models.Categories>"/>
 
+<jsp:useBean id="auth" scope="session" type="java.lang.Boolean"/>
+<jsp:useBean id="authUser" scope="session" type="com.messi.king.messinews.models.Users"/>
+
 <jsp:useBean id="currentPage" scope="request" type="java.lang.Integer"/>
 <jsp:useBean id="maxPage" scope="request" type="java.lang.Integer"/>
 <m:main>
@@ -22,13 +25,17 @@
     </jsp:attribute>
     <jsp:attribute name="js">
         <script>
-            function chinhSua(inputId, btId) {
-                document.getElementById(inputId).readOnly = false;
-                if (document.getElementById(btId).innerText == 'Save') {
-                    document.getElementById('comment').value = document.getElementById(inputId).value
-                    document.getElementById(btId).type = 'submit'
-                } else {
-                    document.getElementById(btId).innerText = 'Save';
+            function checkPermission(premium, event) {
+                if (premium == 1) {
+                    if (!${auth}) {
+                        alert("Bạn phải đăng nhập mới xem được bài này")
+                        event.preventDefault();
+                    } else {
+                        if (${authUser.checkExpiration()==0}) {
+                            alert("Bạn cần phải gia hạn tài khoản để có thể xem bài này")
+                            event.preventDefault();
+                        }
+                    }
                 }
             }
         </script>
@@ -54,8 +61,14 @@
                             <div class="carousel-caption  w-100 h-100 grad"
                                  style=" bottom: 0; left: 0 ; z-index:2">
                                 <a href="${pageContext.request.contextPath}/Home/Details?id=${top10AllCate[0].id}"
-                                   class=" carousel-caption d-none d-md-block p-0">
-                                    <h2>${top10AllCate[0].title}</h2>
+                                   class=" carousel-caption d-none d-md-block p-0"
+                                   onclick="checkPermission(${top10AllCate[0].premium},event)">
+                                    <h2>
+                                        <c:if test="${top10AllCate[0].premium == 1}">
+                                            <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                                        </c:if>
+                                            ${top10AllCate[0].title}
+                                    </h2>
                                     <p>${top10AllCate[0].views} lượt xem</p>
                                 </a>
                             </div>
@@ -71,8 +84,14 @@
                                     <div class="carousel-caption  w-100 h-100 grad"
                                          style=" bottom: 0; left: 0 ; z-index:2">
                                         <a href="${pageContext.request.contextPath}/Home/Details?id=${top10AllCate[i].id}"
-                                           class=" carousel-caption d-none d-md-block p-0">
-                                            <h2>${top10AllCate[i].title}</h2>
+                                           class=" carousel-caption d-none d-md-block p-0"
+                                           onclick="checkPermission(${top10AllCate[i].premium},event)">
+                                            <h2>
+                                                <c:if test="${top10AllCate[i].premium == 1}">
+                                                    <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                                                </c:if>
+                                                    ${top10AllCate[i].title}
+                                            </h2>
                                             <p>${top10AllCate[i].views} lượt xem</p>
                                         </a>
                                     </div>
@@ -101,7 +120,8 @@
                         <div class="w-100 d-flex justify-content-between">
                             <!--                    Bài báo top 1 trong tuần-->
                             <div style=" width: 66%">
-                                <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[0].id}">
+                                <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[0].id}"
+                                   onclick="checkPermission(${top5AllCateInWeek[0].premium},event)">
                                     <img src="${pageContext.request.contextPath}/photos/articles/${top5AllCateInWeek[0].id}/a.png"
                                          alt="" class="w-100">
                                 </a>
@@ -109,7 +129,8 @@
                                    class="ATitle">
                                     <b>${top5AllCateInWeek[0].getCategoriesName(top5AllCateInWeek[0].categories_id)}</b>
                                 </a>
-                                <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[0].id}">
+                                <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[0].id}"
+                                   onclick="checkPermission(${top5AllCateInWeek[0].premium},event)">
                                     <h4>
                                         <c:if test="${top5AllCateInWeek[0].premium == 1}">
                                             <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
@@ -121,7 +142,8 @@
 
                             <!--                    Bài báo top 2 trong tuần-->
                             <div style=" width: 32%; background-image: linear-gradient(to bottom, #EEEEEE, #EEEEEE, transparent) ">
-                                <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[1].id}">
+                                <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[1].id}"
+                                   onclick="checkPermission(${top5AllCateInWeek[1].premium},event)">
                                     <img src="${pageContext.request.contextPath}/photos/articles/${top5AllCateInWeek[1].id}/a.png"
                                          alt="" class="w-100">
                                 </a>
@@ -130,7 +152,8 @@
                                        class="ATitle">
                                         <b>${top5AllCateInWeek[1].getCategoriesName(top5AllCateInWeek[1].categories_id)}</b>
                                     </a>
-                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[1].id}">
+                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[1].id}"
+                                       onclick="checkPermission(${top5AllCateInWeek[1].premium},event)">
                                         <h6><b>
                                             <c:if test="${top5AllCateInWeek[1].premium == 1}">
                                                 <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
@@ -148,13 +171,17 @@
                         <div class=" pt-3 w-100 d-flex justify-content-between">
                             <c:forEach var="i" begin="2" end="4">
                                 <div style=" width: 32%">
-                                    <img src="${pageContext.request.contextPath}/photos/articles/${top5AllCateInWeek[i].id}/a.png"
-                                         alt="" class="w-100">
+                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[i].id}"
+                                       onclick="checkPermission(${top5AllCateInWeek[0].premium},event)">
+                                        <img src="${pageContext.request.contextPath}/photos/articles/${top5AllCateInWeek[i].id}/a.png"
+                                             alt="" class="w-100">
+                                    </a>
                                     <a href="${pageContext.request.contextPath}/Home/ByCat?id=${top5AllCateInWeek[i].categories_id}"
                                        class="ATitle">
                                         <b>${top5AllCateInWeek[i].getCategoriesName(top5AllCateInWeek[i].categories_id)}</b>
                                     </a> <br>
-                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[i].id}">
+                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[i].id}"
+                                       onclick="checkPermission(${top5AllCateInWeek[0].premium},event)">
                                         <c:if test="${top5AllCateInWeek[i].premium == 1}">
                                             <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                         </c:if>
@@ -171,7 +198,8 @@
                         <c:forEach items="${latestNewsAllCate}" var="c">
                             <div class=" mb-3 w-100 d-flex justify-content-between">
                                 <div style="width: 30%">
-                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}">
+                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                       onclick="checkPermission(${c.premium},event)">
                                         <img style="width: 100%"
                                              src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
                                              alt="">
@@ -179,7 +207,8 @@
                                 </div>
                                 <div style="width: 69%" class="pl-2 d-flex flex-column justify-content-between">
                                     <div>
-                                        <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}">
+                                        <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                           onclick="checkPermission(${c.premium},event)">
                                             <c:if test="${c.premium == 1}">
                                                 <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                             </c:if>
@@ -259,33 +288,36 @@
                     </div>
 
                     <!--            10 bài có lượt xem cao nhất theo mỗi danh mục-->
-                        <div class="" style="width: 30%">
-                            <h5>Top 10 bài báo mới nhất theo mỗi danh mục</h5> <br>
-                            <div style="border-style: solid; border-color: cornflowerblue ; border-top: none; border-right:none; border-top-left-radius: 0; border-bottom-right-radius: 0">
-                                <c:forEach items="${newest10PerCate}" var="c">
-                                    <div class="w-100 mb-3 pl-2 d-flex justify-content-between align-items-start" ;>
-                                        <div style="width: 59%">
-                                            <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
-                                               class="ATitle">
-                                                <b>${c.getCategoriesName(c.categories_id)}</b>
-                                            </a> <br>
-                                            <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
-                                               style="line-height: 0">
-                                                <c:if test="${c.premium == 1}">
-                                                    <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
-                                                </c:if>
-                                                <b>${c.title}</b>
-                                            </a>
-                                        </div>
-                                        <div class=" align-items-center" style="width: 40%">
+                    <div class="" style="width: 30%">
+                        <h5>Top 10 bài báo mới nhất theo mỗi danh mục</h5> <br>
+                        <div style="border-style: solid; border-color: cornflowerblue ; border-top: none; border-right:none; border-top-left-radius: 0; border-bottom-right-radius: 0">
+                            <c:forEach items="${newest10PerCate}" var="c">
+                                <div class="w-100 mb-3 pl-2 d-flex justify-content-between align-items-start" ;>
+                                    <div style="width: 59%">
+                                        <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
+                                           class="ATitle">
+                                            <b>${c.getCategoriesName(c.categories_id)}</b>
+                                        </a> <br>
+                                        <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                           style="line-height: 0" onclick="checkPermission(${c.premium},event)">
+                                            <c:if test="${c.premium == 1}">
+                                                <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                                            </c:if>
+                                            <b>${c.title}</b>
+                                        </a>
+                                    </div>
+                                    <div class=" align-items-center" style="width: 40%">
+                                        <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                           style="line-height: 0" onclick="checkPermission(${c.premium},event)">
                                             <img class="w-100"
                                                  src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
                                                  alt="">
-                                        </div>
+                                        </a>
                                     </div>
-                                </c:forEach>
-                            </div>
+                                </div>
+                            </c:forEach>
                         </div>
+                    </div>
                 </div>
             </div>
             <div style="width: 15%" class="d-flex align-items-end flex-column">

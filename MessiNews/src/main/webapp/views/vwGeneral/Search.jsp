@@ -17,13 +17,17 @@
     </jsp:attribute>
     <jsp:attribute name="js">
         <script>
-            function chinhSua(inputId, btId) {
-                document.getElementById(inputId).readOnly = false;
-                if (document.getElementById(btId).innerText == 'Save') {
-                    document.getElementById('comment').value = document.getElementById(inputId).value
-                    document.getElementById(btId).type = 'submit'
-                } else {
-                    document.getElementById(btId).innerText = 'Save';
+            function checkPermission(premium, event) {
+                if (premium == 1) {
+                    if (!${auth}) {
+                        alert("Bạn phải đăng nhập mới xem được bài này")
+                        event.preventDefault();
+                    } else {
+                        if (${authUser.checkExpiration()==0}) {
+                            alert("Bạn cần phải gia hạn tài khoản để có thể xem bài này")
+                            event.preventDefault();
+                        }
+                    }
                 }
             }
         </script>
@@ -37,7 +41,7 @@
                 <c:forEach items="${articleList}" var="c">
                     <div class=" mb-3 w-100 d-flex justify-content-between">
                         <div style="width: 30%">
-                            <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}">
+                            <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}" onclick="checkPermission(${c.premium},event)">
                                 <img style="width: 100%"
                                      src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
                                      alt="">
@@ -45,7 +49,7 @@
                         </div>
                         <div style="width: 69%" class="pl-2 d-flex flex-column justify-content-between">
                             <div>
-                                <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}">
+                                <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}" onclick="checkPermission(${c.premium},event)">
                                     <c:if test="${c.premium == 1}">
                                         <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                     </c:if>

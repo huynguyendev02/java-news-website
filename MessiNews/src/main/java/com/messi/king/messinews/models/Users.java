@@ -180,6 +180,7 @@ public class Users {
     public int checkExpiration() {
         if (this.getRole()==1) {
             Duration duration = Duration.between(LocalDateTime.now(), this.getIssue_at().plusMinutes(expiration));
+            System.out.println(duration.toDays());
             return duration.toDays() < 0 ? 0:1;
         } else
             return 1;

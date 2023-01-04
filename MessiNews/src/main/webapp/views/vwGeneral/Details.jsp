@@ -51,6 +51,20 @@
                     document.getElementById(btId).innerText = 'Save';
                 }
             }
+
+            function checkPermission(premium, event) {
+                if (premium == 1) {
+                    if (!${auth}) {
+                        alert("Bạn phải đăng nhập mới xem được bài này")
+                        event.preventDefault();
+                    } else {
+                        if (${authUser.checkExpiration()==0}) {
+                            alert("Bạn cần phải gia hạn tài khoản để có thể xem bài này")
+                            event.preventDefault();
+                        }
+                    }
+                }
+            }
         </script>
     </jsp:attribute>
     <jsp:body>
@@ -135,12 +149,14 @@
 
                     <div class="w-100 p-3 d-flex justify-content-between">
                         <c:forEach var="i" begin="0" end="5">
-                            <c:if test = "${article.id != related[i].id}">
-                            <div class="w-100 Shadown mr-3">
-                                <a href="${pageContext.request.contextPath}/Home/Details?id=${related[i].id}">
-                                    <img src="${pageContext.request.contextPath}/photos/articles/${related[i].id}/a.png"
-                                         alt="" class="w-100"
-                                         style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                            <c:if test="${article.id != related[i].id}">
+                                <div class="w-100 Shadown mr-3">
+                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${related[i].id}"
+                                       onclick="checkPermission(${related[i].premium},event)">
+                                        <img src="${pageContext.request.contextPath}/photos/articles/${related[i].id}/a.png"
+                                             alt="" class="w-100"
+                                             style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                                    </a>
                                     <div class="p-2">
                                         <c:if test="${related[i].premium == 1}">
                                             <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
@@ -152,13 +168,13 @@
                                                 </a>
                                             </c:if>
                                         </c:forEach>
-                                        <a href="${pageContext.request.contextPath}/Home/Details?id=${related[i].id}">
+                                        <a href="${pageContext.request.contextPath}/Home/Details?id=${related[i].id}"
+                                           onclick="checkPermission(${related[i].premium},event)">
                                             <p>${related[i].title}</p>
                                         </a>
                                     </div>
-                                </a>
-                            </div>
-                            <br>
+                                </div>
+                                <br>
                             </c:if>
                         </c:forEach>
                     </div>
@@ -169,7 +185,8 @@
                     <h4>Tags:</h4>
                     <div>
                         <c:forEach items="${tags}" var="c">
-                            <a href="${pageContext.request.contextPath}/Home/ByTag?id=${c.id}" class="aTags btn btn-outline-info" role="button" aria-pressed="true">
+                            <a href="${pageContext.request.contextPath}/Home/ByTag?id=${c.id}"
+                               class="aTags btn btn-outline-info" role="button" aria-pressed="true">
                                     ${c.name_tags}
                             </a>
                         </c:forEach>

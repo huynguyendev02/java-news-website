@@ -97,6 +97,8 @@
     $('#form').on('submit', function (e) {
 
         e.preventDefault();
+
+
         const username = $('#username').val();
         $.getJSON('${pageContext.request.contextPath}/Account/IsAvailable?username=' + username + '&email=' + username, (data) => {
             if (data === true) {

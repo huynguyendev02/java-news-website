@@ -1,6 +1,8 @@
 package com.messi.king.messinews.filters;
 
 import com.messi.king.messinews.models.Users;
+import com.messi.king.messinews.utils.GithubUtils;
+import com.messi.king.messinews.utils.GoogleUtils;
 import com.messi.king.messinews.utils.ServletUtils;
 
 import javax.servlet.*;
@@ -33,10 +35,32 @@ public class AccountFilter implements Filter {
                     return;
                 }
                 break;
+            case "/Password":
+                if ((boolean)session.getAttribute("auth")==false) {
+                    ServletUtils.redirect("/Account/Login", request, (HttpServletResponse) res);
+                    return;
+                }
+                break;
             case "/Login":
+                request.setAttribute("googleLogin", GoogleUtils.getAuthURL());
+                request.setAttribute("githubLogin", GithubUtils.getAuthURL());
+
                 if ((boolean)session.getAttribute("auth")==true) {
                     ServletUtils.redirect("/Account/Profile", request, (HttpServletResponse) res);
                     return;
+                }
+                break;
+            case "/GLogin":
+                if (req.getParameter("code")==null){
+                    ServletUtils.redirect("/Account/Login", request, (HttpServletResponse) res);
+                    return;
+                }
+                break;
+            case "/GitLogin":
+                if (req.getParameter("code")==null){
+                    ServletUtils.redirect("/Account/Login", request, (HttpServletResponse) res);
+                    return;
+
                 }
                 break;
         }

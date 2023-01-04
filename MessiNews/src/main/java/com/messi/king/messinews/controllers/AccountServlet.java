@@ -2,23 +2,28 @@ package com.messi.king.messinews.controllers;
 
 import com.messi.king.messinews.models.Users;
 import com.messi.king.messinews.services.UsersService;
+import com.messi.king.messinews.utils.GithubUtils;
+import com.messi.king.messinews.utils.GoogleUtils;
 import com.messi.king.messinews.utils.SendMailUtils;
 import com.messi.king.messinews.utils.ServletUtils;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 //import javax.mail.MessagingException;
+import javax.mail.MessagingException;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+
 
 @WebServlet(name = "AccountServlet", value = "/Account/*")
 @MultipartConfig(
@@ -33,10 +38,31 @@ public class AccountServlet extends HttpServlet {
         String url = request.getPathInfo();
         switch (url) {
             case "/Login":
+                request.setAttribute("googleLogin", GoogleUtils.getAuthURL());
+                request.setAttribute("githubLogin", GithubUtils.getAuthURL());
                 request.setAttribute("errorMessage", "");
                 ServletUtils.forward("/views/vwAccount/Login.jsp",request,response);
                 break;
+            case "/GLogin":
+                try {
+                    googleLogin(request,response);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "/GitLogin":
+                try {
+                    githubLogin(request, response);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
             case "/Register":
+                request.setAttribute("email","");
                 ServletUtils.forward("/views/vwAccount/Register.jsp",request,response);
                 break;
             case "/Forgot":
@@ -79,6 +105,49 @@ public class AccountServlet extends HttpServlet {
         }
     }
 
+    private void githubLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ExecutionException, InterruptedException {
+        String code = request.getParameter("code");
+        HttpSession session = request.getSession();
+        System.out.println(code);
+        List<String> resData= GithubUtils.getInfo(code);
+        System.out.println(resData.get(0));
+        System.out.println(resData.get(1));
+        if (resData.get(0).equals("200") && resData.get(1).length()!= 0) {
+            Users user = UsersService.findByEmail(resData.get(1));
+            if (user!=null){
+                session.setAttribute("auth", true);
+                session.setAttribute("authUser", user);
+                ServletUtils.redirect("/Home", request, response);
+            } else {
+                request.setAttribute("email", resData.get(1));
+                ServletUtils.forward("/views/vwAccount/Register.jsp", request, response);
+            }
+        } else {
+            ServletUtils.forward("/views/403.jsp",request,response);
+        }
+    }
+
+    private void googleLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ExecutionException, InterruptedException {
+        String code = request.getParameter("code");
+        HttpSession session = request.getSession();
+        System.out.println(code);
+        List<String> resData= GoogleUtils.getInfo(code);
+        System.out.println(resData.get(0));
+        System.out.println(resData.get(1));
+        if (resData.get(0).equals("200") && resData.get(1).length()!= 0) {
+            Users user = UsersService.findByEmail(resData.get(1));
+            if (user!=null){
+                session.setAttribute("auth", true);
+                session.setAttribute("authUser", user);
+                ServletUtils.redirect("/Home", request, response);
+            } else {
+                request.setAttribute("email", resData.get(1));
+                ServletUtils.forward("/views/vwAccount/Register.jsp", request, response);
+            }
+        } else {
+            ServletUtils.forward("/views/403.jsp",request,response);
+        }
+    }
 
 
     @Override
@@ -100,13 +169,13 @@ public class AccountServlet extends HttpServlet {
             case "/Password":
                 changePassword(request,response);
                 break;
-//            case "/Forgot":
-//                try {
-//                    forgotPassword(request,response);
-//                } catch (MessagingException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                break;
+            case "/Forgot":
+                try {
+                    forgotPassword(request,response);
+                } catch (MessagingException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
             case "/OTP":
                 checkOTP(request,response);
                 break;
@@ -143,26 +212,25 @@ public class AccountServlet extends HttpServlet {
         }
     }
 
-//    private void forgotPassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, MessagingException {
-//        String username = request.getParameter("username");
-//        Users user = UsersService.findByUsername(username);
-//        if (user==null){
-//            System.out.println("chay");
-//            user = UsersService.findByEmail(username);
-//
-//        }
-//
-//        String code = SendMailUtils.sendEmail(user);
-//
-//        String otpHash = BCrypt.withDefaults().hashToString(12, code.toCharArray());
-//
-//        UsersService.updateOTP(user.getId(),otpHash);
-//
-//        request.getSession().setAttribute("forgotUser", UsersService.findById(user.getId()));
-//        request.getSession().setAttribute("timeForgot", LocalDateTime.now().plusMinutes(5));
-//
-//        ServletUtils.redirect("/Account/OTP", request, response);
-//    }
+    private void forgotPassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, MessagingException, MessagingException {
+        String username = request.getParameter("username");
+        Users user = UsersService.findByUsername(username);
+        if (user==null){
+            user = UsersService.findByEmail(username);
+
+        }
+
+        String code = SendMailUtils.sendEmail(user);
+
+        String otpHash = BCrypt.withDefaults().hashToString(12, code.toCharArray());
+
+        UsersService.updateOTP(user.getId(),otpHash);
+
+        request.getSession().setAttribute("forgotUser", UsersService.findById(user.getId()));
+        request.getSession().setAttribute("timeForgot", LocalDateTime.now().plusMinutes(5));
+
+        ServletUtils.redirect("/Account/OTP", request, response);
+    }
 
     private void changeAvatar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Users user  = (Users)request.getSession().getAttribute("authUser");

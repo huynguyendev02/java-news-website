@@ -1,4 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="email" scope="request" type="java.lang.String"/>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,7 +103,13 @@
 
         <h6 class="mt-4 pl-2">Thông tin cá nhân</h6>
         <input name="fullName" type="text" placeholder="Họ và tên" class="w-100 pl-2 inputStyle mt-1" required>
-        <input id="email" name="email" type="email" placeholder="Email" class="w-100 pl-2 inputStyle mt-3" required>
+        <c:if test="${email.length()!=0}">
+            <input id="email" name="email" type="email" placeholder="Email" class="w-100 pl-2 inputStyle mt-3" value="${email}" readonly required>
+        </c:if>
+        <c:if test="${email.length()==0}">
+            <input id="email" name="email" type="email" placeholder="Email" class="w-100 pl-2 inputStyle mt-3" required>
+        </c:if>
+
         <div class="d-flex justify-content-between align-items-center mt-3 pl-2">
             <div>Ngày sinh</div>
             <input name="dob" id="txtDOB" type="text" class=" inputStyle" required style="width: 80%">
@@ -126,10 +136,17 @@
 
     $('#form').on('submit', function (e) {
         e.preventDefault();
+        let pwd = document.getElementById('pwd').value;
+
+        if (/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/.test(pwd)==false){
+            alert('Mật khẩu phải có tối thiểu 8 kí tự, gồm ít nhất 1 số, 1 chữ thường, 1 chữ in hoa')
+            return
+        }
         if (document.getElementById('pwd').value != document.getElementById('confirmPwd').value){
             alert('Xác nhận mật khẩu chưa chính xác')
             return
         }
+
         const username = $('#username').val();
         const email = $('#email').val();
         $.getJSON('${pageContext.request.contextPath}/Account/IsAvailable?username='+username+'&email='+email, (data) => {
