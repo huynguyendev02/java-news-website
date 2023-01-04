@@ -5,17 +5,6 @@
 <jsp:useBean id="subs" scope="request" type="java.util.List<com.messi.king.messinews.models.Users>"/>
 
 <m:main>
-    <jsp:attribute name="css">
-        <style>
-            .btExtendExp{
-                border-style: none;
-                background-color: transparent;
-            }
-            .btExtendExp:hover{
-                color: cornflowerblue;
-            }
-        </style>
-    </jsp:attribute>
     <jsp:body>
         <form action="" method="post">
             <div class="d-flex justify-content-center bgColorGray">
@@ -43,8 +32,8 @@
                                 <td align="center">Tài khoản</td>
                                 <td align="center">Ngày tạo</td>
                                 <td align="center">Email</td>
-                                <td align="center">Hạn dùng</td>
-                                <td align="center">Xóa</td>
+                                <td align="center">Hạn dùng (Ngày)</td>
+                                <td align="center"></td>
                             </tr>
                             <c:forEach items="${subs}" var="c">
                                 <tr>
@@ -60,9 +49,10 @@
                                     </td>
                                     <td align="center">${c.email}</td>
                                     <td align="center">
-                                        <button type="submit" class="btExtendExp" formaction="${pageContext.request.contextPath}/Admin/Users/ExtendExp?id=${c.id}">
-                                                ${c.expiration}
-                                        </button>
+                                        <a type="submit" href="${pageContext.request.contextPath}/Admin/Users/ExtendExp?id=${c.id}">
+
+                                                ${c.expirationDate()<0 ? "Hết hạn": c.expirationDate()}
+                                        </a>
                                     </td>
                                     <td align="center">
                                         <button type="submit"

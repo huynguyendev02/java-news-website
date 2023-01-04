@@ -30,9 +30,7 @@ public class EditorServlet extends HttpServlet {
                 ServletUtils.forward("/views/vwEditor/ListDraft.jsp", request, response);
                 break;
             case "/ListComplete":
-                List<Articles> listFull = EditorService.findByEditor(user.getId());
-                request.setAttribute("articlesList", listFull);
-                ServletUtils.forward("/views/vwEditor/ListComplete.jsp", request, response);
+                listComplete(request, response, user);
                 break;
 
             case "/Accept":
@@ -40,17 +38,10 @@ public class EditorServlet extends HttpServlet {
                 List<Tags> tags = TagsService.findAll();
                 Articles article = ArticlesService.findById(id);
 
-//                Truyền list CCat mà Editor được quyền
-                List<Categories> CatList = new ArrayList<>();
-                CatList.add(new Categories(100, "Oh yeah" ,1));
-                CatList.add(new Categories(102, "Oh yeah2" ,1));
-                CatList.add(new Categories(103, "Oh yeah3" ,1));
-                CatList.add(new Categories(104, "Oh yeah4" ,5));
-                CatList.add(new Categories(105, "Oh yeah5" ,5));
-                CatList.add(new Categories(106, "Oh yeah6" ,5));
-                CatList.add(new Categories(107, "Oh yeah7" ,6));
+                List<Categories> catList = CategoriesService.findAllByEditorId(user.getId());
+                System.out.println(catList.size());
 
-                request.setAttribute("Categories", CatList);
+                request.setAttribute("Categories", catList);
                 request.setAttribute("article", article);
                 request.setAttribute("tags", tags);
                 ServletUtils.forward("/views/vwEditor/Accept.jsp", request, response);
@@ -64,6 +55,13 @@ public class EditorServlet extends HttpServlet {
             default:
                 ServletUtils.forward("/views/404.jsp", request, response);
         }
+    }
+
+    private static void listComplete(HttpServletRequest request, HttpServletResponse response, Users user) throws ServletException, IOException {
+        List<Articles> listFull = ArticlesService.findByCatIdPublish(user.getId());
+
+        request.setAttribute("articlesList", listFull);
+        ServletUtils.forward("/views/vwEditor/ListComplete.jsp", request, response);
     }
 
     @Override

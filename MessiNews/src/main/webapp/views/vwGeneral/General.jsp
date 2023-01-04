@@ -260,7 +260,7 @@
 
                     <!--            10 bài có lượt xem cao nhất theo mỗi danh mục-->
                         <div class="" style="width: 30%">
-                            <h5>Top 10 bài báo nhiều lượt xem nhất theo mỗi danh mục</h5> <br>
+                            <h5>Top 10 bài báo mới nhất theo mỗi danh mục</h5> <br>
                             <div style="border-style: solid; border-color: cornflowerblue ; border-top: none; border-right:none; border-top-left-radius: 0; border-bottom-right-radius: 0">
                                 <c:forEach items="${newest10PerCate}" var="c">
                                     <div class="w-100 mb-3 pl-2 d-flex justify-content-between align-items-start" ;>

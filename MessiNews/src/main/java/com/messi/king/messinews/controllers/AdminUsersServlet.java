@@ -47,6 +47,9 @@ public class AdminUsersServlet extends HttpServlet {
                 request.setAttribute("editors", UsersService.findAllByRole(3));
                 ServletUtils.forward("/views/vwAdmin/EditorsAdminList.jsp", request, response);
                 break;
+            case "/ExtendExp":
+                getExtendExp(request, response);
+                break;
             case "/AssignCategory":
                 int editorId = 0;
                 try {
@@ -69,6 +72,17 @@ public class AdminUsersServlet extends HttpServlet {
                 ServletUtils.forward("/views/404.jsp", request, response);
                 break;
         }
+    }
+
+    private static void getExtendExp(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = 0;
+        try {
+            id = Integer.parseInt(request.getParameter("id"));
+        } catch (NumberFormatException e) {
+        }
+        Users user = UsersService.findById(id);
+        request.setAttribute("user", user);
+        ServletUtils.forward("/views/vwAdmin/SubsAdminExtendExpiration.jsp", request, response);
     }
 
     @Override

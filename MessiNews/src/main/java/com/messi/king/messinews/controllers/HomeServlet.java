@@ -10,6 +10,8 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.*;
 import java.sql.PreparedStatement;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "HomeServlet", value = "/Home/*")
@@ -22,83 +24,33 @@ public class HomeServlet extends HttpServlet {
         }
         switch (url) {
             case "/":
-                List<Articles> top10AllCate = ArticlesService.top10AllCate();
-                List<Articles> top5AllCateInWeek = ArticlesService.top5AllCateInWeek();
-                List<Articles> latestNewsAllCate = ArticlesService.latestNewsAllCate();
-                List<Articles> newest10PerCate = ArticlesService.newest10PerCate();
-
-                request.setAttribute("top10AllCate", top10AllCate);
-                request.setAttribute("top5AllCateInWeek", top5AllCateInWeek);
-                request.setAttribute("latestNewsAllCate", latestNewsAllCate);
-                request.setAttribute("newest10PerCate", newest10PerCate);
-
-//                Trang đang hiển thị
-                Integer currentPage = 4;
-//                Số trang tối đa
-                Integer maxPage = 15;
-                request.setAttribute("currentPage", currentPage);
-                request.setAttribute("maxPage", maxPage);
-                ServletUtils.forward("/views/vwGeneral/General.jsp", request, response);
+                homePage(request, response);
                 break;
             case "/Details":
-                int id = 0;
-                try {
-                    id = Integer.parseInt(request.getParameter("id"));
-                } catch (NumberFormatException e) {
-                    ServletUtils.redirect("/views/204.jsp", request, response);
-                }
-
-                Articles art = ArticlesService.findById(id);
-                if (art != null) {
-
-                    ArticlesService.viewArticle(id);
-
-                    request.setAttribute("article", art);
-                    request.setAttribute("related", ArticlesService.newsRelated(id));
-                    request.setAttribute("comments", CommentService.findByArtId(id));
-
-//                    Viết tạm để chạy web -> sửa thành tìm list tags của bài báo
-                    request.setAttribute("tags", TagsService.findAll());
-
-                    ServletUtils.forward("/views/vwGeneral/Details.jsp", request, response);
-                } else {
-                    ServletUtils.redirect("/views/204.jsp", request, response);
-                }
-                break;
-            case "/ByTags":
-                int idTags = 0;
-                try {
-                    idTags = Integer.parseInt(request.getParameter("idTags"));
-                } catch (NumberFormatException e) {
-                    ServletUtils.redirect("/views/204.jsp", request, response);
-                }
-
-//                List chạy tạm -> sửa thành list Article theo Tags mới tìm ở  trên
-                List<Articles> artList = ArticlesService.newest10PerCate();
-
-                if (artList != null) {
-
-//                    Truyền vào tên của Tags mới tìm ởi trên
-                    request.setAttribute("titleTags", "Đua xe đạp 1 bánh");
-                    request.setAttribute("articles", artList);
-                    ServletUtils.forward("/views/vwGeneral/ByTags.jsp", request, response);
-                } else {
-                    ServletUtils.redirect("/views/204.jsp", request, response);
-                }
+                details(request, response);
                 break;
             case "/ByPCat":
                 getArticlesAndForward(1, request, response);
                 break;
             case "/ByCat":
-
                 getArticlesAndForward(2, request, response);
                 break;
             case "/ByTag":
-
                 getArticlesAndForward(3, request, response);
                 break;
             case "/Download":
                 download(request, response);
+                break;
+
+            case "/Search":
+
+                String key = request.getParameter("key");
+                System.out.println(key);
+                List<Articles> articleList = ArticlesService.searchArticles(key);
+                request.setAttribute("articleList", articleList);
+
+
+                ServletUtils.forward("/views/vwGeneral/Search.jsp", request, response);
                 break;
             default:
                 ServletUtils.forward("/views/404.jsp", request, response);
@@ -107,7 +59,91 @@ public class HomeServlet extends HttpServlet {
 
     }
 
-    private void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private static void details(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = 0;
+        try {
+            id = Integer.parseInt(request.getParameter("id"));
+        } catch (NumberFormatException e) {
+        }
+
+        Articles art = ArticlesService.findById(id);
+        if (art != null) {
+            if (art.getPremium()==1) {
+                Users user = (Users) request.getSession().getAttribute("authUser");
+                if ((boolean)request.getSession().getAttribute("auth")==true) {
+                    if (user.getRole()==1) {
+                        int checkTime = user.getIssue_at().plusMinutes(user.getExpiration()).compareTo(LocalDateTime.now());
+                        if (checkTime<0) {
+                            ServletUtils.forward("/views/403.jsp", request, response);
+                            return;
+                        }
+                    }
+                } else {
+                    ServletUtils.forward("/views/403.jsp", request, response);
+                    return;
+                }
+            }
+            ArticlesService.viewArticle(id);
+
+            request.setAttribute("article", art);
+            request.setAttribute("related", ArticlesService.newsRelated(id));
+            request.setAttribute("comments", CommentService.findByArtId(id));
+
+            request.setAttribute("tags", TagsService.findTagByArticle(id));
+
+            ServletUtils.forward("/views/vwGeneral/Details.jsp", request, response);
+        } else {
+            ServletUtils.forward("/views/204.jsp", request, response);
+        }
+    }
+
+    private static void homePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        int page = 1;
+        try {
+            page = Integer.parseInt(request.getParameter("page"));
+        } catch (NumberFormatException e) {
+        }
+
+        List<Articles> top10AllCate = ArticlesService.top10AllCate();
+        List<Articles> top5AllCateInWeek = ArticlesService.top5AllCateInWeek();
+        List<Articles> latestNewsAllCate = ArticlesService.latestNewsAllCate();
+        List<Articles> newest10PerCate = ArticlesService.newest10PerCate();
+
+        request.setAttribute("top10AllCate", top10AllCate);
+        request.setAttribute("top5AllCateInWeek", top5AllCateInWeek);
+
+        int startIndex = (page-1)*10;
+        int endIndex = Math.min((page * 10), latestNewsAllCate.size());
+
+        request.setAttribute("latestNewsAllCate", latestNewsAllCate.subList(startIndex,endIndex));
+        request.setAttribute("newest10PerCate", newest10PerCate.subList(0,10));
+        System.out.println(latestNewsAllCate.size());
+//                Số trang tối đa
+        int maxPage = (int) Math.ceil((double) latestNewsAllCate.size()/10);
+        System.out.println(maxPage);
+
+        request.setAttribute("currentPage", page);
+        request.setAttribute("maxPage", maxPage);
+        ServletUtils.forward("/views/vwGeneral/General.jsp", request, response);
+    }
+
+    private void download(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+        Users user = (Users) request.getSession().getAttribute("authUser");
+        if ((boolean)request.getSession().getAttribute("auth")==true) {
+            if (user.getRole()==1) {
+                int checkTime = user.getIssue_at().plusMinutes(user.getExpiration()).compareTo(LocalDateTime.now());
+                if (checkTime<0) {
+                    ServletUtils.forward("/views/403.jsp", request, response);
+                    return;
+                }
+            }
+        } else {
+            ServletUtils.forward("/views/403.jsp", request, response);
+            return;
+        }
+
         int id = 0;
         try {
             id = Integer.parseInt(request.getParameter("id"));
@@ -136,9 +172,9 @@ public class HomeServlet extends HttpServlet {
             id = Integer.parseInt(request.getParameter("id"));
         } catch (NumberFormatException e) {
         }
-        List<Articles> arts = null;
+        List<Articles> arts = new ArrayList<>();
         String title = "";
-        List<Categories> cate = null;
+        List<Categories> cate = new ArrayList<>();
         switch (service) {
             case 1:
                 ParentCategories pcate = CategoriesService.findPCatById(id);
@@ -166,12 +202,7 @@ public class HomeServlet extends HttpServlet {
         request.setAttribute("cateRelated", cate);
         request.setAttribute("articles", arts);
 
-//                Trang đang hiển thị
-        Integer currentPage = 4;
-//                Số trang tối đa
-        Integer maxPage = 15;
-        request.setAttribute("currentPage", currentPage);
-        request.setAttribute("maxPage", maxPage);
+
 
         ServletUtils.forward("/views/vwGeneral/Topic.jsp", request, response);
     }
@@ -189,20 +220,6 @@ public class HomeServlet extends HttpServlet {
                 break;
             case "/Details/Comment/Delete":
                 deleteComment(request, response);
-                break;
-            case "/Search":
-                List<Articles> articleList = ArticlesService.newest10PerCate();
-                request.setAttribute("articleList", articleList);
-
-//                key lấy về
-                String key = request.getParameter("key");
-//                Trang đang hiển thị
-                Integer currentPage = 4;
-//                Số trang tối đa
-                Integer maxPage = 15;
-                request.setAttribute("currentPage", currentPage);
-                request.setAttribute("maxPage", maxPage);
-                ServletUtils.forward("/views/vwGeneral/Search.jsp", request, response);
                 break;
             default:
                 ServletUtils.forward("/views/204.jsp", request, response);

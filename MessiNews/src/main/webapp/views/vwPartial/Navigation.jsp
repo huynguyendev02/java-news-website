@@ -28,12 +28,12 @@
                     <div class="input-group-prepend">
                 <span class="input-group-text bgColorGray"
                       style="border-top-left-radius: 20px;border-bottom-left-radius: 20px; border-style: none">
-                    <button id="iconSearch" onclick="iconSearch('${pageContext.request.contextPath}/Home/Search?key=')" style="border-style: none">
+                    <button id="iconSearch" onclick="iconSearch('${pageContext.request.contextPath}/Home/Search?key=')" formmethod="get" style="border-style: none">
                        <i class="fa fa-search" aria-hidden="true" style=" color: grey"></i>
                     </button>
                 </span>
                     </div>
-                    <input id="search"
+                    <input id="search" name="key"
                            onkeypress="searchInfo('${pageContext.request.contextPath}/Home/Search?key=',event)"
                            type="text" class="form-control bgColorGray h-100"
                            placeholder="Bạn muốn tìm bài báo nào?"

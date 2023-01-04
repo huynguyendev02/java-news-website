@@ -1,6 +1,8 @@
 package com.messi.king.messinews.services;
 
+import com.messi.king.messinews.models.ArticleHasTag;
 import com.messi.king.messinews.models.Articles;
+import com.messi.king.messinews.models.Categories;
 import com.messi.king.messinews.utils.DbUtils;
 import org.sql2o.Connection;
 
@@ -12,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class ArticlesService {
     public static List<Articles> top10AllCate() {
-        final String query = "select * from articles ORDER BY views DESC LIMIT 10";
+        final String query = "select * from articles WHERE status=1 ORDER BY views DESC";
         try (Connection con = DbUtils.getConnection()) {
             List<Articles> arts = con.createQuery(query)
                     .executeAndFetch(Articles.class);
@@ -20,10 +22,20 @@ public class ArticlesService {
         }
     }
     public static List<Articles> top5AllCateInWeek() {
-        final String query = "select * from articles WHERE DATEDIFF(NOW(),publish_date)<=7 ORDER BY views DESC";
+        final String query = "select * from articles WHERE DATEDIFF(NOW(),publish_date)<=7 and status=1 ORDER BY views DESC";
         try (Connection con = DbUtils.getConnection()) {
             List<Articles> arts = con.createQuery(query)
                     .executeAndFetch(Articles.class);
+            return arts;
+        }
+    }
+    public static List<Articles> searchArticles(String key) {
+        final String query = "SELECT * from articles WHERE MATCH(title) AGAINST (:key) UNION SELECT * from articles WHERE MATCH(abstract_content) AGAINST (:key) UNION SELECT * from articles WHERE MATCH(content) AGAINST (:key)";
+        List<Articles> arts = new ArrayList<>();
+        try (Connection con = DbUtils.getConnection()) {
+             arts.addAll(con.createQuery(query)
+                     .addParameter("key", key)
+                     .executeAndFetch(Articles.class)) ;
             return arts;
         }
     }
@@ -50,7 +62,7 @@ public class ArticlesService {
         return arts;
     }
     public static List<Articles> newest10PerCate() {
-        final String query = "SELECT * FROM  ( (select * from articles where publish_date = ( select Max(publish_date) from articles as f where f.categories_id=articles.categories_id ) group by categories_id, publish_date ) as bangmot JOIN (SELECT categories_id from articles GROUP BY categories_id ORDER BY SUM(views) DESC LIMIT 10 ) as banghai ON bangmot.categories_id = banghai.categories_id )";
+        final String query = "SELECT * FROM  ( (select * from articles where status=1 and publish_date = ( select Max(publish_date) from articles as f where f.categories_id=articles.categories_id ) group by categories_id, publish_date ) as bangmot JOIN (SELECT categories_id from articles GROUP BY categories_id ORDER BY SUM(views) DESC  ) as banghai ON bangmot.categories_id = banghai.categories_id )";
 //        final String top10cateId = "SELECT categories_id from articles GROUP BY categories_id ORDER BY SUM(views) DESC";
 //        final String topNewestPerCate = "SELECT * from articles WHERE categories_id=:cate_id ORDER BY publish_date desc limit 1";
         try (Connection con = DbUtils.getConnection()) {
@@ -83,7 +95,7 @@ public class ArticlesService {
         }
     }
     public static List<Articles> latestNewsAllCate() {
-        final String query = "select * from articles ORDER BY publish_date DESC";
+        final String query = "select * from articles where status=1 ORDER BY publish_date DESC";
         try (Connection con = DbUtils.getConnection()) {
             List<Articles> arts = con.createQuery(query)
                     .executeAndFetch(Articles.class);
@@ -109,16 +121,14 @@ public class ArticlesService {
         }
     }
     public static List<Articles> findByTagId(int tag_id) {
-        final String tagQuery = "select article_id from article_has_tag where tag_id= :tag_id";
-        final String artsQuery = "select * from article where id= :id";
+        final String tagQuery = "select * from article_has_tag where tag_id= :tag_id";
         try (Connection con = DbUtils.getConnection()) {
-            List<Integer> artsId = con.createQuery(tagQuery)
+            List<ArticleHasTag> artsId = con.createQuery(tagQuery)
                     .addParameter("tag_id", tag_id)
-                    .executeAndFetch(Integer.class);
+                    .executeAndFetch(ArticleHasTag.class);
             List<Articles> arts = new ArrayList<>();;
-            for (int id: artsId) {
-                Articles art = con.createQuery(artsQuery).addParameter("id",id).executeAndFetchFirst(Articles.class);
-                arts.add(art);
+            for (ArticleHasTag articleHasTag: artsId) {
+                arts.add(ArticlesService.findById(articleHasTag.getArticle_id()));
             }
             return arts;
         }
@@ -151,6 +161,17 @@ public class ArticlesService {
             List<Articles> arts = con.createQuery(query)
                     .addParameter("id", id)
                     .executeAndFetch(Articles.class);
+            return arts;
+        }
+    }
+    public static List<Articles> findByCatIdPublish(int userId) {
+        List<Categories> catList = CategoriesService.findAllByEditorId(userId);
+        List<Articles> arts = new ArrayList<>();
+        final String query = "select * from articles where categories_id = :id and status=1 ORDER BY publish_date DESC";
+        try (Connection con = DbUtils.getConnection()) {
+            for(Categories cat : catList) {
+                arts.addAll(con.createQuery(query).addParameter("id", cat.getId()).executeAndFetch(Articles.class));
+            }
             return arts;
         }
     }

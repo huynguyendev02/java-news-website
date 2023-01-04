@@ -59,13 +59,13 @@ public class UsersService {
         }
     }
     public static void extendSubscriber(int id, LocalDateTime expireDate) {
-        final String query = "update users set issue_at = :issue_at, expiration= :expiration where id = :id";
-        Duration duration = Duration.between(LocalDateTime.now(), expireDate);
+        final String query = "update users set expiration= :expiration where id = :id";
+        Users user = UsersService.findById(id);
+        Duration duration = Duration.between(user.getIssue_at(), expireDate);
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
                     .addParameter("id", id)
-                    .addParameter("issue_at", LocalDateTime.now())
-                    .addParameter("expiration",duration.toMinutes() )
+                    .addParameter("expiration",duration.toMinutes())
                     .executeUpdate();
         }
     }

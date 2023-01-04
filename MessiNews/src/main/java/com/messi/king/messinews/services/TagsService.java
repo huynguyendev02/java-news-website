@@ -1,11 +1,13 @@
 package com.messi.king.messinews.services;
 
+import com.messi.king.messinews.models.ArticleHasTag;
 import com.messi.king.messinews.models.ParentCategories;
 import com.messi.king.messinews.models.Tags;
 import com.messi.king.messinews.utils.DbUtils;
 import org.sql2o.Connection;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TagsService {
@@ -23,6 +25,19 @@ public class TagsService {
         try (Connection con = DbUtils.getConnection()) {
             List<Tags> tags = con.createQuery(query)
                     .executeAndFetch(Tags.class);
+            return tags;
+        }
+    }
+    public static List<Tags> findTagByArticle(int artId) {
+        final String query = "select * from article_has_tag where article_id= :artId";
+        try (Connection con = DbUtils.getConnection()) {
+            List<Tags> tags = new ArrayList<>();
+            List<ArticleHasTag> artTags = con.createQuery(query)
+                    .addParameter("artId", artId)
+                    .executeAndFetch(ArticleHasTag.class);
+            for(ArticleHasTag artTag: artTags) {
+                tags.add(TagsService.findById(artTag.getTag_id()));
+            }
             return tags;
         }
     }

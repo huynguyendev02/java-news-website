@@ -3,6 +3,7 @@ package com.messi.king.messinews.models;
 import com.messi.king.messinews.services.ArticlesService;
 import com.messi.king.messinews.services.CategoriesService;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -171,6 +172,17 @@ public class Users {
             views+=art.getViews();
         }
         return views;
+    }
+    public long expirationDate() {
+        Duration duration = Duration.between(LocalDateTime.now(), this.getIssue_at().plusMinutes(expiration));
+        return  duration.toDays();
+    }
+    public int checkExpiration() {
+        if (this.getRole()==1) {
+            Duration duration = Duration.between(LocalDateTime.now(), this.getIssue_at().plusMinutes(expiration));
+            return duration.toDays() < 0 ? 0:1;
+        } else
+            return 1;
     }
 
     public void setOtp_exp(LocalDateTime otp_exp) {
