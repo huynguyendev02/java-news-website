@@ -1,9 +1,11 @@
 package com.messi.king.messinews.controllers;
 
 import com.messi.king.messinews.models.Articles;
+import com.messi.king.messinews.models.Categories;
 import com.messi.king.messinews.models.Tags;
 import com.messi.king.messinews.models.Users;
 import com.messi.king.messinews.services.ArticlesService;
+import com.messi.king.messinews.services.CategoriesService;
 import com.messi.king.messinews.services.TagsService;
 import com.messi.king.messinews.utils.ServletUtils;
 
@@ -48,7 +50,15 @@ public class WriterServlet extends HttpServlet {
                 } catch (NumberFormatException e) {
                 }
                 Articles art = ArticlesService.findById(id);
+                List<Tags> allTags = TagsService.findAll();
+                List<Tags> tags = TagsService.findTagByArticle(id);
+                Categories categories = CategoriesService.findById(art.getCategories_id());
+
                 request.setAttribute("art", art);
+                request.setAttribute("allTags", allTags);
+                request.setAttribute("tags", tags);
+                request.setAttribute("categories", categories);
+
                 ServletUtils.forward("/views/vwWriter/Edit.jsp",request,response);
                 break;
             default:

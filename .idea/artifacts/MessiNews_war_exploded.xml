@@ -27,6 +27,13 @@
           <element id="library" level="project" name="Maven: org.apache.pdfbox:xmpbox:2.0.22" />
           <element id="library" level="project" name="Maven: com.openhtmltopdf:openhtmltopdf-core:1.0.6" />
           <element id="library" level="project" name="Maven: de.rototor.pdfbox:graphics2d:0.30" />
+          <element id="library" level="project" name="Maven: com.github.scribejava:scribejava-apis:8.3.2" />
+          <element id="library" level="project" name="Maven: com.github.scribejava:scribejava-core:8.3.2" />
+          <element id="library" level="project" name="Maven: com.github.scribejava:scribejava-java8:8.3.2" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.4" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.4" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.4" />
+          <element id="library" level="project" name="Maven: org.json:json:20220924" />
         </element>
       </element>
       <element id="directory" name="META-INF">

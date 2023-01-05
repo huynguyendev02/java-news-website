@@ -105,16 +105,15 @@
             </div>
         </div>
 
-        <a href="${googleLogin}" class="w-100 inputStyle " style="background-color: #f9f9fb">
+        <a href="${googleLogin}" class="btn w-100 inputStyle" role="button" style="background-color: #f9f9fb; font-weight: bold">
             <img class="imageIconInBT mr-1" src="${pageContext.request.contextPath}/photos/logos/LogoGoogle.png"
                  alt="">
             Đăng nhập bằng Google
         </a>
-
-        <a href="${githubLogin}" class="w-100 inputStyle mt-3" style="background-color: #f9f9fb">
-            <img class="imageIconInBT mr-1" src="${pageContext.request.contextPath}/photos/logos/LogoFacebook.png"
+        <a href="${githubLogin}" class="btn w-100 inputStyle mt-3" role="button"  style="background-color: #f9f9fb; font-weight: bold">
+            <img class="imageIconInBT mr-1" src="${pageContext.request.contextPath}/photos/logos/LogoGitHub.png"
                  alt="">
-            Đăng nhập bằng Githube
+            Đăng nhập bằng Github
         </a>
         <div align="center" class="mt-4">
             Chưa có tài khoản? <a href="${pageContext.request.contextPath}/Account/Register">Đăng ký</a>
