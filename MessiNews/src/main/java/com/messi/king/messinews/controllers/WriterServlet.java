@@ -154,8 +154,6 @@ public class WriterServlet extends HttpServlet {
     }
 
     private void upload(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-
         String title = request.getParameter("title");
         String abstractContent = request.getParameter("abstract");
         String content = request.getParameter("content");

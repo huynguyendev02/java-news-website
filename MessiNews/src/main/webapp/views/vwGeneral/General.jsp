@@ -172,7 +172,7 @@
                             <c:forEach var="i" begin="2" end="4">
                                 <div style=" width: 32%">
                                     <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[i].id}"
-                                       onclick="checkPermission(${top5AllCateInWeek[0].premium},event)">
+                                       onclick="checkPermission(${top5AllCateInWeek[i].premium},event)">
                                         <img src="${pageContext.request.contextPath}/photos/articles/${top5AllCateInWeek[i].id}/a.png"
                                              alt="" class="w-100">
                                     </a>
@@ -181,7 +181,7 @@
                                         <b>${top5AllCateInWeek[i].getCategoriesName(top5AllCateInWeek[i].categories_id)}</b>
                                     </a> <br>
                                     <a href="${pageContext.request.contextPath}/Home/Details?id=${top5AllCateInWeek[i].id}"
-                                       onclick="checkPermission(${top5AllCateInWeek[0].premium},event)">
+                                       onclick="checkPermission(${top5AllCateInWeek[i].premium},event)">
                                         <c:if test="${top5AllCateInWeek[i].premium == 1}">
                                             <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                         </c:if>

@@ -45,9 +45,21 @@ public class HomeServlet extends HttpServlet {
             case "/Search":
 
                 String key = request.getParameter("key");
-                System.out.println(key);
-                List<Articles> articleList = ArticlesService.searchArticles(key);
-                request.setAttribute("articleList", articleList);
+                List<Articles> allArticle = ArticlesService.searchArticles(key);
+
+//                tìm kiếm theo title
+                List<Articles> byTitle = ArticlesService.top10AllCate();
+
+//                tìm kiếm theo Abstract
+                List<Articles> byAbstract = ArticlesService.top5AllCateInWeek();
+
+//                tìm kiếm theo content
+                List<Articles> byContent = ArticlesService.findByCatId(1);
+
+                request.setAttribute("allArticle", allArticle);
+                request.setAttribute("byTitle", byTitle);
+                request.setAttribute("byAbstract", byAbstract);
+                request.setAttribute("byContent", byContent);
 
 
                 ServletUtils.forward("/views/vwGeneral/Search.jsp", request, response);

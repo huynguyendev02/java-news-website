@@ -32,24 +32,31 @@ public class EditorServlet extends HttpServlet {
             case "/ListComplete":
                 listComplete(request, response, user);
                 break;
+            case "/ViewArticle":
+                int id2 = Integer.parseInt(request.getParameter("id"));
+                Articles article2 = ArticlesService.findById(id2);
+                List<Tags> tags = TagsService.findTagByArticle(id2);
+
+                request.setAttribute("article", article2);
+                request.setAttribute("tags", tags);
+                ServletUtils.forward("/views/vwEditor/ViewArticle.jsp", request, response);
+                break;
 
             case "/Accept":
                 int id = Integer.parseInt(request.getParameter("id"));
-                List<Tags> tags = TagsService.findAll();
+                List<Tags> tagsList = TagsService.findAll();
                 Articles article = ArticlesService.findById(id);
-
                 List<Categories> catList = CategoriesService.findAllByEditorId(user.getId());
-                System.out.println(catList.size());
 
                 request.setAttribute("Categories", catList);
                 request.setAttribute("article", article);
-                request.setAttribute("tags", tags);
+                request.setAttribute("tags", tagsList);
                 ServletUtils.forward("/views/vwEditor/Accept.jsp", request, response);
                 break;
             case "/Deny":
-                int id2 = Integer.parseInt(request.getParameter("id"));
-                Articles article2 = ArticlesService.findById(id2);
-                request.setAttribute("article", article2);
+                int id3 = Integer.parseInt(request.getParameter("id"));
+                Articles article3 = ArticlesService.findById(id3);
+                request.setAttribute("article", article3);
                 ServletUtils.forward("/views/vwEditor/Deny.jsp", request, response);
                 break;
             default:

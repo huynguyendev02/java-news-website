@@ -32,6 +32,25 @@
 
           </style>
     </jsp:attribute>
+    <jsp:attribute name="js">
+        <script>
+            function acceptClick(){
+                $('#accept').css('display','block');
+                $('#draft').css('display','none')
+                $('#deny').css('display','none')
+            }
+            function draftClick(){
+                $('#accept').css('display','none');
+                $('#draft').css('display','block')
+                $('#deny').css('display','none')
+            }
+            function denyClick(){
+                $('#accept').css('display','none');
+                $('#draft').css('display','none')
+                $('#deny').css('display','block')
+            }
+        </script>
+    </jsp:attribute>
     <jsp:body>
         <form action="" method="post" class="h-100">
             <div class="d-flex justify-content-center bgColorGray">
@@ -42,61 +61,123 @@
 
                 <!--    center-->
                 <div style="width: 70%; background-color: white" class="my-3 p-3">
-                    <h4>Những bài viết của bạn</h4>
+                    <div class="d-flex justify-content-between">
+                        <h4>Danh sách bài viết của bạn</h4>
+                        <div>
+                            <a class="mx-1 px-3 btn btn-outline-success" onclick="acceptClick()"
+                               style="border-radius: 20px" type="button">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                                Đã duyệt
+                            </a>
+                            <a class="mx-1 px-3 btn btn-outline-warning" onclick="draftClick()"
+                               style="border-radius: 20px" type="button">
+                                <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                Bản thảo
+                            </a>
+                            <a class="mx-1 px-3 btn btn-outline-danger" onclick="denyClick()"
+                               style="border-radius: 20px" type="button">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                                Bị từ chối
+                            </a>
+                        </div>
+                    </div>
                     <hr>
                     <br>
-                    <table class="w-100" cellpadding="5px">
-                        <tr style="background-color: #EEEEEE">
-                            <td>Tiêu đề</td>
-                            <td align="center">Tramg thái</td>
-                            <td align="center">Ngày xuất bản</td>
-                            <td align="center">Lượt xem</td>
-                            <td align="center">Xóa</td>
-                        </tr>
-                        <c:forEach items="${articlesList}" var="c">
-                            <tr>
-                                <td>
-                                    <c:choose>
-                                        <c:when test="${c.status != 1}">
-                                            <a href="${pageContext.request.contextPath}/Writer/Edit?id=${c.id}">
+
+                    <div id="accept">
+                        <table class="w-100" cellpadding="5px">
+                            <tr style="background-color: #EEEEEE">
+                                <td>Tiêu đề</td>
+                                <td align="center">Tramg thái</td>
+                                <td align="center">Ngày xuất bản</td>
+                                <td align="center">Lượt xem</td>
+                            </tr>
+                            <c:forEach items="${articlesList}" var="c">
+                                <c:if test="${c.status==1}">
+                                    <tr>
+                                        <td>
+                                            <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}">
                                                     ${c.title}
                                             </a>
-                                        </c:when>
-                                        <c:otherwise>
-                                            ${c.title}
-                                        </c:otherwise>
-                                    </c:choose>
-                                </td>
-                                <td align="center">
-                                    <c:choose>
-                                        <c:when test="${c.status == 0}">
-                                            <p style="color: red"> Bị từ chối </p>
-                                        </c:when>
-
-                                        <c:when test="${c.status == 1}">
+                                        </td>
+                                        <td align="center">
                                             <p style="color: forestgreen"> Đã duyệt </p>
-                                        </c:when>
+                                        </td>
+                                        <td align="center">
+                                            <script>
+                                                document.write('${c.publish_date}'.slice(8, 10) + '/' + '${c.publish_date}'.slice(5, 7) + '/' + '${c.publish_date}'.slice(0, 4))
+                                            </script>
+                                        </td>
+                                        <td align="center">
+                                                ${c.views}</td>
+                                    </tr>
+                                </c:if>
+                            </c:forEach>
+                        </table>
+                    </div>
 
-                                        <c:otherwise>
-                                            <p style="color: goldenrod"> Bản thảo </p>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </td>
-                                <td align="center">
-                                    <script>
-                                        document.write('${c.publish_date}'.slice(8, 10) + '/' + '${c.publish_date}'.slice(5, 7) + '/' + '${c.publish_date}'.slice(0, 4))
-                                    </script>
-                                </td>
-                                <td align="center"> ${c.views}</td>
-                                <td align="center">
-                                    <button type="button" formaction="" class="btn btn-danger">Xóa</button>
-                                </td>
-                                <td>
-
-                                </td>
+                    <div id="draft" style="display: none">
+                        <table class="w-100" cellpadding="5px">
+                            <tr style="background-color: #EEEEEE">
+                                <td>Tiêu đề</td>
+                                <td align="center">Chuyên mục</td>
+                                <td align="center">Trạng thái</td>
+                                <td align="center"></td>
                             </tr>
-                        </c:forEach>
-                    </table>
+                            <c:forEach items="${articlesList}" var="c">
+                                <c:if test="${c.status==-1}">
+                                    <tr>
+                                        <td>
+                                            <a href="${pageContext.request.contextPath}/Writer/Edit?id=${c.id}"">
+                                                    ${c.title}
+                                            </a>
+                                        </td>
+                                        <td align="center">
+                                            ${c.getCategoriesName(c.categories_id)}
+                                        </td>
+                                        <td align="center">
+                                            <p style="color: goldenrod"> Bản thảo </p>
+                                        </td>
+                                        <td align="center">
+                                            <button type="button" formaction="" class="btn btn-danger">Xóa</button>
+                                        </td>
+                                    </tr>
+                                </c:if>
+                            </c:forEach>
+                        </table>
+                    </div>
+
+                    <div id="deny" style="display: none">
+                        <table class="w-100" cellpadding="5px">
+                            <tr style="background-color: #EEEEEE">
+                                <td>Tiêu đề</td>
+                                <td align="center">Chuyên mục</td>
+                                <td align="center">Trạng thái</td>
+                                <td align="center"></td>
+                            </tr>
+                            <c:forEach items="${articlesList}" var="c">
+                                <c:if test="${c.status==0}">
+                                    <tr>
+                                        <td>
+                                            <a href="${pageContext.request.contextPath}/Writer/Edit?id=${c.id}"">
+                                                ${c.title}
+                                            </a>
+                                        </td>
+                                        <td align="center">
+                                                ${c.getCategoriesName(c.categories_id)}
+                                        </td>
+                                        <td align="center">
+                                            <p style="color: red"> Bị từ chối </p>
+                                        </td>
+                                        <td align="center">
+                                            <button type="button" formaction="" class="btn btn-danger">Xóa</button>
+                                        </td>
+                                    </tr>
+                                </c:if>
+                            </c:forEach>
+                        </table>
+                    </div>
+
                 </div>
 
                 <!--    right-->

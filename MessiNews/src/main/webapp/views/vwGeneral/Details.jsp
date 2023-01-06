@@ -79,7 +79,7 @@
                     <div>
                         <c:forEach items="${allCategories}" var="c">
                             <c:if test="${c.id == article.categories_id}">
-                                <c:set var="PCatId" scope="session" value="${c.parent_cate_id}"/>
+                                <c:set var="PCatId" value="${c.parent_cate_id}"/>
                             </c:if>
                         </c:forEach>
                         <c:forEach items="${allPCategories}" var="c">
@@ -90,19 +90,19 @@
                             </c:if>
                         </c:forEach>
                         <i class="fa fa-caret-right px-2" aria-hidden="true"></i>
-                        <c:forEach items="${allCategories}" var="c">
-                            <c:if test="${c.id == article.categories_id}">
-                                <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.id}">
-                                    <b>${c.name_category}</b>
-                                </a>
-                            </c:if>
-                        </c:forEach>
+                        <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.id}">
+                            <b>${article.getCategoriesName(article.categories_id)}</b>
+                        </a>
                     </div>
                     <br>
 
                     <!--    Tiểu đề-->
                     <div>
-                        <h1>${article.title}</h1>
+                        <h1>
+                            <c:if test="${article.premium == 1}">
+                                <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                            </c:if>
+                                ${article.title}</h1>
                     </div>
 
                     <!--        Tác giả bài báo-->

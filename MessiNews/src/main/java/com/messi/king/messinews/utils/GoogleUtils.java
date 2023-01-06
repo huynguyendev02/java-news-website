@@ -19,8 +19,8 @@ import java.util.concurrent.ExecutionException;
 
 public class GoogleUtils {
     private static final String PROTECTED_RESOURCE_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
-    private static final String clientId = "";
-    private static final String clientSecret = "";
+    private static final String clientId = "561751142391-ts8f0jegn3alsreh10g2k2t9veuet7on.apps.googleusercontent.com";
+    private static final String clientSecret = "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";
     private static final OAuth20Service service = new ServiceBuilder(clientId)
             .apiSecret(clientSecret)
             .defaultScope("https://www.googleapis.com/auth/userinfo.email")

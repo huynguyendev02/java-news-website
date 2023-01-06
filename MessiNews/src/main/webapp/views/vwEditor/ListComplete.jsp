@@ -13,44 +13,6 @@
                 href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
                 integrity="sha512-f0tzWhCwVFS3WeYaofoLWkTP62ObhewQ1EZn65oSYDZUg1+CyywGKkWzm8BxaJj5HGKI72PnMH9jYyIFz+GH7g=="
                 crossorigin="anonymous" referrerpolicy="no-referrer"/>
-
-          <style>
-              .Shadown {
-                  border-style: solid;
-                  border-right: none;
-              }
-
-              .aDelete {
-                  color: red;
-              }
-
-              .aDelete:hover {
-                  color: red;
-                  font-weight: bold;
-              }
-
-              .aEdit {
-                  color: forestgreen;
-              }
-
-              .aEdit:hover {
-                  color: forestgreen;
-                  font-weight: bold;
-              }
-
-              .btStyle {
-                  width: 350px;
-                  border-radius: 5px;
-              }
-
-              .inputStyle {
-                  border-style: solid;
-                  height: 40px;
-                  border-radius: 10px;
-                  border-color: #F0F0F0;
-              }
-
-          </style>
     </jsp:attribute>
 
     <jsp:body>
@@ -69,12 +31,14 @@
                     <div id="danhSach">
                         <table class="w-100" cellpadding="5px">
                             <tr style="background-color: #EEEEEE">
-                                <td style="width: 40%">Tiêu đề</td>
+                                <td style="width: 35%">Tiêu đề</td>
                                 <td align="center" style="width: 15%">Chuyên mục</td>
                                 <td align="center" style="width: 20%">Tác giả</td>
+                                <td align="center" style="width: 15%">Trang thái</td>
                                 <td align="center" style="width: 10%">Ngày đăng</td>
+                                <td align="center" style="width: 10%">Views</td>
                                 <td align="center" style="width: 5%">Loại</td>
-                                <td align="center" style="width: 20%">Lượt xem</td>
+
                             </tr>
                             <c:forEach items="${articlesList}" var="c">
                                 <tr>
@@ -90,9 +54,31 @@
                                             ${c.getWriterName(c.writer_id)}
                                     </td>
                                     <td align="center">
-                                        <script>
-                                            document.write('${c.publish_date}'.slice(8, 10) + '/' + '${c.publish_date}'.slice(5, 7) + '/' + '${c.publish_date}'.slice(0, 4))
-                                        </script>
+                                        <c:choose>
+                                            <c:when test="${c.status == 0}">
+                                                <p style="color: red"> Bị từ chối </p>
+                                            </c:when>
+
+                                            <c:when test="${c.status == 1}">
+                                                <p style="color: forestgreen"> Đã duyệt </p>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <p style="color: goldenrod"> Bản thảo </p>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td align="center">
+                                        <c:if test="${c.status == 1}">
+                                            <script>
+                                                document.write('${c.publish_date}'.slice(8, 10) + '/' + '${c.publish_date}'.slice(5, 7) + '/' + '${c.publish_date}'.slice(0, 4))
+                                            </script>
+                                        </c:if>
+                                    </td>
+                                    <td align="center">
+                                        <c:if test="${c.status == 1}">
+                                            ${c.views}
+                                        </c:if>
                                     </td>
                                     <td align="center">
                                         <c:if test="${c.premium == 0}">
@@ -102,10 +88,6 @@
                                             <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
                                         </c:if>
                                     </td>
-                                    <td align="center">
-                                            ${c.views}
-                                    </td>
-
                                 </tr>
                             </c:forEach>
                         </table>

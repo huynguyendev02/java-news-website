@@ -34,6 +34,7 @@
                                 <td align="center">Email</td>
                                 <td align="center">Hạn dùng (Ngày)</td>
                                 <td align="center"></td>
+                                <td align="center"></td>
                             </tr>
                             <c:forEach items="${subs}" var="c">
                                 <tr>
@@ -49,10 +50,11 @@
                                     </td>
                                     <td align="center">${c.email}</td>
                                     <td align="center">
-                                        <a type="submit" href="${pageContext.request.contextPath}/Admin/Users/ExtendExp?id=${c.id}">
-
-                                                ${c.expirationDate()<0 ? "Hết hạn": c.expirationDate()}
-                                        </a>
+                                            ${c.expirationDate()<0 ? "Hết hạn": c.expirationDate()}
+                                    </td>
+                                    <td align="center">
+                                        <a href="${pageContext.request.contextPath}/Admin/Users/ExtendExp?id=${c.id}"
+                                           role="button" class="btn btn-info">Gia hạn</a>
                                     </td>
                                     <td align="center">
                                         <button type="submit"

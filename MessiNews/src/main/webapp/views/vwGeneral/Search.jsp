@@ -2,8 +2,10 @@
 <%@ taglib prefix="m" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<jsp:useBean id="articleList" scope="request" type="java.util.List<com.messi.king.messinews.models.Articles>"/>
-
+<jsp:useBean id="allArticle" scope="request" type="java.util.List<com.messi.king.messinews.models.Articles>"/>
+<jsp:useBean id="byTitle" scope="request" type="java.util.List<com.messi.king.messinews.models.Articles>"/>
+<jsp:useBean id="byAbstract" scope="request" type="java.util.List<com.messi.king.messinews.models.Articles>"/>
+<jsp:useBean id="byContent" scope="request" type="java.util.List<com.messi.king.messinews.models.Articles>"/>
 
 <m:main>
     <jsp:attribute name="css">
@@ -30,50 +32,210 @@
                     }
                 }
             }
+            function byAllClick(){
+                $('#byAll').css('display','block')
+                $('#byTitle').css('display','none')
+                $('#byAbstract').css('display','none')
+                $('#byContent').css('display','none')
+            }
+
+            function byTitleClick(){
+                $('#byAll').css('display','none')
+                $('#byTitle').css('display','block')
+                $('#byAbstract').css('display','none')
+                $('#byContent').css('display','none')
+            }
+
+            function byAbstract(){
+                $('#byAll').css('display','none')
+                $('#byTitle').css('display','none')
+                $('#byAbstract').css('display','block')
+                $('#byContent').css('display','none')
+            }
+
+            function byContent(){
+                $('#byAll').css('display','none')
+                $('#byTitle').css('display','none')
+                $('#byAbstract').css('display','none')
+                $('#byContent').css('display','block')
+            }
+
         </script>
     </jsp:attribute>
     <jsp:body>
         <div style="width: 15%"></div>
         <div class="d-flex justify-content-center">
             <div style="width: 70%">
-                <h3>Kết quả tìm kiếm</h3>
-                <br>
-                <c:forEach items="${articleList}" var="c">
-                    <div class=" mb-3 w-100 d-flex justify-content-between">
-                        <div style="width: 30%">
-                            <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}" onclick="checkPermission(${c.premium},event)">
-                                <img style="width: 100%"
-                                     src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
-                                     alt="">
-                            </a>
-                        </div>
-                        <div style="width: 69%" class="pl-2 d-flex flex-column justify-content-between">
-                            <div>
-                                <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}" onclick="checkPermission(${c.premium},event)">
-                                    <c:if test="${c.premium == 1}">
-                                        <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
-                                    </c:if>
-                                    <b>${c.title}</b><br>
-                                        ${c.abstract_content}
+                <div align="center">
+                    <h3><i><b>Kết quả tìm kiếm</b></i></h3>
+                    <div class="d-flex justify-content-center w-100 my-4">
+                        <a href="#" onclick="byAllClick()" class="mx-3"><b>Toàn bộ</b></a>
+                        <a href="#" onclick="byTitleClick()" class="mx-3"><b>Tiêu đề</b></a>
+                        <a href="#" onclick="byAbstract()" class="mx-3"><b>Nội dung tóm tắt</b></a>
+                        <a href="#" onclick="byContent()" class="mx-3"><b>Nôi dung đầy đủ</b></a>
+                    </div>
+                    <hr>
+                </div>
+
+                <div id="byAll">
+                    <c:forEach items="${allArticle}" var="c">
+                        <div class=" mb-3 w-100 d-flex justify-content-between">
+                            <div style="width: 30%">
+                                <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                   onclick="checkPermission(${c.premium},event)">
+                                    <img style="width: 100%"
+                                         src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
+                                         alt="">
                                 </a>
                             </div>
-                            <div class="d-flex w-100 justify-content-between">
+                            <div style="width: 69%" class="pl-2 d-flex flex-column justify-content-between">
                                 <div>
-                                    <img src="${pageContext.request.contextPath}/photos/userAvatar/${c.writer_id}/avatar.png"
-                                         alt="" style="width: 30px; height: 30px; border-radius: 30px">
-                                        ${c.getWriterName(c.writer_id)}
-                                </div>
-                                <div class="pr-4">
-                                    <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
-                                       class="ATitle">
-                                        <b>${c.getCategoriesName(c.categories_id)}</b>
+                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                       onclick="checkPermission(${c.premium},event)">
+                                        <c:if test="${c.premium == 1}">
+                                            <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                                        </c:if>
+                                        <b>${c.title}</b><br>
+                                            ${c.abstract_content}
                                     </a>
+                                </div>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <div>
+                                        <img src="${pageContext.request.contextPath}/photos/userAvatar/${c.writer_id}/avatar.png"
+                                             alt="" style="width: 30px; height: 30px; border-radius: 30px">
+                                            ${c.getWriterName(c.writer_id)}
+                                    </div>
+                                    <div class="pr-4">
+                                        <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
+                                           class="ATitle">
+                                            <b>${c.getCategoriesName(c.categories_id)}</b>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </c:forEach>
+                    </c:forEach>
+                </div>
 
+                <div id="byTitle" style="display: none">
+                    <c:forEach items="${byTitle}" var="c">
+                        <div class=" mb-3 w-100 d-flex justify-content-between">
+                            <div style="width: 30%">
+                                <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                   onclick="checkPermission(${c.premium},event)">
+                                    <img style="width: 100%"
+                                         src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
+                                         alt="">
+                                </a>
+                            </div>
+                            <div style="width: 69%" class="pl-2 d-flex flex-column justify-content-between">
+                                <div>
+                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                       onclick="checkPermission(${c.premium},event)">
+                                        <c:if test="${c.premium == 1}">
+                                            <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                                        </c:if>
+                                        <b>${c.title}</b><br>
+                                            ${c.abstract_content}
+                                    </a>
+                                </div>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <div>
+                                        <img src="${pageContext.request.contextPath}/photos/userAvatar/${c.writer_id}/avatar.png"
+                                             alt="" style="width: 30px; height: 30px; border-radius: 30px">
+                                            ${c.getWriterName(c.writer_id)}
+                                    </div>
+                                    <div class="pr-4">
+                                        <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
+                                           class="ATitle">
+                                            <b>${c.getCategoriesName(c.categories_id)}</b>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+
+                <div id="byAbstract" style="display: none">
+                    <c:forEach items="${byAbstract}" var="c">
+                        <div class=" mb-3 w-100 d-flex justify-content-between">
+                            <div style="width: 30%">
+                                <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                   onclick="checkPermission(${c.premium},event)">
+                                    <img style="width: 100%"
+                                         src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
+                                         alt="">
+                                </a>
+                            </div>
+                            <div style="width: 69%" class="pl-2 d-flex flex-column justify-content-between">
+                                <div>
+                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                       onclick="checkPermission(${c.premium},event)">
+                                        <c:if test="${c.premium == 1}">
+                                            <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                                        </c:if>
+                                        <b>${c.title}</b><br>
+                                            ${c.abstract_content}
+                                    </a>
+                                </div>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <div>
+                                        <img src="${pageContext.request.contextPath}/photos/userAvatar/${c.writer_id}/avatar.png"
+                                             alt="" style="width: 30px; height: 30px; border-radius: 30px">
+                                            ${c.getWriterName(c.writer_id)}
+                                    </div>
+                                    <div class="pr-4">
+                                        <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
+                                           class="ATitle">
+                                            <b>${c.getCategoriesName(c.categories_id)}</b>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+
+                <div id="byContent" style="display: none">
+                    <c:forEach items="${byContent}" var="c">
+                        <div class=" mb-3 w-100 d-flex justify-content-between">
+                            <div style="width: 30%">
+                                <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                   onclick="checkPermission(${c.premium},event)">
+                                    <img style="width: 100%"
+                                         src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
+                                         alt="">
+                                </a>
+                            </div>
+                            <div style="width: 69%" class="pl-2 d-flex flex-column justify-content-between">
+                                <div>
+                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                       onclick="checkPermission(${c.premium},event)">
+                                        <c:if test="${c.premium == 1}">
+                                            <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                                        </c:if>
+                                        <b>${c.title}</b><br>
+                                            ${c.abstract_content}
+                                    </a>
+                                </div>
+                                <div class="d-flex w-100 justify-content-between">
+                                    <div>
+                                        <img src="${pageContext.request.contextPath}/photos/userAvatar/${c.writer_id}/avatar.png"
+                                             alt="" style="width: 30px; height: 30px; border-radius: 30px">
+                                            ${c.getWriterName(c.writer_id)}
+                                    </div>
+                                    <div class="pr-4">
+                                        <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
+                                           class="ATitle">
+                                            <b>${c.getCategoriesName(c.categories_id)}</b>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
 
             </div>
         </div>

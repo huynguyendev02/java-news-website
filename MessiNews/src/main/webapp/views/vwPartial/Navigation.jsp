@@ -134,6 +134,8 @@
                                 <a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/Admin/Articles/ListComplete">Quản lý các bài
                                     đã duyệt</a>
+                                <a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/Admin/Articles/Upload">Tạo bài viết mới</a>
                                 <button class="dropdown-item"
                                         formaction="${pageContext.request.contextPath}/Account/Logout">Đăng xuất
                                 </button>

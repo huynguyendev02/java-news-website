@@ -10,7 +10,10 @@ import com.messi.king.messinews.utils.ServletUtils;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
+import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @WebServlet(name = "AdminArticlesServlet", value = "/Admin/Articles/*")
@@ -19,6 +22,11 @@ public class AdminArticlesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String url = request.getPathInfo();
         switch (url) {
+            case "/Upload":
+                List<Tags> tagsList = TagsService.findAll();
+                request.setAttribute("tags", tagsList);
+                ServletUtils.forward("/views/vwWriter/Upload.jsp",request,response);
+                break;
             case "/ListDraft":
                 List<Articles> artsDraft = EditorService.findAllDraft();
                 request.setAttribute("articlesList", artsDraft);
