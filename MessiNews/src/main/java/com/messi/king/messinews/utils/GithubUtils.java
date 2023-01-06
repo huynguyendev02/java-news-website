@@ -19,8 +19,8 @@ import java.util.concurrent.ExecutionException;
 public class GithubUtils {
     private static final String NETWORK_NAME = "GitHub";
     private static final String PROTECTED_RESOURCE_URL = "https://api.github.com/user/emails";
-    private static final String clientId = "e576a6aea86a61bbd9f8";
-    private static final String clientSecret = "4785cc26d8a901a12ef8213857b23356c1a82266";
+    private static final String clientId = "";
+    private static final String clientSecret = "";
 
     private static final OAuth20Service service = new ServiceBuilder(clientId)
             .apiSecret(clientSecret)
