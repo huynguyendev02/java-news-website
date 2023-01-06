@@ -22,6 +22,7 @@ public class HomeServlet extends HttpServlet {
         if (url == null || url.equals("/")) {
             url = "/";
         }
+
         switch (url) {
             case "/":
                 homePage(request, response);
@@ -44,31 +45,45 @@ public class HomeServlet extends HttpServlet {
 
             case "/Search":
 
-                String key = request.getParameter("key");
-                List<Articles> allArticle = ArticlesService.searchArticles(key);
-
-//                tìm kiếm theo title
-                List<Articles> byTitle = ArticlesService.top10AllCate();
-
-//                tìm kiếm theo Abstract
-                List<Articles> byAbstract = ArticlesService.top5AllCateInWeek();
-
-//                tìm kiếm theo content
-                List<Articles> byContent = ArticlesService.findByCatId(1);
-
-                request.setAttribute("allArticle", allArticle);
-                request.setAttribute("byTitle", byTitle);
-                request.setAttribute("byAbstract", byAbstract);
-                request.setAttribute("byContent", byContent);
-
-
-                ServletUtils.forward("/views/vwGeneral/Search.jsp", request, response);
+                search(request, response);
                 break;
             default:
                 ServletUtils.forward("/views/404.jsp", request, response);
                 break;
         }
 
+    }
+
+    private static void search(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Users user = (Users) request.getSession().getAttribute("authUser");
+
+        String key = request.getParameter("key");
+        List<Articles> allArticle = ArticlesService.searchArticles(key);
+
+//                tìm kiếm theo title
+        List<Articles> byTitle = ArticlesService.searchArticlesByTitle(key);
+
+//                tìm kiếm theo Abstract
+        List<Articles> byAbstract = ArticlesService.searchArticlesByAbs(key);
+
+//                tìm kiếm theo content
+        List<Articles> byContent = ArticlesService.searchAriclesByContent(key);
+
+        if ((boolean)request.getSession().getAttribute("auth")) {
+            if (user.getRole()==1)
+                java.util.Collections.sort(allArticle, new Articles());
+                java.util.Collections.sort(byTitle, new Articles());
+                java.util.Collections.sort(byAbstract, new Articles());
+                java.util.Collections.sort(byContent, new Articles());
+        }
+
+        request.setAttribute("allArticle", allArticle);
+        request.setAttribute("byTitle", byTitle);
+        request.setAttribute("byAbstract", byAbstract);
+        request.setAttribute("byContent", byContent);
+
+
+        ServletUtils.forward("/views/vwGeneral/Search.jsp", request, response);
     }
 
     private static void details(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -109,8 +124,8 @@ public class HomeServlet extends HttpServlet {
         }
     }
 
-    private static void homePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    private static void  homePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+       Users user =  (Users)request.getSession().getAttribute("authUser");
         int page = 1;
         try {
             page = Integer.parseInt(request.getParameter("page"));
@@ -120,6 +135,10 @@ public class HomeServlet extends HttpServlet {
         List<Articles> top10AllCate = ArticlesService.top10AllCate();
         List<Articles> top5AllCateInWeek = ArticlesService.top5AllCateInWeek();
         List<Articles> latestNewsAllCate = ArticlesService.latestNewsAllCate();
+        if ((boolean)request.getSession().getAttribute("auth")) {
+            if (user.getRole()==1)
+            java.util.Collections.sort(latestNewsAllCate, new Articles());
+        }
         List<Articles> newest10PerCate = ArticlesService.newest10PerCate();
 
         request.setAttribute("top10AllCate", top10AllCate);
@@ -133,7 +152,6 @@ public class HomeServlet extends HttpServlet {
         System.out.println(latestNewsAllCate.size());
 //                Số trang tối đa
         int maxPage = (int) Math.ceil((double) latestNewsAllCate.size()/10);
-        System.out.println(maxPage);
 
         request.setAttribute("currentPage", page);
         request.setAttribute("maxPage", maxPage);
@@ -184,6 +202,7 @@ public class HomeServlet extends HttpServlet {
             id = Integer.parseInt(request.getParameter("id"));
         } catch (NumberFormatException e) {
         }
+        Users user = (Users) request.getSession().getAttribute("authUser");
         List<Articles> arts = new ArrayList<>();
         String title = "";
         List<Categories> cate = new ArrayList<>();
@@ -210,6 +229,10 @@ public class HomeServlet extends HttpServlet {
                 break;
         }
 
+        if ((boolean)request.getSession().getAttribute("auth")) {
+            if (user.getRole()==1)
+                java.util.Collections.sort(arts, new Articles());
+        }
         request.setAttribute("titleTopic", title);
         request.setAttribute("cateRelated", cate);
         request.setAttribute("articles", arts);

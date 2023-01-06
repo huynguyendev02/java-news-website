@@ -39,6 +39,36 @@ public class ArticlesService {
             return arts;
         }
     }
+    public static List<Articles> searchArticlesByTitle(String key) {
+        final String query = "SELECT * from articles WHERE MATCH(title) AGAINST (:key)";
+        List<Articles> arts = new ArrayList<>();
+        try (Connection con = DbUtils.getConnection()) {
+            arts.addAll(con.createQuery(query)
+                    .addParameter("key", key)
+                    .executeAndFetch(Articles.class)) ;
+            return arts;
+        }
+    }
+    public static List<Articles> searchArticlesByAbs(String key) {
+        final String query = "SELECT * from articles WHERE MATCH(abstract_content) AGAINST (:key)";
+        List<Articles> arts = new ArrayList<>();
+        try (Connection con = DbUtils.getConnection()) {
+            arts.addAll(con.createQuery(query)
+                    .addParameter("key", key)
+                    .executeAndFetch(Articles.class)) ;
+            return arts;
+        }
+    }
+    public static List<Articles> searchAriclesByContent(String key) {
+        final String query = "SELECT * from articles WHERE MATCH(content) AGAINST (:key)";
+        List<Articles> arts = new ArrayList<>();
+        try (Connection con = DbUtils.getConnection()) {
+            arts.addAll(con.createQuery(query)
+                    .addParameter("key", key)
+                    .executeAndFetch(Articles.class)) ;
+            return arts;
+        }
+    }
     public static List<Articles> newsRelated(int artId) {
         Articles art = ArticlesService.findById(artId);
         List<Articles> arts = ArticlesService.findByCatId(art.getCategories_id());
@@ -203,4 +233,13 @@ public class ArticlesService {
         }
     }
 
+    public static List<Articles> findByEditorId(int id) {
+        final String query = "select * from articles where editor_id = :editor_id";
+        try (Connection con = DbUtils.getConnection()) {
+            List<Articles> arts = con.createQuery(query)
+                    .addParameter("editor_id", id)
+                    .executeAndFetch(Articles.class);
+            return arts;
+        }
+    }
 }

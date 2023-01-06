@@ -62,6 +62,7 @@
             outline: #F0F0F0;
         }
     </style>
+    <script src='https://www.google.com/recaptcha/api.js?hl=vi'></script>
 </head>
 <body>
 <form id="form" action="" method="post" class="d-flex justify-content-center w-100 h-100 bgColorGray">
@@ -115,8 +116,12 @@
             <input name="dob" id="txtDOB" type="text" class=" inputStyle" required style="width: 80%">
         </div>
 
+        <div class="g-recaptcha my-3" data-sitekey="6LcyK9gjAAAAACFIpnIgZhHo6qa7Np9cTSPGOwyD"></div>
+
         <button id="btRegister" type="submit" class="w-100 inputStyle btn btn-primary mt-3">Đăng ký</button>
+
     </div>
+
 </form>
 
 <script src="https://code.jquery.com/jquery-3.6.1.min.js" crossorigin="anonymous"></script>
@@ -135,7 +140,10 @@
     }
 
     $('#form').on('submit', function (e) {
-        e.preventDefault();
+        e.preventDefault()
+
+
+
         let pwd = document.getElementById('pwd').value;
 
         if (/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/.test(pwd)==false){
@@ -153,10 +161,18 @@
             if (data==false) {
                 alert('Tên tài khoản hoặc email đã được sử dụng.')
                 return
-            } else {
-                $('#form').off('submit').submit();
             }
         })
+        let captcha = $('#g-recaptcha-response').val();
+        $.getJSON('${pageContext.request.contextPath}/Account/CheckCaptcha?captcha='+captcha, (data) => {
+            if (data==false) {
+                alert('Mã xác nhận Captcha không đúng! Vui lòng thử lại')
+                return
+            }
+        })
+
+        $('#form').off('submit').submit();
+
     })
 
     $('#txtDOB').datetimepicker({

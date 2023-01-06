@@ -28,17 +28,24 @@ public class PermissionFilter implements Filter {
         switch (path) {
             case "/Admin":
                 if (user.getRole()!=4) {
-                    ServletUtils.forward("/views/403.jsp", request, (HttpServletResponse) res);
+                    ServletUtils.redirect("/Account/Login", request, (HttpServletResponse) res);
+                    return;
                 }
                 break;
             case "/Editor":
                 if (user.getRole()!=3 && user.getRole()!=4) {
-                    ServletUtils.forward("/views/403.jsp", request, (HttpServletResponse) res);
+                    ServletUtils.redirect("/Account/Login", request, (HttpServletResponse) res);
+                    return;
                 }
                 break;
             case "/Writer":
+                if (user.getRole()==4 && request.getPathInfo().equals("/List")) {
+                    ServletUtils.redirect("/Admin/Articles/ListComplete", request, (HttpServletResponse) res);
+                    return;
+                }
                 if (user.getRole()!=2 && user.getRole()!=4) {
-                    ServletUtils.forward("/views/403.jsp", request, (HttpServletResponse) res);
+                    ServletUtils.redirect("/Account/Login", request, (HttpServletResponse) res);
+                    return;
                 }
                 break;
         }

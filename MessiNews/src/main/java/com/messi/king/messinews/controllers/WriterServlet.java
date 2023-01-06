@@ -6,7 +6,9 @@ import com.messi.king.messinews.models.Tags;
 import com.messi.king.messinews.models.Users;
 import com.messi.king.messinews.services.ArticlesService;
 import com.messi.king.messinews.services.CategoriesService;
+import com.messi.king.messinews.services.EditorService;
 import com.messi.king.messinews.services.TagsService;
+import com.messi.king.messinews.utils.PdfUtils;
 import com.messi.king.messinews.utils.ServletUtils;
 
 import javax.servlet.*;
@@ -15,6 +17,8 @@ import javax.servlet.annotation.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -154,6 +158,8 @@ public class WriterServlet extends HttpServlet {
     }
 
     private void upload(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Users user = (Users) request.getSession().getAttribute("authUser");
+
         String title = request.getParameter("title");
         String abstractContent = request.getParameter("abstract");
         String content = request.getParameter("content");
@@ -190,6 +196,22 @@ public class WriterServlet extends HttpServlet {
                 destination = targetDir + "/" + "b.png";
                 part.write(destination);
             }
+        }
+        if (user.getRole()==4) {
+            int premium = 0;
+            try {
+                premium = Integer.parseInt(request.getParameter("premium"));
+            } catch (NumberFormatException e) {
+                ServletUtils.redirect("/views/204.jsp", request, response);
+            }
+
+            String publish_timeStr = request.getParameter("publish_time") + " 00:00";
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            LocalDateTime publish_time = LocalDateTime.parse(publish_timeStr, df);
+
+            EditorService.acceptArticle(artId, publish_time, premium,cateId, tagsId);
+            Articles art = ArticlesService.findById(artId);
+            PdfUtils.createPdfFile(art, request, response);
         }
         ServletUtils.redirect("/Writer/List", request, response);
     }

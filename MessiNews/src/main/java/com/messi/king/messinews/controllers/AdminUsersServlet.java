@@ -47,6 +47,10 @@ public class AdminUsersServlet extends HttpServlet {
                 request.setAttribute("editors", UsersService.findAllByRole(3));
                 ServletUtils.forward("/views/vwAdmin/EditorsAdminList.jsp", request, response);
                 break;
+            case "/ListAdmin":
+                request.setAttribute("editors", UsersService.findAllByRole(4));
+                ServletUtils.forward("/views/vwAdmin/AdminList.jsp", request, response);
+                break;
             case "/ExtendExp":
                 getExtendExp(request, response);
                 break;

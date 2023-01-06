@@ -4,8 +4,9 @@ import com.messi.king.messinews.services.CategoriesService;
 import com.messi.king.messinews.services.UsersService;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
-public class Articles {
+public class Articles implements Comparator<Articles> {
     private int id;
     private String title;
     private LocalDateTime publish_date;
@@ -17,6 +18,15 @@ public class Articles {
     private int writer_id;
     private int status;
     private String reason;
+    private int editor_id;
+
+    public int getEditor_id() {
+        return editor_id;
+    }
+
+    public void setEditor_id(int editor_id) {
+        this.editor_id = editor_id;
+    }
 
     public String getReason() {
         return reason;
@@ -127,4 +137,8 @@ public class Articles {
     }
     public String getCategoriesName(int id) {return CategoriesService.findById(id).getName_category();}
 
+    @Override
+    public int compare(Articles o1, Articles o2) {
+        return o2.getPremium() - o1.getPremium() ;
+    }
 }

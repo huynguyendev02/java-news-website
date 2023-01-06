@@ -65,7 +65,7 @@ public class EditorServlet extends HttpServlet {
     }
 
     private static void listComplete(HttpServletRequest request, HttpServletResponse response, Users user) throws ServletException, IOException {
-        List<Articles> listFull = ArticlesService.findByCatIdPublish(user.getId());
+        List<Articles> listFull = ArticlesService.findByEditorId(user.getId());
 
         request.setAttribute("articlesList", listFull);
         ServletUtils.forward("/views/vwEditor/ListComplete.jsp", request, response);
@@ -101,7 +101,7 @@ public class EditorServlet extends HttpServlet {
 
     }
 
-    private static void acceptArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public static void acceptArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int id = 0, premium = 0, idCat=0;
         try {
             id = Integer.parseInt(request.getParameter("id"));
