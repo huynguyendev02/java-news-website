@@ -47,24 +47,26 @@ public class EditorService {
                     .executeAndFetch(Articles.class);
         }
     }
-    public static void acceptArticle(int id, LocalDateTime publish_time, int premium, int idCat, int[] tagIds) {
-        final String query = "update articles set publish_date = :publish_time,categories_id= :categories_id , status=1, premium= :premium where id = :id";
+    public static void acceptArticle(int id, LocalDateTime publish_time, int premium, int idCat, int[] tagIds, int editorId) {
+        final String query = "update articles set publish_date = :publish_time,categories_id= :categories_id , status=1, premium= :premium, editor_id= :editor_id where id = :id";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
                     .addParameter("id", id)
                     .addParameter("premium", premium)
                     .addParameter("categories_id", idCat)
                     .addParameter("publish_time", publish_time)
+                    .addParameter("editor_id",editorId)
                     .executeUpdate();
         }
         TagsService.editTagsByArticle(id, tagIds);
     }
-    public static void declineArticle(int id,String reason) {
-        final String query = "update articles set reason = :reason, status=0 where id = :id";
+    public static void declineArticle(int id,String reason, int editorId) {
+        final String query = "update articles set reason = :reason, status=0, editor_id= :editor_id where id = :id";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
                     .addParameter("id", id)
                     .addParameter("reason", reason)
+                    .addParameter("editor_id", editorId)
                     .executeUpdate();
         }
     }

@@ -8,7 +8,6 @@
 <jsp:useBean id="byContent" scope="request" type="java.util.List<com.messi.king.messinews.models.Articles>"/>
 
 <jsp:useBean id="url" scope="request" type="java.lang.String"/>
-<jsp:useBean id="type" scope="request" type="java.lang.Integer"/>
 
 <jsp:useBean id="currentPage" scope="request" type="java.lang.Integer"/>
 <jsp:useBean id="maxPage" scope="request" type="java.lang.Integer"/>
@@ -36,23 +35,6 @@
                             event.preventDefault();
                         }
                     }
-                }
-            }
-            window.onload = function (){
-                switch (${type}){
-                    case 1:
-                        $('#byAll').css('display', 'block')
-                        break;
-                    case 2:
-                        $('#byTitle').css('display', 'block')
-                        break;
-                    case 3:
-                        $('#byAbstract').css('display', 'block')
-                        break;
-                    case 4:
-                        $('#byContent').css('display', 'block')
-                        break;
-
                 }
             }
 
@@ -101,7 +83,7 @@
                     <hr>
                 </div>
 
-                <div id="byAll" style="display: none">
+                <div id="byAll">
                     <c:if test="${allArticle.size()==0}">
                         <div class=" mt-3 w-100" align="center">
                             <h5>
@@ -152,47 +134,47 @@
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">
                                 <li class="page-item">
-                                    <a class="page-link" href="${pageContext.request.contextPath}/Home${url}&type=1&page=1">
+                                    <a class="page-link" href="${pageContext.request.contextPath}/Home${url}&page=1">
                                         <i class="fa fa-fast-backward" aria-hidden="true"></i>
                                     </a>
                                 </li>
                                 <li class="page-item">
                                     <c:if test="${currentPage==1}">
                                         <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=1&page=1">
+                                           href="${pageContext.request.contextPath}/Home${url}&page=1">
                                             <i class="fa fa-step-backward" aria-hidden="true"></i>
                                         </a>
                                     </c:if>
                                     <c:if test="${currentPage>1}">
                                         <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=1&page=${currentPage-1}">
+                                           href="${pageContext.request.contextPath}/Home${url}&page=${currentPage-1}">
                                             <i class="fa fa-step-backward" aria-hidden="true"></i>
                                         </a>
                                     </c:if>
                                 </li>
                                 <li class="page-item">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/Home${url}&type=1&page=${currentPage}">
+                                       href="${pageContext.request.contextPath}/Home${url}&page=${currentPage}">
                                             ${currentPage}
                                     </a>
                                 </li>
                                 <li class="page-item">
                                     <c:if test="${currentPage==maxPage}">
                                         <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=1&page=${maxPage}">
+                                           href="${pageContext.request.contextPath}/Home${url}&page=${maxPage}">
                                             <i class="fa fa-step-forward" aria-hidden="true"></i>
                                         </a>
                                     </c:if>
                                     <c:if test="${currentPage<maxPage}">
                                         <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=1&page=${currentPage+1}">
+                                           href="${pageContext.request.contextPath}/Home${url}&page=${currentPage+1}">
                                             <i class="fa fa-step-forward" aria-hidden="true"></i>
                                         </a>
                                     </c:if>
                                 </li>
                                 <li class="page-item">
                                     <a class="page-link"
-                                       href="${pageContext.request.contextPath}/Home${url}&type=1&page=${maxPage}">
+                                       href="${pageContext.request.contextPath}/Home${url}&page=${maxPage}">
                                         <i class="fa fa-fast-forward" aria-hidden="true"></i>
                                     </a>
                                 </li>
@@ -246,58 +228,6 @@
                             </div>
                         </div>
                     </c:forEach>
-                        <%--                    Phân trang--%>
-                    <div class="mt-5 mb-3 w-100 d-flex justify-content-center">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="${pageContext.request.contextPath}/Home${url}&type=2&page=1">
-                                        <i class="fa fa-fast-backward" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <c:if test="${currentPage==1}">
-                                        <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=2&page=1">
-                                            <i class="fa fa-step-backward" aria-hidden="true"></i>
-                                        </a>
-                                    </c:if>
-                                    <c:if test="${currentPage>1}">
-                                        <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=2&page=${currentPage-1}">
-                                            <i class="fa fa-step-backward" aria-hidden="true"></i>
-                                        </a>
-                                    </c:if>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="${pageContext.request.contextPath}/Home${url}&type=2&page=${currentPage}">
-                                            ${currentPage}
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <c:if test="${currentPage==maxPage}">
-                                        <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=2&page=${maxPage}">
-                                            <i class="fa fa-step-forward" aria-hidden="true"></i>
-                                        </a>
-                                    </c:if>
-                                    <c:if test="${currentPage<maxPage}">
-                                        <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=2&page=${currentPage+1}">
-                                            <i class="fa fa-step-forward" aria-hidden="true"></i>
-                                        </a>
-                                    </c:if>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="${pageContext.request.contextPath}/Home${url}&type=2&page=${maxPage}">
-                                        <i class="fa fa-fast-forward" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
                 </div>
 
                 <div id="byAbstract" style="display: none">
@@ -345,58 +275,6 @@
                             </div>
                         </div>
                     </c:forEach>
-                        <%--                    phân trang--%>
-                    <div class="mt-5 mb-3 w-100 d-flex justify-content-center">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="${pageContext.request.contextPath}/Home${url}&type=3&page=1">
-                                        <i class="fa fa-fast-backward" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <c:if test="${currentPage==1}">
-                                        <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=3&page=1">
-                                            <i class="fa fa-step-backward" aria-hidden="true"></i>
-                                        </a>
-                                    </c:if>
-                                    <c:if test="${currentPage>1}">
-                                        <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=3&page=${currentPage-1}">
-                                            <i class="fa fa-step-backward" aria-hidden="true"></i>
-                                        </a>
-                                    </c:if>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="${pageContext.request.contextPath}/Home${url}&type=3&page=${currentPage}">
-                                            ${currentPage}
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <c:if test="${currentPage==maxPage}">
-                                        <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=3&page=${maxPage}">
-                                            <i class="fa fa-step-forward" aria-hidden="true"></i>
-                                        </a>
-                                    </c:if>
-                                    <c:if test="${currentPage<maxPage}">
-                                        <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=3&page=${currentPage+1}">
-                                            <i class="fa fa-step-forward" aria-hidden="true"></i>
-                                        </a>
-                                    </c:if>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="${pageContext.request.contextPath}/Home${url}&type=3&page=${maxPage}">
-                                        <i class="fa fa-fast-forward" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
                 </div>
 
                 <div id="byContent" style="display: none">
@@ -444,58 +322,6 @@
                             </div>
                         </div>
                     </c:forEach>
-                        <%--                    phân trang--%>
-                    <div class="mt-5 mb-3 w-100 d-flex justify-content-center">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" href="${pageContext.request.contextPath}/Home${url}&type=4&page=1">
-                                        <i class="fa fa-fast-backward" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <c:if test="${currentPage==1}">
-                                        <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=4&page=1">
-                                            <i class="fa fa-step-backward" aria-hidden="true"></i>
-                                        </a>
-                                    </c:if>
-                                    <c:if test="${currentPage>1}">
-                                        <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=4&page=${currentPage-1}">
-                                            <i class="fa fa-step-backward" aria-hidden="true"></i>
-                                        </a>
-                                    </c:if>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="${pageContext.request.contextPath}/Home${url}&type=4&page=${currentPage}">
-                                            ${currentPage}
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <c:if test="${currentPage==maxPage}">
-                                        <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=4&page=${maxPage}">
-                                            <i class="fa fa-step-forward" aria-hidden="true"></i>
-                                        </a>
-                                    </c:if>
-                                    <c:if test="${currentPage<maxPage}">
-                                        <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home${url}&type=4&page=${currentPage+1}">
-                                            <i class="fa fa-step-forward" aria-hidden="true"></i>
-                                        </a>
-                                    </c:if>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="${pageContext.request.contextPath}/Home${url}&type=4&page=${maxPage}">
-                                        <i class="fa fa-fast-forward" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
                 </div>
 
             </div>

@@ -89,6 +89,8 @@ public class EditorServlet extends HttpServlet {
     }
 
     private static void denyArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Users user = (Users) request.getSession().getAttribute("authUser");
+
         int id = 0;
         try {
             id = Integer.parseInt(request.getParameter("id"));
@@ -96,12 +98,13 @@ public class EditorServlet extends HttpServlet {
             ServletUtils.redirect("/views/204.jsp", request, response);
         }
         String reason = request.getParameter("reason").trim();
-        EditorService.declineArticle(id, reason);
+        EditorService.declineArticle(id, reason, user.getId());
         ServletUtils.redirect("/Editor/ListDraft", request, response);
 
     }
 
     public static void acceptArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Users user = (Users) request.getSession().getAttribute("authUser");
         int id = 0, premium = 0, idCat=0;
         try {
             id = Integer.parseInt(request.getParameter("id"));
@@ -124,7 +127,7 @@ public class EditorServlet extends HttpServlet {
                 .mapToInt(Integer::parseInt)
                 .toArray();
 
-        EditorService.acceptArticle(id, publish_time, premium,idCat, tagsId);
+        EditorService.acceptArticle(id, publish_time, premium,idCat, tagsId, user.getId());
 
         Articles art = ArticlesService.findById(id);
         PdfUtils.createPdfFile(art, request, response);

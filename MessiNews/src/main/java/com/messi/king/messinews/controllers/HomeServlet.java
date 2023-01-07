@@ -41,9 +41,7 @@ public class HomeServlet extends HttpServlet {
             case "/Download":
                 download(request, response);
                 break;
-
             case "/Search":
-
                 search(request, response);
                 break;
             default:
@@ -72,40 +70,25 @@ public class HomeServlet extends HttpServlet {
             java.util.Collections.sort(byContent, new Articles());
         }
 
-//      Type là loại tìm kiếm được gửi về:   1: Tìm hết; 2: Tìm theo title; 3: Tìm theo abs; 4; tìm theo nội dung
-//      Page gửi về
-        int type = 1, page = 1;
+        int page = 1;
         try {
-            type = Integer.parseInt(request.getParameter("type"));
             page = Integer.parseInt(request.getParameter("page"));
         } catch (NumberFormatException e) {
         }
-        request.setAttribute("type", type);
 
-        switch (type){
-            case 1:
-//        Truyền vào trang hiện tại và trang tối đa của danh sách all
-                request.setAttribute("currentPage", 1);
-                request.setAttribute("maxPage", 10);
-                break;
-            case 2:
-//        Truyền vào trang hiện tại và trang tối đa của danh sách title
-                request.setAttribute("currentPage", 2);
-                request.setAttribute("maxPage", 20);
-                break;
-            case 3:
-//        Truyền vào trang hiện tại và trang tối đa của danh sách abs
-                request.setAttribute("currentPage", 3);
-                request.setAttribute("maxPage", 30);
-                break;
-            case 4:
-//        Truyền vào trang hiện tại và trang tối đa của danh sách nội dung
-                request.setAttribute("currentPage", 4);
-                request.setAttribute("maxPage", 40);
-                break;
-        }
+        int maxPage = (int) Math.ceil((double) allArticle.size() / 10);
+        if (page>maxPage) page = maxPage;
 
-        request.setAttribute("allArticle", allArticle);
+        int startIndex = (page - 1) * 10;
+        int endIndex = Math.min((page * 10), allArticle.size());
+
+//                Số trang tối đa
+
+        request.setAttribute("currentPage", page);
+        request.setAttribute("maxPage", maxPage);
+
+
+        request.setAttribute("allArticle", allArticle.subList(startIndex, endIndex));
         request.setAttribute("byTitle", byTitle);
         request.setAttribute("byAbstract", byAbstract);
         request.setAttribute("byContent", byContent);
@@ -121,7 +104,7 @@ public class HomeServlet extends HttpServlet {
         }
 
         Articles art = ArticlesService.findById(id);
-        if (art != null) {
+        if (art != null && art.getStatus()==1) {
             if (art.getPremium() == 1) {
                 Users user = (Users) request.getSession().getAttribute("authUser");
                 if ((boolean) request.getSession().getAttribute("auth") == true) {
@@ -171,13 +154,16 @@ public class HomeServlet extends HttpServlet {
         request.setAttribute("top10AllCate", top10AllCate);
         request.setAttribute("top5AllCateInWeek", top5AllCateInWeek);
 
+        int maxPage = (int) Math.ceil((double) latestNewsAllCate.size() / 10);
+        if (page>maxPage) page=maxPage;
+
+
         int startIndex = (page - 1) * 10;
         int endIndex = Math.min((page * 10), latestNewsAllCate.size());
 
         request.setAttribute("latestNewsAllCate", latestNewsAllCate.subList(startIndex, endIndex));
         request.setAttribute("newest10PerCate", newest10PerCate.subList(0, 10));
 //                Số trang tối đa
-        int maxPage = (int) Math.ceil((double) latestNewsAllCate.size() / 10);
 
         request.setAttribute("currentPage", page);
         request.setAttribute("maxPage", maxPage);
@@ -259,22 +245,29 @@ public class HomeServlet extends HttpServlet {
             if (user.getRole() == 1)
                 java.util.Collections.sort(arts, new Articles());
         }
-        String url = request.getPathInfo() + "?id=" + Integer.toString(id);
+        String url = request.getPathInfo() + "?id=" + id;
         request.setAttribute("url", url);
         request.setAttribute("titleTopic", title);
         request.setAttribute("cateRelated", cate);
-        request.setAttribute("articles", arts);
 
-//      Page gửi về
         int page = 1;
         try {
             page = Integer.parseInt(request.getParameter("page"));
         } catch (NumberFormatException e) {
         }
 
-//        Chỗ cần thêm dữ liệu đây
-        request.setAttribute("currentPage", 1);
-        request.setAttribute("maxPage", 10);
+        int maxPage = (int) Math.ceil((double) arts.size() / 10);
+        if (page>maxPage) page=maxPage;
+
+        int startIndex = (page - 1) * 10;
+        int endIndex = Math.min((page * 10), arts.size());
+
+        request.setAttribute("articles", arts.subList(startIndex, endIndex));
+
+
+
+        request.setAttribute("currentPage", page);
+        request.setAttribute("maxPage", maxPage);
 
         ServletUtils.forward("/views/vwGeneral/Topic.jsp", request, response);
     }

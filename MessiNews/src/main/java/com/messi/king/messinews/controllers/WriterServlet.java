@@ -209,7 +209,7 @@ public class WriterServlet extends HttpServlet {
             DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             LocalDateTime publish_time = LocalDateTime.parse(publish_timeStr, df);
 
-            EditorService.acceptArticle(artId, publish_time, premium,cateId, tagsId);
+            EditorService.acceptArticle(artId, publish_time, premium,cateId, tagsId, user.getId());
             Articles art = ArticlesService.findById(artId);
             PdfUtils.createPdfFile(art, request, response);
         }
