@@ -256,7 +256,7 @@
                                         </c:if>
                                     </li>
                                     <li class="page-item">
-                                        <a class="page-link" href="${pageContext.request.contextPath}/Home?page=2">
+                                        <a class="page-link" href="${pageContext.request.contextPath}/Home?page=${currentPage}">
                                                 ${currentPage}
                                         </a>
                                     </li>

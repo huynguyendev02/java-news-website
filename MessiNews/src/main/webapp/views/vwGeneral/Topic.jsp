@@ -6,6 +6,7 @@
 <jsp:useBean id="titleTopic" scope="request" type="java.lang.String"/>
 <jsp:useBean id="cateRelated" scope="request" type="java.util.List<com.messi.king.messinews.models.Categories>"/>
 
+<jsp:useBean id="url" scope="request" type="java.lang.String"/>
 <jsp:useBean id="currentPage" scope="request" type="java.lang.Integer"/>
 <jsp:useBean id="maxPage" scope="request" type="java.lang.Integer"/>
 
@@ -29,7 +30,8 @@
       </jsp:attribute>
     <jsp:body>
         <div class="d-flex justify-content-center">
-            <div style="width: 15%"></div>
+            <div style="width: 15%">
+            </div>
             <div style="width: 70%">
 
                     <%--            Tiêu đề và danh mục--%>
@@ -128,49 +130,50 @@
                             </c:forEach>
                         </div>
 
+<%--                        Phân trang--%>
                         <div class="mt-5 mb-3 w-100 d-flex justify-content-center">
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination">
                                     <li class="page-item">
-                                        <a class="page-link" href="${pageContext.request.contextPath}/Home?page=1">
+                                        <a class="page-link" href="${pageContext.request.contextPath}/Home${url}&page=1">
                                             <i class="fa fa-fast-backward" aria-hidden="true"></i>
                                         </a>
                                     </li>
                                     <li class="page-item">
                                         <c:if test="${currentPage==1}">
-                                            <a class="page-link" href="${pageContext.request.contextPath}/Home?page=1">
+                                            <a class="page-link" href="${pageContext.request.contextPath}/Home${url}&page=1">
                                                 <i class="fa fa-step-backward" aria-hidden="true"></i>
                                             </a>
                                         </c:if>
                                         <c:if test="${currentPage>1}">
                                             <a class="page-link"
-                                               href="${pageContext.request.contextPath}/Home?page=${currentPage-1}">
+                                               href="${pageContext.request.contextPath}/Home${url}&page=${currentPage-1}">
                                                 <i class="fa fa-step-backward" aria-hidden="true"></i>
                                             </a>
                                         </c:if>
                                     </li>
                                     <li class="page-item">
-                                        <a class="page-link" href="${pageContext.request.contextPath}/Home?page=2">
+                                        <a class="page-link" href="${pageContext.request.contextPath}/Home${url}&page=${currentPage}">
                                                 ${currentPage}
                                         </a>
                                     </li>
                                     <li class="page-item">
                                         <c:if test="${currentPage==maxPage}">
                                             <a class="page-link"
-                                               href="${pageContext.request.contextPath}/Home?page=${maxPage}">
+                                               href="${pageContext.request.contextPath}/Home${url}&page=${maxPage}">
                                                 <i class="fa fa-step-forward" aria-hidden="true"></i>
                                             </a>
                                         </c:if>
                                         <c:if test="${currentPage<maxPage}">
                                             <a class="page-link"
-                                               href="${pageContext.request.contextPath}/Home?page=${currentPage+1}">
+                                               href="${pageContext.request.contextPath}/Home${url}&page=${currentPage+1}">
                                                 <i class="fa fa-step-forward" aria-hidden="true"></i>
                                             </a>
                                         </c:if>
                                     </li>
                                     <li class="page-item">
                                         <a class="page-link"
-                                           href="${pageContext.request.contextPath}/Home?page=${maxPage}">
+                                           href="${pageContext.request.contextPath}/Home${url}&page=${maxPage}">
                                             <i class="fa fa-fast-forward" aria-hidden="true"></i>
                                         </a>
                                     </li>

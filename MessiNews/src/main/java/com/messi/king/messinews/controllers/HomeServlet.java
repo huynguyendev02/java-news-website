@@ -22,7 +22,6 @@ public class HomeServlet extends HttpServlet {
         if (url == null || url.equals("/")) {
             url = "/";
         }
-
         switch (url) {
             case "/":
                 homePage(request, response);
@@ -58,45 +57,58 @@ public class HomeServlet extends HttpServlet {
         Users user = (Users) request.getSession().getAttribute("authUser");
 
         String key = request.getParameter("key");
+        String url = request.getPathInfo() + "?key=" + key;
+        request.setAttribute("url", url);
         List<Articles> allArticle = ArticlesService.searchArticles(key);
-
-//                tìm kiếm theo title
         List<Articles> byTitle = ArticlesService.searchArticlesByTitle(key);
-
-//                tìm kiếm theo Abstract
         List<Articles> byAbstract = ArticlesService.searchArticlesByAbs(key);
-
-//                tìm kiếm theo content
         List<Articles> byContent = ArticlesService.searchAriclesByContent(key);
 
-        if ((boolean)request.getSession().getAttribute("auth")) {
-            if (user.getRole()==1)
+        if ((boolean) request.getSession().getAttribute("auth")) {
+            if (user.getRole() == 1)
                 java.util.Collections.sort(allArticle, new Articles());
-                java.util.Collections.sort(byTitle, new Articles());
-                java.util.Collections.sort(byAbstract, new Articles());
-                java.util.Collections.sort(byContent, new Articles());
+            java.util.Collections.sort(byTitle, new Articles());
+            java.util.Collections.sort(byAbstract, new Articles());
+            java.util.Collections.sort(byContent, new Articles());
+        }
+
+//      Type là loại tìm kiếm được gửi về:   1: Tìm hết; 2: Tìm theo title; 3: Tìm theo abs; 4; tìm theo nội dung
+//      Page gửi về
+        int type = 1, page = 1;
+        try {
+            type = Integer.parseInt(request.getParameter("type"));
+            page = Integer.parseInt(request.getParameter("page"));
+        } catch (NumberFormatException e) {
+        }
+        request.setAttribute("type", type);
+
+        switch (type){
+            case 1:
+//        Truyền vào trang hiện tại và trang tối đa của danh sách all
+                request.setAttribute("currentPage", 1);
+                request.setAttribute("maxPage", 10);
+                break;
+            case 2:
+//        Truyền vào trang hiện tại và trang tối đa của danh sách title
+                request.setAttribute("currentPage", 2);
+                request.setAttribute("maxPage", 20);
+                break;
+            case 3:
+//        Truyền vào trang hiện tại và trang tối đa của danh sách abs
+                request.setAttribute("currentPage", 3);
+                request.setAttribute("maxPage", 30);
+                break;
+            case 4:
+//        Truyền vào trang hiện tại và trang tối đa của danh sách nội dung
+                request.setAttribute("currentPage", 4);
+                request.setAttribute("maxPage", 40);
+                break;
         }
 
         request.setAttribute("allArticle", allArticle);
-//        Truyền vào trang hiện tại và trang tối đa của danh sách all
-        request.setAttribute("currentPageAll", 1);
-        request.setAttribute("maxPageAll", 10);
-
         request.setAttribute("byTitle", byTitle);
-        //        Truyền vào trang hiện tại và trang tối đa của danh sách all
-        request.setAttribute("currentPageByTitle", 1);
-        request.setAttribute("maxPageByTitle", 10);
-
         request.setAttribute("byAbstract", byAbstract);
-        //        Truyền vào trang hiện tại và trang tối đa của danh sách all
-        request.setAttribute("currentPageByAbstract", 1);
-        request.setAttribute("maxPageByAbstract", 10);
-
         request.setAttribute("byContent", byContent);
-        //        Truyền vào trang hiện tại và trang tối đa của danh sách all
-        request.setAttribute("currentPageByContent", 1);
-        request.setAttribute("maxPageByContent", 10);
-
 
         ServletUtils.forward("/views/vwGeneral/Search.jsp", request, response);
     }
@@ -110,12 +122,12 @@ public class HomeServlet extends HttpServlet {
 
         Articles art = ArticlesService.findById(id);
         if (art != null) {
-            if (art.getPremium()==1) {
+            if (art.getPremium() == 1) {
                 Users user = (Users) request.getSession().getAttribute("authUser");
-                if ((boolean)request.getSession().getAttribute("auth")==true) {
-                    if (user.getRole()==1) {
+                if ((boolean) request.getSession().getAttribute("auth") == true) {
+                    if (user.getRole() == 1) {
                         int checkTime = user.getIssue_at().plusMinutes(user.getExpiration()).compareTo(LocalDateTime.now());
-                        if (checkTime<0) {
+                        if (checkTime < 0) {
                             ServletUtils.forward("/views/403.jsp", request, response);
                             return;
                         }
@@ -139,8 +151,8 @@ public class HomeServlet extends HttpServlet {
         }
     }
 
-    private static void  homePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-       Users user =  (Users)request.getSession().getAttribute("authUser");
+    private static void homePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Users user = (Users) request.getSession().getAttribute("authUser");
         int page = 1;
         try {
             page = Integer.parseInt(request.getParameter("page"));
@@ -150,23 +162,22 @@ public class HomeServlet extends HttpServlet {
         List<Articles> top10AllCate = ArticlesService.top10AllCate();
         List<Articles> top5AllCateInWeek = ArticlesService.top5AllCateInWeek();
         List<Articles> latestNewsAllCate = ArticlesService.latestNewsAllCate();
-        if ((boolean)request.getSession().getAttribute("auth")) {
-            if (user.getRole()==1)
-            java.util.Collections.sort(latestNewsAllCate, new Articles());
+        if ((boolean) request.getSession().getAttribute("auth")) {
+            if (user.getRole() == 1)
+                java.util.Collections.sort(latestNewsAllCate, new Articles());
         }
         List<Articles> newest10PerCate = ArticlesService.newest10PerCate();
 
         request.setAttribute("top10AllCate", top10AllCate);
         request.setAttribute("top5AllCateInWeek", top5AllCateInWeek);
 
-        int startIndex = (page-1)*10;
+        int startIndex = (page - 1) * 10;
         int endIndex = Math.min((page * 10), latestNewsAllCate.size());
 
-        request.setAttribute("latestNewsAllCate", latestNewsAllCate.subList(startIndex,endIndex));
-        request.setAttribute("newest10PerCate", newest10PerCate.subList(0,10));
-        System.out.println(latestNewsAllCate.size());
+        request.setAttribute("latestNewsAllCate", latestNewsAllCate.subList(startIndex, endIndex));
+        request.setAttribute("newest10PerCate", newest10PerCate.subList(0, 10));
 //                Số trang tối đa
-        int maxPage = (int) Math.ceil((double) latestNewsAllCate.size()/10);
+        int maxPage = (int) Math.ceil((double) latestNewsAllCate.size() / 10);
 
         request.setAttribute("currentPage", page);
         request.setAttribute("maxPage", maxPage);
@@ -176,10 +187,10 @@ public class HomeServlet extends HttpServlet {
     private void download(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         Users user = (Users) request.getSession().getAttribute("authUser");
-        if ((boolean)request.getSession().getAttribute("auth")==true) {
-            if (user.getRole()==1) {
+        if ((boolean) request.getSession().getAttribute("auth") == true) {
+            if (user.getRole() == 1) {
                 int checkTime = user.getIssue_at().plusMinutes(user.getExpiration()).compareTo(LocalDateTime.now());
-                if (checkTime<0) {
+                if (checkTime < 0) {
                     ServletUtils.forward("/views/403.jsp", request, response);
                     return;
                 }
@@ -244,16 +255,26 @@ public class HomeServlet extends HttpServlet {
                 break;
         }
 
-        if ((boolean)request.getSession().getAttribute("auth")) {
-            if (user.getRole()==1)
+        if ((boolean) request.getSession().getAttribute("auth")) {
+            if (user.getRole() == 1)
                 java.util.Collections.sort(arts, new Articles());
         }
+        String url = request.getPathInfo() + "?id=" + Integer.toString(id);
+        request.setAttribute("url", url);
         request.setAttribute("titleTopic", title);
         request.setAttribute("cateRelated", cate);
         request.setAttribute("articles", arts);
 
+//      Page gửi về
+        int page = 1;
+        try {
+            page = Integer.parseInt(request.getParameter("page"));
+        } catch (NumberFormatException e) {
+        }
+
+//        Chỗ cần thêm dữ liệu đây
         request.setAttribute("currentPage", 1);
-        request.setAttribute("maxPage", 2);
+        request.setAttribute("maxPage", 10);
 
         ServletUtils.forward("/views/vwGeneral/Topic.jsp", request, response);
     }

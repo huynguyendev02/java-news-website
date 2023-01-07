@@ -117,10 +117,7 @@ public class AccountServlet extends HttpServlet {
     private void githubLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ExecutionException, InterruptedException {
         String code = request.getParameter("code");
         HttpSession session = request.getSession();
-        System.out.println(code);
         List<String> resData= GithubUtils.getInfo(code);
-        System.out.println(resData.get(0));
-        System.out.println(resData.get(1));
         if (resData.get(0).equals("200") && resData.get(1).length()!= 0) {
             Users user = UsersService.findByEmail(resData.get(1));
             if (user!=null){
@@ -139,10 +136,7 @@ public class AccountServlet extends HttpServlet {
     private void googleLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ExecutionException, InterruptedException {
         String code = request.getParameter("code");
         HttpSession session = request.getSession();
-        System.out.println(code);
         List<String> resData= GoogleUtils.getInfo(code);
-        System.out.println(resData.get(0));
-        System.out.println(resData.get(1));
         if (resData.get(0).equals("200") && resData.get(1).length()!= 0) {
             Users user = UsersService.findByEmail(resData.get(1));
             if (user!=null){
