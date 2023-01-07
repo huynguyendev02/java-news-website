@@ -129,13 +129,13 @@
                                 <a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/Admin/Users/ListEditor">Quản lý biên tập</a>
                                 <a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/Admin/Users/ListAdmin">Quản lý Admin</a>
+                                <a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/Admin/Articles/ListDraft">Quản lý các bản
                                     thảo</a>
                                 <a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/Admin/Articles/ListComplete">Quản lý các bài
                                     đã duyệt</a>
-                                <a class="dropdown-item"
-                                   href="${pageContext.request.contextPath}/Admin/Articles/Upload">Tạo bài viết mới</a>
                                 <button class="dropdown-item"
                                         formaction="${pageContext.request.contextPath}/Account/Logout">Đăng xuất
                                 </button>

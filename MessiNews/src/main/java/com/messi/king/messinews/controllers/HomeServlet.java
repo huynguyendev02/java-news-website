@@ -78,9 +78,24 @@ public class HomeServlet extends HttpServlet {
         }
 
         request.setAttribute("allArticle", allArticle);
+//        Truyền vào trang hiện tại và trang tối đa của danh sách all
+        request.setAttribute("currentPageAll", 1);
+        request.setAttribute("maxPageAll", 10);
+
         request.setAttribute("byTitle", byTitle);
+        //        Truyền vào trang hiện tại và trang tối đa của danh sách all
+        request.setAttribute("currentPageByTitle", 1);
+        request.setAttribute("maxPageByTitle", 10);
+
         request.setAttribute("byAbstract", byAbstract);
+        //        Truyền vào trang hiện tại và trang tối đa của danh sách all
+        request.setAttribute("currentPageByAbstract", 1);
+        request.setAttribute("maxPageByAbstract", 10);
+
         request.setAttribute("byContent", byContent);
+        //        Truyền vào trang hiện tại và trang tối đa của danh sách all
+        request.setAttribute("currentPageByContent", 1);
+        request.setAttribute("maxPageByContent", 10);
 
 
         ServletUtils.forward("/views/vwGeneral/Search.jsp", request, response);
@@ -237,7 +252,8 @@ public class HomeServlet extends HttpServlet {
         request.setAttribute("cateRelated", cate);
         request.setAttribute("articles", arts);
 
-
+        request.setAttribute("currentPage", 1);
+        request.setAttribute("maxPage", 2);
 
         ServletUtils.forward("/views/vwGeneral/Topic.jsp", request, response);
     }

@@ -17,8 +17,10 @@
           <element id="library" level="project" name="Maven: org.sql2o:sql2o:1.6.0" />
           <element id="library" level="project" name="Maven: org.apache.taglibs:taglibs-standard-spec:1.2.5" />
           <element id="library" level="project" name="Maven: org.apache.taglibs:taglibs-standard-impl:1.2.5" />
+          <element id="library" level="project" name="Maven: org.glassfish:javax.json:1.0.4" />
           <element id="library" level="project" name="Maven: at.favre.lib:bcrypt:0.9.0" />
           <element id="library" level="project" name="Maven: at.favre.lib:bytes:1.3.0" />
+          <element id="library" level="project" name="Maven: javax.json:javax.json-api:1.1.4" />
           <element id="library" level="project" name="Maven: org.jsoup:jsoup:1.13.1" />
           <element id="library" level="project" name="Maven: com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.6" />
           <element id="library" level="project" name="Maven: org.apache.pdfbox:pdfbox:2.0.22" />

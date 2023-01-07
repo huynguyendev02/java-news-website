@@ -6,9 +6,15 @@
              type="java.util.List<com.messi.king.messinews.models.ParentCategories>"/>
 <jsp:useBean id="allCategories" scope="request" type="java.util.List<com.messi.king.messinews.models.Categories>"/>
 <jsp:useBean id="tags" scope="request" type="java.util.List<com.messi.king.messinews.models.Tags>"/>
+<jsp:useBean id="authUser" scope="session" type="com.messi.king.messinews.models.Users"/>
+
 
 <m:main>
      <jsp:attribute name="css">
+         <link rel="stylesheet"
+               href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
+               integrity="sha512-f0tzWhCwVFS3WeYaofoLWkTP62ObhewQ1EZn65oSYDZUg1+CyywGKkWzm8BxaJj5HGKI72PnMH9jYyIFz+GH7g=="
+               crossorigin="anonymous" referrerpolicy="no-referrer"/>
            <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.2.5/css/fileinput.min.css" media="all"
                  rel="stylesheet" type="text/css"/>
          <style>
@@ -23,6 +29,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.2.5/js/locales/vi.min.js"></script>
          <script src="https://cdn.tiny.cloud/1/9j7smfctwfkjpq7dixag0611zkfac5z40r6ismhkjyo8zvmm/tinymce/6/tinymce.min.js"
                  referrerpolicy="origin"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"
+                integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw=="
+                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
         <script>
             function showListCart(idPCat, namePCat) {
@@ -55,6 +64,12 @@
                 language: 'vi',
                 dropZoneEnabled: false,
                 allowedFileExtensions: ['jpg', 'png']
+            });
+
+            $('#publish_time').datetimepicker({
+                format: 'd/m/Y',
+                timepicker: false,
+                mask: true
             });
 
             tinymce.init({
@@ -128,6 +143,20 @@
                                     </div>
                                 </c:forEach>
                             </div><br>
+
+                            <c:if test="${authUser.role==4}">
+                                <label for="publish_time">Ngày phát hành</label> <br>
+                                <input name="publish_time" id="publish_time" type="text" class="form-control" style="width: 20%"> <br>
+
+                                <label for="articleType">Loại báo</label>
+                                <div id="articleType" class="pl-3">
+                                    <input type="radio" id="normal" name="premium" value="0">
+                                    <label for="normal">Thường</label><br>
+                                    <input type="radio" id="premium" name="premium" value="1">
+                                    <label for="premium">Cao cấp</label><br>
+                                </div>
+                                <br>
+                            </c:if>
 
                             <label for="divTags">Chọn tag</label>
                             <div id="divTags">

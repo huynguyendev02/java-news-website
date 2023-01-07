@@ -63,7 +63,15 @@
 
                 <!--    center-->
                 <div style="width: 70%; background-color: white" class="m-4 p-3">
-                    <h4>Danh sách các bài viết đã duyệt</h4>
+                    <div class="d-flex justify-content-between">
+                        <h4>Danh sách các bài viết đã duyệt</h4>
+                        <a href="${pageContext.request.contextPath}/Admin/Articles/Upload"
+                           class="mx-3 px-3 btn btn-outline-success"
+                           style="border-radius: 20px" type="button">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            Thêm bài viết với
+                        </a>
+                    </div>
                     <hr>
                     <br>
                     <div id="danhSach">

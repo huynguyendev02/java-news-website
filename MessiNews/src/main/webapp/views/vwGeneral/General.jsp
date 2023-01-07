@@ -234,8 +234,6 @@
                         </c:forEach>
 
                             <%--                        Phân trang--%>
-                            <%--                        <c:set var="page" value="<%= request.getAttribute("page") %>"/>--%>
-                            <%--                        <c:set var="maxPage" value="<%= request.getAttribute("maxPage") %>"/>--%>
                         <div class="mt-5 mb-3 w-100 d-flex justify-content-center">
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination">

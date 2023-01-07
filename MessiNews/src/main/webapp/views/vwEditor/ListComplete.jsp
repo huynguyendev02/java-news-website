@@ -14,7 +14,20 @@
                 integrity="sha512-f0tzWhCwVFS3WeYaofoLWkTP62ObhewQ1EZn65oSYDZUg1+CyywGKkWzm8BxaJj5HGKI72PnMH9jYyIFz+GH7g=="
                 crossorigin="anonymous" referrerpolicy="no-referrer"/>
     </jsp:attribute>
+    <jsp:attribute name="js">
+        <script>
+            function acceptClick(){
+                $('#divAccept').css('display','block');
+                $('#divDeny').css('display','none')
+            }
 
+            function denyClick(){
+                $('#divAccept').css('display','none');
+                $('#divDeny').css('display','block')
+            }
+
+        </script>
+    </jsp:attribute>
     <jsp:body>
         <form action="" method="post">
             <div class="d-flex justify-content-center bgColorGray">
@@ -25,73 +38,103 @@
 
                 <!--    center-->
                 <div style="width: 70%; background-color: white" class="m-4 p-3">
-                    <h4>Danh sách các bài viết đã duyệt</h4>
+                    <div class="d-flex justify-content-between">
+                        <h4>Danh sách bài viết được bạn xử lý</h4>
+                        <div>
+                            <a class="mx-1 px-3 btn btn-outline-success" onclick="acceptClick()"
+                               style="border-radius: 20px" type="button">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                                Được duyệt
+                            </a>
+                            <a class="mx-1 px-3 btn btn-outline-danger" onclick="denyClick()"
+                               style="border-radius: 20px" type="button">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                                Bị từ chối
+                            </a>
+                        </div>
+                    </div>
                     <hr>
                     <br>
-                    <div id="danhSach">
+
+                    <div id="divAccept">
                         <table class="w-100" cellpadding="5px">
                             <tr style="background-color: #EEEEEE">
                                 <td style="width: 35%">Tiêu đề</td>
                                 <td align="center" style="width: 15%">Chuyên mục</td>
                                 <td align="center" style="width: 20%">Tác giả</td>
-                                <td align="center" style="width: 15%">Trang thái</td>
                                 <td align="center" style="width: 10%">Ngày đăng</td>
-                                <td align="center" style="width: 10%">Views</td>
-                                <td align="center" style="width: 5%">Loại</td>
+                                <td align="center" style="width: 10%">Lượt xem</td>
+                                <td align="center" style="width: 10%">Loại báo</td>
 
                             </tr>
                             <c:forEach items="${articlesList}" var="c">
-                                <tr>
-                                    <td>
-                                        <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}">
-                                                ${c.title}
-                                        </a>
-                                    </td>
-                                    <td align="center">
-                                            ${c.getCategoriesName(c.categories_id)}
-                                    </td>
-                                    <td align="center">
-                                            ${c.getWriterName(c.writer_id)}
-                                    </td>
-                                    <td align="center">
-                                        <c:choose>
-                                            <c:when test="${c.status == 0}">
-                                                <p style="color: red"> Bị từ chối </p>
-                                            </c:when>
-
-                                            <c:when test="${c.status == 1}">
-                                                <p style="color: forestgreen"> Đã duyệt </p>
-                                            </c:when>
-
-                                            <c:otherwise>
-                                                <p style="color: goldenrod"> Bản thảo </p>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </td>
-                                    <td align="center">
-                                        <c:if test="${c.status == 1}">
+                                <c:if test="${c.status==1}">
+                                    <tr>
+                                        <td>
+                                            <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}">
+                                                    ${c.title}
+                                            </a>
+                                        </td>
+                                        <td align="center">
+                                                ${c.getCategoriesName(c.categories_id)}
+                                        </td>
+                                        <td align="center">
+                                                ${c.getWriterName(c.writer_id)}
+                                        </td>
+                                        <td align="center">
                                             <script>
                                                 document.write('${c.publish_date}'.slice(8, 10) + '/' + '${c.publish_date}'.slice(5, 7) + '/' + '${c.publish_date}'.slice(0, 4))
                                             </script>
-                                        </c:if>
-                                    </td>
-                                    <td align="center">
-                                        <c:if test="${c.status == 1}">
-                                            ${c.views}
-                                        </c:if>
-                                    </td>
-                                    <td align="center">
-                                        <c:if test="${c.premium == 0}">
-                                            <i class="fa fa-star" aria-hidden="true" style="color: grey"></i>
-                                        </c:if>
-                                        <c:if test="${c.premium == 1}">
-                                            <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
-                                        </c:if>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td align="center">
+                                                ${c.views}
+                                        </td>
+                                        <td align="center">
+                                            <c:if test="${c.premium == 0}">
+                                                <i class="fa fa-star" aria-hidden="true" style="color: grey"></i>
+                                            </c:if>
+                                            <c:if test="${c.premium == 1}">
+                                                <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                                            </c:if>
+                                        </td>
+                                    </tr>
+                                </c:if>
                             </c:forEach>
                         </table>
                     </div>
+
+                    <div id="divDeny" style="display: none">
+                        <table class="w-100" cellpadding="5px">
+                            <tr style="background-color: #EEEEEE">
+                                <td style="width: 35%">Tiêu đề</td>
+                                <td align="center" style="width: 15%">Chuyên mục</td>
+                                <td align="center" style="width: 20%">Tác giả</td>
+                                <td align="center" style="width: 30%">Lý do</td>
+                            </tr>
+                            <c:forEach items="${articlesList}" var="c">
+                                <c:if test="${c.status==0}">
+                                    <tr>
+                                        <td>
+                                            <a href="${pageContext.request.contextPath}/Editor/ViewArticle?id=${c.id}">
+                                                    ${c.title}
+                                            </a>
+                                        </td>
+                                        <td align="center">
+                                                ${c.getCategoriesName(c.categories_id)}
+                                        </td>
+                                        <td align="center">
+                                                ${c.getWriterName(c.writer_id)}
+                                        </td>
+                                        <td align="center">
+                                                ${c.reason}
+                                        </td>
+                                    </tr>
+                                </c:if>
+                            </c:forEach>
+                        </table>
+                    </div>
+
+
                 </div>
 
                 <!--    right-->
