@@ -7,6 +7,15 @@
 <jsp:useBean id="allCategories" scope="request" type="java.util.List<com.messi.king.messinews.models.Categories>"/>
 
 <m:main>
+    <jsp:attribute name="js">
+        <script>
+            function confirmDelete(event) {
+                if (!confirm("Bạn có chắc muốn xóa?")) {
+                    event.preventDefault();
+                }
+            }
+        </script>
+    </jsp:attribute>
     <jsp:body>
         <form action="" method="post">
             <div class="d-flex justify-content-center bgColorGray">
@@ -52,7 +61,7 @@
                                         </c:forEach>
                                     </td>
                                     <td align="center">
-                                        <button type="submit"
+                                        <button type="submit" onclick="confirmDelete(event)"
                                                 formaction="${pageContext.request.contextPath}/Admin/Categories/DeleteCate?idCate=${c.id}"
                                                 class="btn btn-danger">Xóa
                                         </button>

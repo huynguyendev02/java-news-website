@@ -41,7 +41,7 @@ public class EditorService {
         }
     }
     public static List<Articles> findAllComplete() {
-        final String query = "SELECT * from articles where status=1";
+        final String query = "SELECT * from articles where status!=-1";
         try (Connection con = DbUtils.getConnection()) {
             return con.createQuery(query)
                     .executeAndFetch(Articles.class);

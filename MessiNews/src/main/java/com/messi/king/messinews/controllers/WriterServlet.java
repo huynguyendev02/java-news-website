@@ -36,7 +36,6 @@ public class WriterServlet extends HttpServlet {
         switch (url) {
             case "/List":
                 Users user = (Users) session.getAttribute("authUser");
-                System.out.println(user.getId());
                 List<Articles> articlesList = ArticlesService.findByWriterId(user.getId());
                 request.setAttribute("articlesList", articlesList);
 
@@ -121,6 +120,10 @@ public class WriterServlet extends HttpServlet {
 
     private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         int id = 0;
+        try {
+            id = Integer.parseInt(request.getParameter("id"));
+        } catch (NumberFormatException e) {
+        }
         Articles art = ArticlesService.findById(id);
         if (art!=null) {
             ArticlesService.delete(art);

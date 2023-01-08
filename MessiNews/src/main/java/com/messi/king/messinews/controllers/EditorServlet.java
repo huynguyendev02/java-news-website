@@ -99,7 +99,12 @@ public class EditorServlet extends HttpServlet {
         }
         String reason = request.getParameter("reason").trim();
         EditorService.declineArticle(id, reason, user.getId());
-        ServletUtils.redirect("/Editor/ListDraft", request, response);
+        if (user.getRole()==3){
+            ServletUtils.redirect("/Editor/ListDraft", request, response);
+        }
+        else {
+            ServletUtils.redirect("/Admin/Articles/ListDraft", request, response);
+        }
 
     }
 
@@ -132,6 +137,11 @@ public class EditorServlet extends HttpServlet {
         Articles art = ArticlesService.findById(id);
         PdfUtils.createPdfFile(art, request, response);
 
-        ServletUtils.redirect("/Editor/ListComplete", request, response);
+        if (user.getRole()==3){
+            ServletUtils.redirect("/Editor/ListComplete", request, response);
+        }
+        else {
+            ServletUtils.redirect("/Admin/Articles/ListComplete", request, response);
+        }
     }
 }

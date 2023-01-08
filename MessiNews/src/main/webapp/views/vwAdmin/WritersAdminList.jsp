@@ -5,6 +5,15 @@
 <jsp:useBean id="writers" scope="request" type="java.util.List<com.messi.king.messinews.models.Users>"/>
 
 <m:main>
+    <jsp:attribute name="js">
+        <script>
+            function confirmDelete(event) {
+                if (!confirm("Bạn có chắc muốn xóa?")) {
+                    event.preventDefault();
+                }
+            }
+        </script>
+    </jsp:attribute>
     <jsp:body>
         <form action="" method="post">
             <div class="d-flex justify-content-center bgColorGray">
@@ -36,7 +45,7 @@
                                 <td align="center">Tổng lượt xem</td>
                                 <td align="center">Bài bị từ chối</td>
                                 <td align="center">Bài cao cấp</td>
-                                <td align="center">Xóa</td>
+                                <td align="center"></td>
                             </tr>
                             <c:forEach items="${writers}" var="c">
                                 <tr>
@@ -56,7 +65,7 @@
                                     <td align="center">${c.denyArticlesCount()}</td>
                                     <td align="center">${c.premiumCount()}</td>
                                     <td align="center">
-                                        <button type="submit"
+                                        <button type="submit" onclick="confirmDelete(event)"
                                                 formaction="${pageContext.request.contextPath}/Admin/Users/Delete?id=${c.id}"
                                                 class="btn btn-danger">Xóa
                                         </button>

@@ -92,41 +92,43 @@
                         </div>
                     </c:if>
                     <c:forEach items="${allArticle}" var="c">
-                        <div class=" mb-3 w-100 d-flex justify-content-between">
-                            <div style="width: 30%">
-                                <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
-                                   onclick="checkPermission(${c.premium},event)">
-                                    <img style="width: 100%"
-                                         src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
-                                         alt="">
-                                </a>
-                            </div>
-                            <div style="width: 69%" class="pl-2 d-flex flex-column justify-content-between">
-                                <div>
+                        <c:if test="${c.status==1}">
+                            <div class=" mb-3 w-100 d-flex justify-content-between">
+                                <div style="width: 30%">
                                     <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
                                        onclick="checkPermission(${c.premium},event)">
-                                        <c:if test="${c.premium == 1}">
-                                            <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
-                                        </c:if>
-                                        <b>${c.title}</b><br>
-                                            ${c.abstract_content}
+                                        <img style="width: 100%"
+                                             src="${pageContext.request.contextPath}/photos/articles/${c.id}/a.png"
+                                             alt="">
                                     </a>
                                 </div>
-                                <div class="d-flex w-100 justify-content-between">
+                                <div style="width: 69%" class="pl-2 d-flex flex-column justify-content-between">
                                     <div>
-                                        <img src="${pageContext.request.contextPath}/photos/userAvatar/${c.writer_id}/avatar.png"
-                                             alt="" style="width: 30px; height: 30px; border-radius: 30px">
-                                            ${c.getWriterName(c.writer_id)}
-                                    </div>
-                                    <div class="pr-4">
-                                        <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
-                                           class="ATitle">
-                                            <b>${c.getCategoriesName(c.categories_id)}</b>
+                                        <a href="${pageContext.request.contextPath}/Home/Details?id=${c.id}"
+                                           onclick="checkPermission(${c.premium},event)">
+                                            <c:if test="${c.premium == 1}">
+                                                <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                                            </c:if>
+                                            <b>${c.title}</b><br>
+                                                ${c.abstract_content}
                                         </a>
+                                    </div>
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <div>
+                                            <img src="${pageContext.request.contextPath}/photos/userAvatar/${c.writer_id}/avatar.png"
+                                                 alt="" style="width: 30px; height: 30px; border-radius: 30px">
+                                                ${c.getWriterName(c.writer_id)}
+                                        </div>
+                                        <div class="pr-4">
+                                            <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.categories_id}"
+                                               class="ATitle">
+                                                <b>${c.getCategoriesName(c.categories_id)}</b>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </c:if>
                     </c:forEach>
 
                         <%--                        Phần trang --%>

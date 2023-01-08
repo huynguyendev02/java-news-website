@@ -21,6 +21,7 @@ public class ArticlesService {
             return arts;
         }
     }
+
     public static List<Articles> top5AllCateInWeek() {
         final String query = "select * from articles WHERE DATEDIFF(NOW(),publish_date)<=7 and status=1 ORDER BY views DESC";
         try (Connection con = DbUtils.getConnection()) {
@@ -29,46 +30,51 @@ public class ArticlesService {
             return arts;
         }
     }
+
     public static List<Articles> searchArticles(String key) {
-        final String query = "SELECT * from articles WHERE MATCH(title) AGAINST (:key) UNION SELECT * from articles WHERE MATCH(abstract_content) AGAINST (:key) UNION SELECT * from articles WHERE MATCH(content) AGAINST (:key)";
+        final String query = "SELECT * from articles WHERE MATCH(title) AGAINST (:key) and status=1 UNION SELECT * from articles WHERE MATCH(abstract_content) AGAINST (:key) and status=1 UNION SELECT * from articles WHERE MATCH(content) AGAINST (:key) and status=1";
         List<Articles> arts = new ArrayList<>();
         try (Connection con = DbUtils.getConnection()) {
-             arts.addAll(con.createQuery(query)
-                     .addParameter("key", key)
-                     .executeAndFetch(Articles.class)) ;
+            arts.addAll(con.createQuery(query)
+                    .addParameter("key", key)
+                    .executeAndFetch(Articles.class));
             return arts;
         }
     }
+
     public static List<Articles> searchArticlesByTitle(String key) {
-        final String query = "SELECT * from articles WHERE MATCH(title) AGAINST (:key)";
+        final String query = "SELECT * from articles WHERE MATCH(title) AGAINST (:key) and status=1";
         List<Articles> arts = new ArrayList<>();
         try (Connection con = DbUtils.getConnection()) {
             arts.addAll(con.createQuery(query)
                     .addParameter("key", key)
-                    .executeAndFetch(Articles.class)) ;
+                    .executeAndFetch(Articles.class));
             return arts;
         }
     }
+
     public static List<Articles> searchArticlesByAbs(String key) {
-        final String query = "SELECT * from articles WHERE MATCH(abstract_content) AGAINST (:key)";
+        final String query = "SELECT * from articles WHERE MATCH(abstract_content) AGAINST (:key) and status=1";
         List<Articles> arts = new ArrayList<>();
         try (Connection con = DbUtils.getConnection()) {
             arts.addAll(con.createQuery(query)
                     .addParameter("key", key)
-                    .executeAndFetch(Articles.class)) ;
+                    .executeAndFetch(Articles.class));
             return arts;
         }
     }
+
     public static List<Articles> searchAriclesByContent(String key) {
-        final String query = "SELECT * from articles WHERE MATCH(content) AGAINST (:key)";
+        final String query = "SELECT * from articles WHERE MATCH(content) AGAINST (:key) and status=1";
         List<Articles> arts = new ArrayList<>();
         try (Connection con = DbUtils.getConnection()) {
             arts.addAll(con.createQuery(query)
                     .addParameter("key", key)
-                    .executeAndFetch(Articles.class)) ;
+                    .executeAndFetch(Articles.class));
             return arts;
         }
     }
+
     public static List<Articles> newsRelated(int artId) {
         Articles art = ArticlesService.findById(artId);
         List<Articles> arts = ArticlesService.findByCatId(art.getCategories_id());
@@ -76,21 +82,21 @@ public class ArticlesService {
 
 
         if (arts.size() < 5) {
-            List<Articles> artsByPCat =  ArticlesService.findByPCatId(pcatId);
-            for (Articles artP: artsByPCat) {
+            List<Articles> artsByPCat = ArticlesService.findByPCatId(pcatId);
+            for (Articles artP : artsByPCat) {
                 int check = 1;
                 for (Articles artC : arts)
-                    if (artC.getId()==artP.getId()){
+                    if (artC.getId() == artP.getId()) {
                         check = 0;
                         break;
                     }
-                if (check==1)
+                if (check == 1)
                     arts.add(artP);
             }
         }
-        System.out.println(arts.size());
         return arts;
     }
+
     public static List<Articles> newest10PerCate() {
         final String query = "SELECT * FROM  ( (select * from articles where status=1 and publish_date = ( select Max(publish_date) from articles as f where f.categories_id=articles.categories_id ) group by categories_id, publish_date ) as bangmot JOIN (SELECT categories_id from articles GROUP BY categories_id ORDER BY SUM(views) DESC  ) as banghai ON bangmot.categories_id = banghai.categories_id )";
 //        final String top10cateId = "SELECT categories_id from articles GROUP BY categories_id ORDER BY SUM(views) DESC";
@@ -124,6 +130,7 @@ public class ArticlesService {
                     .executeUpdate();
         }
     }
+
     public static List<Articles> latestNewsAllCate() {
         final String query = "select * from articles where status=1 ORDER BY publish_date DESC";
         try (Connection con = DbUtils.getConnection()) {
@@ -132,6 +139,7 @@ public class ArticlesService {
             return arts;
         }
     }
+
     public static Articles findById(int id) {
         final String query = "select * from articles where id = :id";
         try (Connection con = DbUtils.getConnection()) {
@@ -141,6 +149,7 @@ public class ArticlesService {
             return art;
         }
     }
+
     public static List<Articles> findByWriterId(int writerId) {
         final String query = "select * from articles where writer_id = :writerId";
         try (Connection con = DbUtils.getConnection()) {
@@ -150,43 +159,52 @@ public class ArticlesService {
             return arts;
         }
     }
+
     public static List<Articles> findByTagId(int tag_id) {
         final String tagQuery = "select * from article_has_tag where tag_id= :tag_id";
         try (Connection con = DbUtils.getConnection()) {
             List<ArticleHasTag> artsId = con.createQuery(tagQuery)
                     .addParameter("tag_id", tag_id)
                     .executeAndFetch(ArticleHasTag.class);
-            List<Articles> arts = new ArrayList<>();;
-            for (ArticleHasTag articleHasTag: artsId) {
-                arts.add(ArticlesService.findById(articleHasTag.getArticle_id()));
+            List<Articles> arts = new ArrayList<>();
+            Articles art = new Articles();
+            for (ArticleHasTag articleHasTag : artsId) {
+                art = ArticlesService.findById(articleHasTag.getArticle_id());
+                if (art.getStatus()==1){
+                    arts.add(art);
+                }
             }
             return arts;
         }
     }
+
     public static void viewArticle(int id) {
-        final String query = "update articles set views= views+1 where id = :id";
+        final String query = "update articles set views= views+1 where id = :id and status=1";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
                     .addParameter("id", id)
                     .executeUpdate();
         }
     }
+
     public static List<Articles> findByPCatId(int parent_cate_id) {
         final String cateQuery = "select id from categories where parent_cate_id= :parent_cate_id";
         try (Connection con = DbUtils.getConnection()) {
             List<Integer> cateId = con.createQuery(cateQuery)
                     .addParameter("parent_cate_id", parent_cate_id)
                     .executeAndFetch(Integer.class);
-            List<Articles> arts = new ArrayList<>();;
-            for (int id: cateId) {
+            List<Articles> arts = new ArrayList<>();
+
+            for (int id : cateId) {
                 List<Articles> artsByCat = findByCatId(id);
                 arts.addAll(artsByCat);
             }
             return arts;
         }
     }
+
     public static List<Articles> findByCatId(int id) {
-        final String query = "select * from articles where categories_id = :id ORDER BY publish_date DESC";
+        final String query = "select * from articles where categories_id = :id and status=1 ORDER BY publish_date DESC";
         try (Connection con = DbUtils.getConnection()) {
             List<Articles> arts = con.createQuery(query)
                     .addParameter("id", id)
@@ -194,12 +212,13 @@ public class ArticlesService {
             return arts;
         }
     }
+
     public static List<Articles> findByCatIdPublish(int userId) {
         List<Categories> catList = CategoriesService.findAllByEditorId(userId);
         List<Articles> arts = new ArrayList<>();
         final String query = "select * from articles where categories_id = :id and status=1 ORDER BY publish_date DESC";
         try (Connection con = DbUtils.getConnection()) {
-            for(Categories cat : catList) {
+            for (Categories cat : catList) {
                 arts.addAll(con.createQuery(query).addParameter("id", cat.getId()).executeAndFetch(Articles.class));
             }
             return arts;
@@ -207,7 +226,7 @@ public class ArticlesService {
     }
 
     public static void delete(Articles art) {
-        final String query = "delete from tags where id = :id";
+        final String query = "delete from articles where id = :id";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
                     .addParameter("id", art.getId())
@@ -218,15 +237,15 @@ public class ArticlesService {
     public static int add(Articles articles) {
         String insertSql = "INSERT INTO articles (title, views, abstract_content, content, categories_id,premium, writer_id, status) VALUES (:title, :views, :abstract_content, :content, :categories_id,:premium, :writer_id, :status)";
         try (Connection con = DbUtils.getConnection()) {
-            BigInteger bigInt =  (BigInteger)con.createQuery(insertSql, true)
-                    .addParameter("title",articles.getTitle())
-                    .addParameter("views",0)
+            BigInteger bigInt = (BigInteger) con.createQuery(insertSql, true)
+                    .addParameter("title", articles.getTitle())
+                    .addParameter("views", 0)
                     .addParameter("abstract_content", articles.getAbstract_content())
-                    .addParameter("content",articles.getContent())
-                    .addParameter("categories_id",articles.getCategories_id())
+                    .addParameter("content", articles.getContent())
+                    .addParameter("categories_id", articles.getCategories_id())
                     .addParameter("premium", articles.getPremium())
                     .addParameter("writer_id", articles.getWriter_id())
-                    .addParameter("status",-1)
+                    .addParameter("status", -1)
                     .executeUpdate()
                     .getKey();
             return bigInt.intValue();

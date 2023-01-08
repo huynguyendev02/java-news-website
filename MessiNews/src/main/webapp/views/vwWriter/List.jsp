@@ -5,49 +5,30 @@
 <jsp:useBean id="articlesList" scope="request" type="java.util.List<com.messi.king.messinews.models.Articles>"/>
 
 <m:main>
-     <jsp:attribute name="css">
-          <style>
-              .Shadown {
-                  border-style: solid;
-                  border-right: none;
-              }
-
-              .aDelete {
-                  color: red;
-              }
-
-              .aDelete:hover {
-                  color: red;
-                  font-weight: bold;
-              }
-
-              .aEdit {
-                  color: forestgreen;
-              }
-
-              .aEdit:hover {
-                  color: forestgreen;
-                  font-weight: bold;
-              }
-
-          </style>
-    </jsp:attribute>
     <jsp:attribute name="js">
         <script>
-            function acceptClick(){
-                $('#accept').css('display','block');
-                $('#draft').css('display','none')
-                $('#deny').css('display','none')
+            function acceptClick() {
+                $('#accept').css('display', 'block');
+                $('#draft').css('display', 'none')
+                $('#deny').css('display', 'none')
             }
-            function draftClick(){
-                $('#accept').css('display','none');
-                $('#draft').css('display','block')
-                $('#deny').css('display','none')
+
+            function draftClick() {
+                $('#accept').css('display', 'none');
+                $('#draft').css('display', 'block')
+                $('#deny').css('display', 'none')
             }
-            function denyClick(){
-                $('#accept').css('display','none');
-                $('#draft').css('display','none')
-                $('#deny').css('display','block')
+
+            function denyClick() {
+                $('#accept').css('display', 'none');
+                $('#draft').css('display', 'none')
+                $('#deny').css('display', 'block')
+            }
+
+            function confirmDelete(event) {
+                if (!confirm("Bạn có chắc muốn xóa?")) {
+                    event.preventDefault();
+                }
             }
         </script>
     </jsp:attribute>
@@ -128,18 +109,21 @@
                                 <c:if test="${c.status==-1}">
                                     <tr>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/Writer/Edit?id=${c.id}"">
+                                            <a href="${pageContext.request.contextPath}/Writer/Edit?id=${c.id}">
                                                     ${c.title}
                                             </a>
                                         </td>
                                         <td align="center">
-                                            ${c.getCategoriesName(c.categories_id)}
+                                                ${c.getCategoriesName(c.categories_id)}
                                         </td>
                                         <td align="center">
                                             <p style="color: goldenrod"> Bản thảo </p>
                                         </td>
                                         <td align="center">
-                                            <button type="button" formaction="" class="btn btn-danger">Xóa</button>
+                                            <button type="submit"
+                                                    formaction="${pageContext.request.contextPath}/Writer/Delete?id=${c.id}"
+                                                    onclick="confirmDelete(event)" class="btn btn-danger">Xóa
+                                            </button>
                                         </td>
                                     </tr>
                                 </c:if>
@@ -153,14 +137,15 @@
                                 <td>Tiêu đề</td>
                                 <td align="center">Chuyên mục</td>
                                 <td align="center">Trạng thái</td>
+                                <td align="center">Lý do</td>
                                 <td align="center"></td>
                             </tr>
                             <c:forEach items="${articlesList}" var="c">
                                 <c:if test="${c.status==0}">
                                     <tr>
                                         <td>
-                                            <a href="${pageContext.request.contextPath}/Writer/Edit?id=${c.id}"">
-                                                ${c.title}
+                                            <a href="${pageContext.request.contextPath}/Writer/Edit?id=${c.id}">
+                                                    ${c.title}
                                             </a>
                                         </td>
                                         <td align="center">
@@ -170,7 +155,13 @@
                                             <p style="color: red"> Bị từ chối </p>
                                         </td>
                                         <td align="center">
-                                            <button type="button" formaction="" class="btn btn-danger">Xóa</button>
+                                                ${c.reason}
+                                        </td>
+                                        <td align="center">
+                                            <button type="submit"
+                                                    formaction="${pageContext.request.contextPath}/Writer/Delete?id=${c.id}"
+                                                    onclick="confirmDelete(event)" class="btn btn-danger">Xóa
+                                            </button>
                                         </td>
                                     </tr>
                                 </c:if>

@@ -54,7 +54,7 @@ public class AdminTagsServlet extends HttpServlet {
             case "/Add":
                 String nameTag = request.getParameter("nameTag");
                 TagsService.add(nameTag);
-                ServletUtils.redirect("/Admin/Tag/List", request, response);
+                ServletUtils.redirect("/Admin/Tags/List", request, response);
                 break;
             case "/Edit":
                 editTag(request,response);

@@ -16,29 +16,6 @@
                 crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
           <style>
-              .Shadown {
-                  border-style: solid;
-                  border-right: none;
-              }
-
-              .aDelete {
-                  color: red;
-              }
-
-              .aDelete:hover {
-                  color: red;
-                  font-weight: bold;
-              }
-
-              .aEdit {
-                  color: forestgreen;
-              }
-
-              .aEdit:hover {
-                  color: forestgreen;
-                  font-weight: bold;
-              }
-
               .btStyle {
                   width: 350px;
                   border-radius: 5px;

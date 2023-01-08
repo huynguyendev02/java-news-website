@@ -1,6 +1,7 @@
 package com.messi.king.messinews.controllers;
 
 import com.messi.king.messinews.models.Articles;
+import com.messi.king.messinews.models.Categories;
 import com.messi.king.messinews.models.Tags;
 import com.messi.king.messinews.models.Users;
 import com.messi.king.messinews.services.*;
@@ -21,6 +22,7 @@ public class AdminArticlesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String url = request.getPathInfo();
+
         switch (url) {
             case "/Upload":
                 List<Tags> tagsList = TagsService.findAll();
@@ -38,22 +40,45 @@ public class AdminArticlesServlet extends HttpServlet {
                 ServletUtils.forward("/views/vwAdmin/ArticleCompleteAdminList.jsp", request, response);
                 break;
             case "/Accept":
-                int id = Integer.parseInt(request.getParameter("id"));
-                List<Tags> tags = TagsService.findAll();
-                Articles article = ArticlesService.findById(id);
-                request.setAttribute("article", article);
-                request.setAttribute("tags",tags);
-                ServletUtils.forward("/views/vwEditor/Accept.jsp",request,response);
+                getAccept(request,response);
                 break;
             case "/Deny":
-                int id2 = Integer.parseInt(request.getParameter("id"));
-                Articles article2 = ArticlesService.findById(id2);
-                request.setAttribute("article", article2);
-                ServletUtils.forward("/views/vwEditor/Deny.jsp",request,response);
+                getDeny(request,response);
+                break;
+            case "/ViewArticle":
+                getViewArticle(request,response);
                 break;
             default:
                 ServletUtils.forward("/views/404.jsp",request,response);
         }
+    }
+
+    private void getAccept(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        List<Tags> tagsList = TagsService.findAll();
+        Articles article = ArticlesService.findById(id);
+        List<Categories> catList = CategoriesService.findAll();
+
+        request.setAttribute("Categories", catList);
+        request.setAttribute("article", article);
+        request.setAttribute("tags", tagsList);
+        ServletUtils.forward("/views/vwEditor/Accept.jsp", request, response);
+    }
+
+    private void getDeny(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Articles article = ArticlesService.findById(id);
+        request.setAttribute("article", article);
+        ServletUtils.forward("/views/vwEditor/Deny.jsp", request, response);
+    }
+    private void getViewArticle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Articles article = ArticlesService.findById(id);
+        List<Tags> tags = TagsService.findTagByArticle(id);
+
+        request.setAttribute("article", article);
+        request.setAttribute("tags", tags);
+        ServletUtils.forward("/views/vwEditor/ViewArticle.jsp", request, response);
     }
 
     @Override

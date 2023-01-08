@@ -80,6 +80,7 @@ public class HomeServlet extends HttpServlet {
         if (page>maxPage) page = maxPage;
 
         int startIndex = (page - 1) * 10;
+        if (startIndex<0) startIndex = 0;
         int endIndex = Math.min((page * 10), allArticle.size());
 
 //                Số trang tối đa

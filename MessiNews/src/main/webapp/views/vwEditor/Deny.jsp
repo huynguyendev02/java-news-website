@@ -34,7 +34,7 @@
                                 <i class="fa fa-times" aria-hidden="true"></i>
                                 Hủy bỏ
                             </a>
-                            <button class="btn btn-success" type="submit">
+                            <button class="btn btn-success" type="submit" formaction="${pageContext.request.contextPath}/Editor/Deny?id=${article.id}">
                                 <i class="fa fa-check" aria-hidden="true"></i>
                                 Hoàn thành
                             </button>

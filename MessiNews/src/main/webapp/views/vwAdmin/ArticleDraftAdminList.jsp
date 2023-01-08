@@ -39,7 +39,7 @@
               <c:forEach items="${articlesList}" var="c">
                 <tr>
                   <td>
-                    <a href="${pageContext.request.contextPath}/Editor/ViewArticle?id=${c.id}">
+                    <a href="${pageContext.request.contextPath}/Admin/Articles/ViewArticle?id=${c.id}">
                         ${c.title}
                     </a>
                   </td>
@@ -47,12 +47,12 @@
                       ${c.getWriterName(c.writer_id)}
                   </td>
                   <td align="center">
-                    <a type="button" href="${pageContext.request.contextPath}/Editor/Accept?id=${c.id}"
+                    <a type="button" href="${pageContext.request.contextPath}/Admin/Articles/Accept?id=${c.id}"
                        class="btn btn-success">Duyệt
                     </a>
                   </td>
                   <td align="center">
-                    <a type="button" href="${pageContext.request.contextPath}/Editor/Deny?id=${c.id}"
+                    <a type="button" href="${pageContext.request.contextPath}/Admin/Articles//Deny?id=${c.id}"
                        class="btn btn-danger">Từ chối
                     </a>
                   </td>
