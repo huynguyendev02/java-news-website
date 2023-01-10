@@ -89,7 +89,7 @@ public class HomeServlet extends HttpServlet {
         request.setAttribute("maxPage", maxPage);
 
 
-        request.setAttribute("allArticle", allArticle.subList(startIndex, endIndex));
+        request.setAttribute("allArticle", allArticle.size()!=0? allArticle.subList(startIndex, endIndex) : new ArrayList<>());
         request.setAttribute("byTitle", byTitle);
         request.setAttribute("byAbstract", byAbstract);
         request.setAttribute("byContent", byContent);
@@ -263,7 +263,7 @@ public class HomeServlet extends HttpServlet {
         int startIndex = (page - 1) * 10;
         int endIndex = Math.min((page * 10), arts.size());
 
-        request.setAttribute("articles", arts.subList(startIndex, endIndex));
+        request.setAttribute("articles", arts.size()!=0 ?  arts.subList(startIndex, endIndex) : new ArrayList<>());
 
 
 

@@ -29,6 +29,7 @@ public class SendMailUtils {
         pr.setProperty("mail.smtp.port", "587");
         pr.setProperty("mail.smtp.auth", "true");
         pr.setProperty("mail.smtp.starttls.enable", "true");
+        pr.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
 
         Session session = Session.getDefaultInstance(pr);
 
