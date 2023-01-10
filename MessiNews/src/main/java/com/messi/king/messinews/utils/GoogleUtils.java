@@ -25,7 +25,7 @@ public class GoogleUtils {
     private static final OAuth20Service service = new ServiceBuilder(clientId)
             .apiSecret(clientSecret)
             .defaultScope("https://www.googleapis.com/auth/userinfo.email")
-            .callback("hhttp://34.124.178.223.nip.io:8080/MessiNews/Account/GLogin")
+            .callback("http://34.124.178.223.nip.io:8080/MessiNews/Account/GLogin")
             .build(GoogleApi20.instance());
     public static String getAuthURL() {
         final Map<String, String> additionalParams = new HashMap<>();
