@@ -24,7 +24,7 @@ public class GithubUtils {
 
     private static final OAuth20Service service = new ServiceBuilder(clientId)
             .apiSecret(clientSecret)
-            .callback("http://localhost:8080/MessiNews/Account/GitLogin")
+            .callback("http://34.124.178.223.nip.io:8080/MessiNews/Account/GitLogin")
             .build(GitHubApi.instance());
     public static String getAuthURL() {
         final String authorizationUrl = service.getAuthorizationUrl();

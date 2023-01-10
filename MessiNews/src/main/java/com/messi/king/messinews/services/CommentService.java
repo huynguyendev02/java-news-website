@@ -21,11 +21,11 @@ public class CommentService {
         }
     }
     public static void updateComment(int id, String content) {
-        final String query = "update comments set content = :content, date= :date where id = :id";
+        final String query = "update comments set comment = :comment, date= :date where id = :id";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
                     .addParameter("id", id)
-                    .addParameter("content", content)
+                    .addParameter("comment", content)
                     .addParameter("date", LocalDateTime.now())
                     .executeUpdate();
         }
@@ -55,7 +55,7 @@ public class CommentService {
         final String query = "delete from comments where id = :commentId";
         try (Connection con = DbUtils.getConnection()) {
             con.createQuery(query)
-                    .addParameter("id", commentId)
+                    .addParameter("commentId", commentId)
                     .executeUpdate();
         }
     }

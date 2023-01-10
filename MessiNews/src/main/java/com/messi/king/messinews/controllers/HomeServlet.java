@@ -303,8 +303,12 @@ public class HomeServlet extends HttpServlet {
         if (comment != null) {
             String content = request.getParameter("comment");
             CommentService.updateComment(commentId, content);
-
-            ServletUtils.redirect(request.getServletPath(), request, response);
+            String url = request.getHeader("referer");
+            if (url!=null) {
+                ServletUtils.redirect(url, request, response);
+            } else  {
+                ServletUtils.redirect("/Home", request, response);
+            }
 
         } else {
             ServletUtils.redirect("/views/204.jsp", request, response);
@@ -322,8 +326,12 @@ public class HomeServlet extends HttpServlet {
         if (comment != null) {
 
             CommentService.delete(commentId);
-            ServletUtils.redirect(request.getServletPath(), request, response);
-
+            String url = request.getHeader("referer");
+            if (url!=null) {
+                ServletUtils.redirect(url, request, response);
+            } else  {
+                ServletUtils.redirect("/Home", request, response);
+            }
         } else {
             ServletUtils.redirect("/views/204.jsp", request, response);
         }
@@ -339,11 +347,11 @@ public class HomeServlet extends HttpServlet {
 
         Articles art = ArticlesService.findById(artId);
         if (art != null) {
-            String comment = request.getParameter("commentAdd");
+            String comment = request.getParameter("realCmt");
             Users user = (Users) request.getSession().getAttribute("authUser");
             CommentService.add(user.getId(), artId, comment);
 
-            ServletUtils.redirect(request.getServletPath(), request, response);
+            ServletUtils.redirect(request.getContextPath()+"/Home/Details?id="+art.getId(), request, response);
         }
     }
 }

@@ -3,10 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <jsp:useBean id="editor" scope="request" type="com.messi.king.messinews.models.Users"/>
-<jsp:useBean id="cates" scope="request" type="java.util.List<com.messi.king.messinews.models.ParentCategories>"/>
 <jsp:useBean id="allPCategories" scope="request"
              type="java.util.List<com.messi.king.messinews.models.ParentCategories>"/>
 <jsp:useBean id="allCategories" scope="request" type="java.util.List<com.messi.king.messinews.models.Categories>"/>
+<jsp:useBean id="cates" scope="request" type="java.util.List<com.messi.king.messinews.models.Categories>"/>
 
 <m:main>
     <jsp:attribute name="css">
@@ -20,17 +20,10 @@
     </jsp:attribute>
     <jsp:attribute name="js">
         <script>
-            function choosePCat(idPCat, name) {
-                $('.divCheckBox').each(function (index, value) {
-                    $(this).css('display','none');
-                });
-                document.getElementById(idPCat).style.display = 'block';
-                document.getElementById('btPCat').innerText = name;
-            }
-            function setArrCat(){
+            function setArrCat() {
                 let list = []
                 $('.ckBox').each(function (index, value) {
-                    if ($(this).is(':checked')){
+                    if ($(this).is(':checked')) {
                         list.push($(this).val())
                     }
                 });
@@ -53,35 +46,46 @@
 
                     <hr>
                     <h5>Biên tập: ${editor.username}</h5>
-
-                    <div class="dropdown mt-3">
-                        <button class="btn btn-outline-secondary btStyle" type="button" id="btPCat"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Chọn chuyên mục lớn
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <input name="catesId" id="catesId" type="text" style="display: none">
+                    <div class="w-100 px-5 pt-4">
+                        <table border="1" class="w-100" cellpadding="10px">
+                            <tr>
+                                <td align="center">Chuyên mục lớn</td>
+                                <td align="center">Chuyên mục nhỏ</td>
+                            </tr>
                             <c:forEach items="${allPCategories}" var="c">
-                                <a class="dropdown-item"
-                                   onclick="choosePCat('div${c.id}','${c.name_parent_cate}')">${c.name_parent_cate}</a>
+                                <tr>
+                                    <td align="center" style="width: 50%">
+                                            ${c.name_parent_cate}
+                                    </td>
+                                    <td class="pl-4">
+                                        <c:forEach items="${allCategories}" var="d">
+                                            <c:if test="${c.id == d.parent_cate_id}">
+                                                <c:set var="checkCate" value="0"/>
+                                                <c:forEach items="${cates}" var="f">
+                                                    <c:if test="${f.id == d.id}">
+                                                        <c:set var="checkCate" value="1"/>
+                                                    </c:if>
+                                                </c:forEach>
+                                                <c:if test="${checkCate == 0}">
+                                                    <input class="ckBox" type="checkbox" id="checkBox${d.id}"
+                                                           name="fav_language" value="${d.id}">
+                                                    <label for="checkBox${d.id}">${d.name_category}</label><br>
+                                                </c:if>
+                                                <c:if test="${checkCate == 1}">
+                                                    <input class="ckBox" type="checkbox" id="checkBox${d.id}"
+                                                           name="fav_language" value="${d.id}" checked>
+                                                    <label for="checkBox${d.id}">${d.name_category}</label><br>
+                                                </c:if>
+                                            </c:if>
+                                        </c:forEach>
+                                    </td>
+                                </tr>
                             </c:forEach>
-                        </div>
+                        </table>
                     </div>
 
-                    <input name="catesId" id="catesId" type="text" style="display: none">
-
-                    <c:forEach items="${allPCategories}" var="c">
-                        <div class="divCheckBox mt-3 pl-3" id="div${c.id}" style="display: none">
-                            <c:forEach items="${allCategories}" var="d">
-                                <c:if test="${c.id == d.parent_cate_id}">
-                                    <input class="ckBox" onclick="chooseCheckBox('checkBox${d.id}')" type="checkbox" id="checkBox${d.id}" name="fav_language" value="${d.id}">
-                                    <label for="checkBox${d.id}">${d.name_category}</label><br>
-                                </c:if>
-                            </c:forEach>
-                        </div>
-                    </c:forEach>
-
-                    <hr>
-                    <div id="save" align="end">
+                    <div id="save" align="end" class="mt-4">
                         <a href="${pageContext.request.contextPath}/Admin/Users/ListEditor"
                            class="btn btn-secondary mr-2">
                             <i class="fa fa-times" aria-hidden="true"></i>

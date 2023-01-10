@@ -45,7 +45,7 @@
             function chinhSua(inputId, btId) {
                 document.getElementById(inputId).readOnly = false;
                 if (document.getElementById(btId).innerText == 'Save') {
-                    document.getElementById('comment').value = document.getElementById(inputId).value
+                    document.getElementById('editComment').value = document.getElementById(inputId).value
                     document.getElementById(btId).type = 'submit'
                 } else {
                     document.getElementById(btId).innerText = 'Save';
@@ -146,40 +146,45 @@
 
                         <%--    Các danh mục liên quan--%>
                     <h4>Có thể bạn sẽ quan tâm</h4>
-
-                    <div class="w-100 p-3 d-flex justify-content-between">
-                        <c:forEach var="i" begin="0" end="5">
-                            <c:if test="${article.id != related[i].id}">
-                                <div class="w-100 Shadown mr-3">
-                                    <a href="${pageContext.request.contextPath}/Home/Details?id=${related[i].id}"
-                                       onclick="checkPermission(${related[i].premium},event)">
-                                        <img src="${pageContext.request.contextPath}/photos/articles/${related[i].id}/a.png"
-                                             alt="" class="w-100"
-                                             style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
-                                    </a>
-                                    <div class="p-2">
-                                        <c:if test="${related[i].premium == 1}">
-                                            <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
-                                        </c:if>
-                                        <c:forEach items="${allCategories}" var="c">
-                                            <c:if test="${c.id == related[i].categories_id}">
-                                                <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.id}">
-                                                    <b>${c.name_category}</b>
-                                                </a>
-                                            </c:if>
-                                        </c:forEach>
+                    <c:if test="${related.size()==0}">
+                        <div class="w-100 p-3 d-flex justify-content-center">
+                            <h4>Chưa bái bài báo nào liên quan...</h4>
+                        </div>
+                    </c:if>
+                    <c:if test="${related.size()!=0}">
+                        <div class="w-100 p-3 d-flex justify-content-between">
+                            <c:forEach var="i" begin="0" end="5">
+                                <c:if test="${article.id != related[i].id}">
+                                    <div class="w-100 Shadown mr-3">
                                         <a href="${pageContext.request.contextPath}/Home/Details?id=${related[i].id}"
                                            onclick="checkPermission(${related[i].premium},event)">
-                                            <p>${related[i].title}</p>
+                                            <img src="${pageContext.request.contextPath}/photos/articles/${related[i].id}/a.png"
+                                                 alt="" class="w-100"
+                                                 style="border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
                                         </a>
+                                        <div class="p-2">
+                                            <c:if test="${related[i].premium == 1}">
+                                                <i class="fa fa-star" aria-hidden="true" style="color: gold"></i>
+                                            </c:if>
+                                            <c:forEach items="${allCategories}" var="c">
+                                                <c:if test="${c.id == related[i].categories_id}">
+                                                    <a href="${pageContext.request.contextPath}/Home/ByCat?id=${c.id}">
+                                                        <b>${c.name_category}</b>
+                                                    </a>
+                                                </c:if>
+                                            </c:forEach>
+                                            <a href="${pageContext.request.contextPath}/Home/Details?id=${related[i].id}"
+                                               onclick="checkPermission(${related[i].premium},event)">
+                                                <p>${related[i].title}</p>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                                <br>
-                            </c:if>
-                        </c:forEach>
-                    </div>
+                                    <br>
+                                </c:if>
+                            </c:forEach>
+                        </div>
+                    </c:if>
                     <hr>
-
 
                         <%--                        Danh sách tag --%>
                     <h4>Tags:</h4>
@@ -202,7 +207,7 @@
                     <c:if test="${comments.size()==0}">
                         <b>Chưa có bình luận nào</b>
                     </c:if>
-                    <input id="comment" name="comment" type="text" style="display: none">
+                    <input id="editComment" name="editComment" type="text" style="display: none">
                     <c:forEach items="${comments}" var="c">
                         <div class="d-flex ">
                             <img class="imageIcon"
@@ -244,7 +249,7 @@
                             <img class="imageIcon"
                                  src="${pageContext.request.contextPath}/photos/userAvatar/${authUser.id}/avatar.png"
                                  alt="">
-                            <textarea name="realCmt" class="bgColorGray w-100 ml-3 p-3" rows="4"
+                            <textarea name="commentAdd" class="bgColorGray w-100 ml-3 p-3" rows="4"
                                       style="border-radius: 10px; border-style: none"
                                       placeholder="Bình luận ngay nào..."></textarea>
                         </div>

@@ -119,21 +119,29 @@ public class AdminUsersServlet extends HttpServlet {
         int editorId = 0;
         try {
             editorId = Integer.parseInt(request.getParameter("editorId"));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException e) { 
         }
         Users editor = UsersService.findById(editorId);
         if (editor != null) {
+            String[] catesIdStr =request.getParameter("catesId").split(",");
+            System.out.println(catesIdStr.length);
+            if (!catesIdStr[0].equals("")) {
+                int[] catesId = Arrays
+                        .stream(catesIdStr)
+                        .mapToInt(Integer::parseInt)
+                        .toArray();
+                UsersService.assignCategories(editorId, catesId);
+            } else {
+                UsersService.deleteEditorCategories(editorId);
+            }
 
-            String[] catesIdStr = request.getParameter("catesId")
-                    .split(",");
-            int[] catesId = Arrays
-                    .stream(catesIdStr)
-                    .mapToInt(Integer::parseInt)
-                    .toArray();
 
-            UsersService.assignCategories(editorId, catesId);
-
-            ServletUtils.redirect("/Admin/Users/Profile?id=" + editorId, request, response);
+            String url = request.getHeader("referer");
+            if (url!=null) {
+                ServletUtils.redirect(url, request, response);
+            } else  {
+                ServletUtils.redirect("/Home", request, response);
+            }
         } else {
             ServletUtils.forward("/views/204.jsp", request, response);
         }

@@ -70,26 +70,24 @@ public class UsersService {
         }
     }
     public static void assignCategories(int editor_id, int[] catesId ) {
-        List<Integer> newCateId = Arrays.stream(catesId).boxed().toList();
-        for (int cateId : catesId) {
-            String queryCheck = "Select * from editor_manage_categories where category_id= :cateId and editor_id= :editor_id";
-            try (Connection con = DbUtils.getConnection()) {
-                boolean check = con.createQuery(queryCheck)
-                        .addParameter("editor_id", editor_id)
-                        .addParameter("cateId", cateId)
-                        .executeAndFetchFirst(EditorManageCategories.class) != null;
-                if (check)
-                    newCateId.remove(cateId);
-            }
-        }
+        UsersService.deleteEditorCategories(editor_id);
         String insertSql = "INSERT INTO editor_manage_categories (editor_id, category_id) VALUES (:editor_id, :category_id)";
         try (Connection con = DbUtils.getConnection()) {
-            for (int cateId: newCateId) {
+            for (int cateId: catesId) {
                 con.createQuery(insertSql)
                         .addParameter("editor_id", editor_id)
                         .addParameter("category_id", cateId)
                         .executeUpdate();
             }
+        }
+    }
+
+    public static void deleteEditorCategories(int editor_id ) {
+        String deleteSql = "delete from editor_manage_categories where editor_id = :editor_id";
+        try (Connection con = DbUtils.getConnection()) {
+            con.createQuery(deleteSql)
+                    .addParameter("editor_id", editor_id)
+                    .executeUpdate();
         }
     }
 

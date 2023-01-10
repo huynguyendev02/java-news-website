@@ -356,9 +356,7 @@ public class AccountServlet extends HttpServlet {
                 session.setAttribute("auth", true);
                 session.setAttribute("authUser", user);
 
-//                String url = (String) session.getAttribute("retUrl");
-//                if (url == null)
-//                    url = "/Home";
+
                 ServletUtils.redirect("/Home", request, response);
             } else {
                 request.setAttribute("errorMessage", "Thông tin đăng nhập không chính xác");
